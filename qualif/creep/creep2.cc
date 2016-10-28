@@ -8,14 +8,34 @@
 #include <algorithm>
 
 struct Command {
-    int command; // 1 queen, 2 tumor
+    Command() = default;
+
+    static Command QueenSpawn(int id, int x, int y) {
+        Command cmd;
+        cmd.command = 1;
+        cmd.id = id;
+        cmd.x = x;
+        cmd.y = y;
+        return cmd;
+    }
+
+    static Command TumorSpawn(int id, int x, int y) {
+        Command cmd;
+        cmd.command = 2;
+        cmd.id = id;
+        cmd.x = x;
+        cmd.y = y;
+        return cmd;
+    }
+
+    int command = -1;
     int id;
     int x;
     int y;
 };
 
 struct game;
-Command GetCommand(const game& game);
+Command GetCommand(game& game);
 
 
 // bal alsó sarok 0,0, jobbra x, felfelé y tengely
@@ -589,16 +609,16 @@ void step(game &g, bool turbo)
 #else
         1e6/speed;
 #endif
-    usleep(d*dt_tick_q8/256);
 }
 
 int main(int argc, char **argv)
 {
     assert(argc==2 && "./creep map < in");
     game g(argv[1]);
+    std::cout << 100 << std::endl;
     for(int n=0; g.t_q2<g.t_limit_q2; ++n)
     {
-        auto command = GetCommand(game);
+        auto command = GetCommand(g);
         if (command.command <= 0) {
             step(g,true);
         } else {
@@ -619,7 +639,24 @@ int main(int argc, char **argv)
     return 0;
 }
 
-Command GetCommand(const game& game) {
+std::vector<pos> GetQueenSpawnablePositions(game& game) {
+    std::vector<pos> result;
+    for(uint y = 0; y < game.map_dy; ++y) {
+        for(uint x = 0; x < game.map_dx; ++x) {
+            auto p = pos(x, y);
+            if (game.valid_pos(p) &&
+                !game.map_wall[p.y][p.x] &&
+                !game.map_building[p.y][p.x] &&
+                game.map_creep[p.y][p.x])
+            {
+                result.push_back(p);
+            }
+        }
+    }
+    return result;
+}
+
+Command GetCommand(game& game) {
     for (auto* building : game.buildings) {
         if (building->name() == std::string("creep_tumor")) {
             auto ct = static_cast<creep_tumor*>(building);
@@ -635,12 +672,16 @@ Command GetCommand(const game& game) {
 
     for (auto* unit : game.units) {
         if (unit->name() == std::string("queen")) {
-            auto queen = static_cast<queen*>(unit);
-            if (queen->energy_q8 < queen::spawn_creep_tumor_energy_cost_q8) {
+            auto q = static_cast<queen*>(unit);
+            if (q->energy_q8 < queen::spawn_creep_tumor_energy_cost_q8) {
                 // charging
             } else {
-                // available
+                auto spawnable_pos = GetQueenSpawnablePositions(game);
+                auto p = spawnable_pos[rand() % spawnable_pos.size()];
+
+                return Command::QueenSpawn(q->id, p.x, p.y);
             }
         }
     }
+    return Command{};
 }
