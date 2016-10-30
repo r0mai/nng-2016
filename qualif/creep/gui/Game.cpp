@@ -89,7 +89,7 @@ void Game::clickOn(int x, int y) {
     }
     if (creep) {
         if (inputMode == InputMode::TumorSpawn) {
-            if (!IsValidPosition(activeTumorPos)) {
+            if (!isValidPosition(activeTumorPos)) {
                 std::cerr << "Invalid active tumor coordinate" << std::endl;
                 return;
             }
@@ -106,7 +106,7 @@ void Game::clickOn(int x, int y) {
                 return;
             }
 
-            auto candidateCells = CellsAround(activeTumorPos, 10);
+            auto candidateCells = cellsAround(activeTumorPos, 10);
 
             auto it = std::find(begin(candidateCells), end(candidateCells), activeTumorPos);
             if (it == end(candidateCells)) {
@@ -126,19 +126,19 @@ void Game::clickOn(int x, int y) {
     }
 }
 
-bool Game::IsValidPosition(const sf::Vector2i& p) const {
+bool Game::isValidPosition(const sf::Vector2i& p) const {
     auto columns = model.tiles.shape()[0];
     auto rows = model.tiles.shape()[1];
 
     return p.x >= 0 && p.y >= 0 && p.x < columns && p.y < rows;
 }
 
-std::vector<sf::Vector2i> Game::CellsAround(const sf::Vector2i& p, int radius) const {
+std::vector<sf::Vector2i> Game::cellsAround(const sf::Vector2i& p, int radius) const {
     std::vector<sf::Vector2i> cells;
     for (int dy = -radius+1; dy < radius; ++dy) {
         for(int dx = -radius+1; dx < radius; ++dx) {
             sf::Vector2i cell(p.x + dx, p.y + dy);
-            if (!IsValidPosition(cell)) {
+            if (!isValidPosition(cell)) {
                 continue;
             }
 
