@@ -3,6 +3,8 @@
 #include "../Model.hpp"
 #include <SFML/Graphics.hpp>
 
+namespace gui {
+
 class Game {
 public:
     Game(const TileMatrix& model);
@@ -19,3 +21,5 @@ private:
 
     sf::RenderWindow window;
 };
+
+} // namespace gui

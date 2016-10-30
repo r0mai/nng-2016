@@ -6,6 +6,6 @@ int main() {
     TileMatrix model(boost::extents[64][64]);
     model[10][2] = Creep{};
 
-    Game game{model};
+    gui::Game game{model};
     game.run();
 }

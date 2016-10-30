@@ -1,6 +1,8 @@
 #include "Game.hpp"
 #include <iostream>
 
+namespace gui {
+
 Game::Game(const TileMatrix& model) :
     window(sf::VideoMode(768, 768), "Title"),
     model(model)
@@ -97,3 +99,5 @@ void Game::draw() {
     }
     window.display();
 }
+
+} // namespace gui
