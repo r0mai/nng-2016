@@ -578,7 +578,7 @@ void step(game &g, bool turbo)
 #else
 		1e6/speed;
 #endif
-	usleep(d*dt_tick_q8/256);
+	// usleep(d*dt_tick_q8/256);
 }
 
 int main(int argc, char **argv)
@@ -603,5 +603,6 @@ int main(int argc, char **argv)
 	}
 	while(g.anything_to_do() && g.t_q2<g.t_limit_q2)
 		step(g,false);
+        printf("Current tick = %d\n", g.t_q2);
 	return 0;
 }
