@@ -17,7 +17,7 @@ Integer getIntersections(Integer n) {
 	Float two = 2;
 	const Float sqrt2 = boost::multiprecision::sqrt(two);
 	Integer result = 1;
-	for(Integer k = 1; k < n; ++k) {
+	for(Integer k = 1; k <= n; ++k) {
 		result += boost::multiprecision::ceil(sqrt2 * Float{k});
 	}
 	return result;
@@ -33,10 +33,10 @@ int main(int argc, char** argv) {
 
 	// https://oeis.org/A022775
 	std::map<Integer, Integer> expectedValues{
-		{1, 1},
-		{2, 3},
-		{3, 6},
-		{4, 11}
+		{0, 1},
+		{1, 3},
+		{2, 6},
+		{3, 11}
 	};
 
 	for(const auto& expected: expectedValues) {
