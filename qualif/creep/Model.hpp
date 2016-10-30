@@ -44,6 +44,8 @@ struct Queen {
 };
 
 struct Model {
+    int tick = -1;
+    int max_tick = -1;
     TileMatrix tiles;
     std::vector<Queen> queens;
 };

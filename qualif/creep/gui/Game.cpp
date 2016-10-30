@@ -213,9 +213,9 @@ std::string Game::GetStatusString() const {
 
     ss << "Mode: ";
     if (inputMode == InputMode::QueenSpawn) {
-        ss << "queen";
+        ss << "q";
     } else {
-        ss << "tumor";
+        ss << "t";
     }
 
     ss << " ";
@@ -228,6 +228,10 @@ std::string Game::GetStatusString() const {
         }
     }
     ss << ")";
+
+    ss << " ";
+
+    ss << "(" << model.tick << "/" << model.max_tick << ")";
 
     return ss.str();
 }

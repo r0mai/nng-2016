@@ -648,6 +648,8 @@ Model GuiModelFromGame(game& game) {
     }
 
     Model model {
+        game.t_q2,
+        game.t_limit_q2,
         tiles,
         queens
     };
