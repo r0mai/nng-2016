@@ -170,9 +170,19 @@ struct TileDrawer : boost::static_visitor<> {
         drawTile(sf::Color::Magenta);
     }
 
-    void operator()(const CreepTumor&) {
+    void operator()(const CreepTumor& ct) {
         drawTile(sf::Color::Magenta);
-        drawInnerTile(sf::Color{202, 31, 123});
+        switch (ct.state) {
+            case CreepTumor::State::Active:
+                drawInnerTile(sf::Color::Green);
+                break;
+            case CreepTumor::State::Cooldown:
+                drawInnerTile(sf::Color::Yellow);
+                break;
+            case CreepTumor::State::InActive:
+                drawInnerTile(sf::Color{202, 31, 123});
+                break;
+        }
     }
 
     void operator()(const CreepCandidate&) {
