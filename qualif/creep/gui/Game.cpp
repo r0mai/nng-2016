@@ -134,7 +134,7 @@ void Game::clickOn(const sf::Vector2i& p) {
 
             auto candidateCells = cellsAround(activeTumorPos, 10);
 
-            auto it = std::find(begin(candidateCells), end(candidateCells), activeTumorPos);
+            auto it = std::find(begin(candidateCells), end(candidateCells), p);
             if (it == end(candidateCells)) {
                 std::cerr << "New position too far away" << std::endl;
                 return;
