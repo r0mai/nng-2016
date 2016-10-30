@@ -7,36 +7,12 @@
 #include <vector>
 #include <algorithm>
 
-struct Command {
-    Command() = default;
-
-    static Command QueenSpawn(int id, int x, int y) {
-        Command cmd;
-        cmd.command = 1;
-        cmd.id = id;
-        cmd.x = x;
-        cmd.y = y;
-        return cmd;
-    }
-
-    static Command TumorSpawn(int id, int x, int y) {
-        Command cmd;
-        cmd.command = 2;
-        cmd.id = id;
-        cmd.x = x;
-        cmd.y = y;
-        return cmd;
-    }
-
-    int command = -1;
-    int id;
-    int x;
-    int y;
-};
+#include "gui/Game.hpp"
+#include "Model.hpp"
 
 struct game;
 Command GetCommand(game& game);
-
+TileMatrix GuiModelFromGame(game& game);
 
 // bal alsó sarok 0,0, jobbra x, felfelé y tengely
 int const map_max_dx=64;
@@ -593,14 +569,12 @@ struct game
     building* map_building[map_max_dy][map_max_dx];
 };
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     assert(argc==2 && "./creep map < in");
     game g(argv[1]);
-    std::cout << 100 << std::endl;
-    for(int n=0; g.t_q2<g.t_limit_q2; ++n)
-    {
-        auto command = GetCommand(g);
+
+    gui::Game gui(GuiModelFromGame(g));
+    gui.setCommandCallback([&g, &gui](const Command& command) {
         if (command.command <= 0) {
             g.tick();
         } else {
@@ -609,16 +583,54 @@ int main(int argc, char **argv)
             int x = command.x;
             int y = command.y;
             printf("%d %d %d %d %d\n", g.t_q2, cmd, id, x, y);
-            if(cmd==1)
+            if (cmd==1) {
                 g.queen_spawn_creep_tumor(g.get_queen(id),pos(x,y));
-            else if(cmd==2)
+            } else if(cmd==2) {
                 g.creep_tumor_spawn_creep_tumor(g.get_creep_tumor(id),pos(x,y));
-            else assert(0 && "invalid cmd code");
+            } else {
+                assert(0 && "invalid cmd code");
+            }
+        }
+        if (!g.anything_to_do()) {
+            printf("DONE nothing to do");
+        }
+        if (g.t_q2 >= g.t_limit_q2) {
+            printf("DONE time limit exceeded");
+        }
+        gui.setModel(GuiModelFromGame(g));
+    });
+    gui.run();
+
+    return 0;
+}
+
+TileMatrix GuiModelFromGame(game& game) {
+    TileMatrix model(boost::extents[game.map_dx][game.map_dy]);
+
+    for (int y = 0; y < game.map_dy; ++y) {
+        for (int x = 0; x < game.map_dx; ++x) {
+            auto* building = game.map_building[y][x];
+            if (game.map_wall[y][x]) {
+                model[x][y] = Wall{};
+            } else if (building) {
+                if (building->name() == std::string("creep_tumor")) {
+                    model[x][y] = CreepTumor{};
+                } else {
+                    model[x][y] = Hatchery{};
+                }
+            } else if (game.map_creep[y][x]) {
+                model[x][y] = Creep{};
+            } else if (0 < game.map_creep_gen[y][x]) {
+                if (game.creep_spread_candidate(pos(x, y))) {
+                    model[x][y] = CreepCandidate{};
+                } else {
+                    model[x][y] = CreepRadius{};
+                }
+            }
         }
     }
-    while(g.anything_to_do() && g.t_q2<g.t_limit_q2)
-        g.tick();
-    return 0;
+
+    return model;
 }
 
 std::vector<pos> GetQueenSpawnablePositions(game& game) {

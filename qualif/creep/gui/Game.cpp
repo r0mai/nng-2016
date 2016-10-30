@@ -19,6 +19,10 @@ void Game::setModel(const TileMatrix& model) {
     this->model = model;
 }
 
+void Game::setCommandCallback(const CommandCallback& callback) {
+    commandCallback = callback;
+}
+
 void Game::handleEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -56,20 +60,43 @@ struct TileDrawer : boost::static_visitor<> {
         window.draw(rect);
     }
 
+    void drawInnerTile(const sf::Color& color) {
+        sf::RectangleShape rect(tileSize * 0.7f);
+        rect.setPosition(tileTopLeft + 0.15f * tileSize);
+        rect.setFillColor(color);
+        window.draw(rect);
+    }
+
     void operator()(const Hatchery&) {
-        drawTile(sf::Color{202, 31, 123});
+        drawTile(sf::Color::Magenta);
+        drawInnerTile(sf::Color{202, 31, 123});
     }
 
     void operator()(const Wall&) {
         drawTile(sf::Color{169, 169, 169});
     }
 
-    void operator()(const Plain&) {
+    void operator()(const Empty&) {
         drawTile(sf::Color::Black);
     }
 
     void operator()(const Creep&) {
         drawTile(sf::Color::Magenta);
+    }
+
+    void operator()(const CreepTumor&) {
+        drawTile(sf::Color::Magenta);
+        drawInnerTile(sf::Color{202, 31, 123});
+    }
+
+    void operator()(const CreepCandidate&) {
+        drawTile(sf::Color::Black);
+        drawInnerTile(sf::Color::Magenta);
+    }
+
+    void operator()(const CreepRadius&) {
+        drawTile(sf::Color::Black);
+        drawInnerTile(sf::Color::Magenta);
     }
 
 private:

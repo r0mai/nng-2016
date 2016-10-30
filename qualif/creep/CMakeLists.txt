@@ -11,9 +11,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -g -O2 -D_DEBUG -DFONT_ASCII -DCOLOR_ANSI -DFAST_FWD=20")
 
-add_executable(gcreep gui/main.cpp gui/Game.cpp)
+add_executable(gcreep creep2.cc gui/Game.cpp)
 target_link_libraries(gcreep ${SFML_LIBRARIES})
 
 add_executable(creep creep.cc)
-add_executable(creep2 creep2.cc)
 add_executable(kerrigen kerrigan.cpp)
