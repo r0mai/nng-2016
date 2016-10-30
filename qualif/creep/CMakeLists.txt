@@ -15,4 +15,3 @@ add_executable(gcreep creep2.cc gui/Game.cpp)
 target_link_libraries(gcreep ${SFML_LIBRARIES})
 
 add_executable(creep creep.cc)
-add_executable(kerrigen kerrigan.cpp)
