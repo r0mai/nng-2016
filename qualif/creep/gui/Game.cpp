@@ -65,6 +65,13 @@ void Game::handleMouseButtonPressedEvent(const sf::Event::MouseButtonEvent& ev) 
 void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
     switch (ev.code) {
         case sf::Keyboard::N:
+            if (!hasValidMove()) {
+                sendCommand(Command{});
+            } else {
+                std::cerr << "You have a valid move (P to force)" << std::endl;
+            }
+            break;
+        case sf::Keyboard::P:
             sendCommand(Command{});
             break;
         case sf::Keyboard::Q:
@@ -151,6 +158,27 @@ std::vector<sf::Vector2i> Game::cellsAround(const sf::Vector2i& p, int radius) c
         }
     }
     return cells;
+}
+
+bool Game::hasValidMove() const {
+    for (auto& queen : model.queens) {
+        if (queen.energy >= 6400) {
+            return true;
+        }
+    }
+
+    auto columns = model.tiles.shape()[0];
+    auto rows = model.tiles.shape()[1];
+
+    for (auto y = 0; y < rows; ++y) {
+        for (auto x = 0; x < columns; ++x) {
+            auto* creepTumor = boost::get<CreepTumor>(&model.tiles[x][y]);
+            if (creepTumor && creepTumor->state == CreepTumor::State::Active) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void Game::sendCommand(const Command& cmd) {
