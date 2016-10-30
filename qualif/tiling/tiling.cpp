@@ -23,13 +23,21 @@ Integer getIntersections(Integer n) {
 	return result;
 }
 
+Integer power(const Integer& base, std::size_t exponent) {
+	Integer result;
+	mpz_pow_ui(result.backend().data(), base.backend().data(), exponent);
+	return result;
+}
+
 int main(int argc, char** argv) {
 	if (argc != 2) {
-		std::cerr << "Provide n" << std::endl;
+		std::cerr << "Provide exponent" << std::endl;
 		std::exit(1);
 	}
 
-	auto n = boost::lexical_cast<Integer>(argv[1]);
+	auto exponent = boost::lexical_cast<std::size_t>(argv[1]);
+	Integer ten = 10;
+	auto n = power(ten, exponent);
 
 	// https://oeis.org/A022775
 	std::map<Integer, Integer> expectedValues{
