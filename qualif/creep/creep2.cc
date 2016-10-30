@@ -593,24 +593,6 @@ struct game
     building* map_building[map_max_dy][map_max_dx];
 };
 
-void step(game &g, bool turbo)
-{
-    g.tick();
-    double speed=
-#if defined SPEED
-        SPEED;
-#else
-        1;
-#endif
-    // 1e6: normál sebesség
-    int d=
-#if defined FAST_FWD
-        turbo?1e6/FAST_FWD:1e6/speed;
-#else
-        1e6/speed;
-#endif
-}
-
 int main(int argc, char **argv)
 {
     assert(argc==2 && "./creep map < in");
@@ -620,7 +602,7 @@ int main(int argc, char **argv)
     {
         auto command = GetCommand(g);
         if (command.command <= 0) {
-            step(g,true);
+            g.tick();
         } else {
             int cmd = command.command;
             int id = command.id;
@@ -635,7 +617,7 @@ int main(int argc, char **argv)
         }
     }
     while(g.anything_to_do() && g.t_q2<g.t_limit_q2)
-        step(g,false);
+        g.tick();
     return 0;
 }
 
