@@ -582,7 +582,7 @@ int main(int argc, char **argv) {
             int id = command.id;
             int x = command.x;
             int y = command.y;
-            printf("Command %d %d %d %d %d\n", g.t_q2, cmd, id, x, y);
+            printf("%d %d %d %d %d\n", g.t_q2, cmd, id, x, y);
             if (cmd == 1) {
                 g.queen_spawn_creep_tumor(g.get_queen(id),pos(x,y));
             } else if (cmd == 2) {
