@@ -1,19 +1,11 @@
 #include <iostream>
-#include <SFML/Graphics.hpp>
-using namespace std;
 
-int main(int argc, char* argv[]) {
+#include "Game.hpp"
 
-  /* Code adapted from the SFML 2 "Window" example */
+int main() {
+    TileMatrix model(boost::extents[64][64]);
+    model[10][2] = Creep{};
 
-  sf::Window App(sf::VideoMode(800, 600), "myproject");
-
-  while (App.isOpen()) {
-    sf::Event Event;
-    while (App.pollEvent(Event)) {
-      if (Event.type == sf::Event::Closed)
-    App.close();
-    }
-    App.display();
-  }
+    Game game{model};
+    game.run();
 }

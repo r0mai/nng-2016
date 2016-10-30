@@ -9,9 +9,9 @@ include_directories(${SFML_INCLUDE_DIR})
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -g -O0 -D_DEBUG -DFONT_ASCII -DCOLOR_ANSI -DFAST_FWD=20")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -g -O2 -D_DEBUG -DFONT_ASCII -DCOLOR_ANSI -DFAST_FWD=20")
 
-add_executable(gcreep gui/main.cpp)
+add_executable(gcreep gui/main.cpp gui/Game.cpp)
 target_link_libraries(gcreep ${SFML_LIBRARIES})
 
 add_executable(creep creep.cc)
