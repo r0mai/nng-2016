@@ -4,11 +4,26 @@
 #include <boost/multi_array.hpp>
 
 struct Hatchery {};
+
 struct Wall {};
+
 struct Empty {};
+
 struct Creep {};
-struct CreepTumor {};
+
+struct CreepTumor {
+    enum class State {
+        InActive,
+        Cooldown,
+        Active
+    };
+
+    int id = -1;
+    State state;
+};
+
 struct CreepCandidate {};
+
 struct CreepRadius {};
 
 using Tile = boost::variant<
@@ -22,6 +37,16 @@ using Tile = boost::variant<
 >;
 
 using TileMatrix = boost::multi_array<Tile, 2>;
+
+struct Queen {
+    int id = -1;
+    int energy = -1;
+};
+
+struct Model {
+    TileMatrix tiles;
+    std::vector<Queen> queens;
+};
 
 struct Command {
     Command() = default;

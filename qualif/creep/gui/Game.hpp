@@ -9,19 +9,31 @@ class Game {
 public:
     using CommandCallback = std::function<void(const Command& cmd)>;
 
-    Game(const TileMatrix& model);
+    Game(const Model& model);
 
     void run();
-    void setModel(const TileMatrix& model);
+    void setModel(const Model& model);
     void setCommandCallback(const CommandCallback& callback);
 
 private:
     void handleEvents();
     void handleMouseButtonPressedEvent(const sf::Event::MouseButtonEvent& ev);
-
+    void handleKeyPressedEvent(const sf::Event::KeyEvent& ev);
+    void clickOn(int x, int y);
     void draw();
 
-    TileMatrix model;
+    void sendCommand(const Command& cmd);
+
+    std::string GetStatusString() const;
+
+    enum class InputMode {
+        QueenSpawn,
+        TumorSpawn
+    };
+    InputMode inputMode = InputMode::QueenSpawn;
+    sf::Vector2i activeTumorPos{-1, -1};
+
+    Model model;
 
     CommandCallback commandCallback;
 

@@ -12,7 +12,7 @@
 
 struct game;
 Command GetCommand(game& game);
-TileMatrix GuiModelFromGame(game& game);
+Model GuiModelFromGame(game& game);
 
 // bal alsó sarok 0,0, jobbra x, felfelé y tengely
 int const map_max_dx=64;
@@ -582,20 +582,17 @@ int main(int argc, char **argv) {
             int id = command.id;
             int x = command.x;
             int y = command.y;
-            printf("%d %d %d %d %d\n", g.t_q2, cmd, id, x, y);
-            if (cmd==1) {
+            printf("Command %d %d %d %d %d\n", g.t_q2, cmd, id, x, y);
+            if (cmd == 1) {
                 g.queen_spawn_creep_tumor(g.get_queen(id),pos(x,y));
-            } else if(cmd==2) {
+            } else if (cmd == 2) {
                 g.creep_tumor_spawn_creep_tumor(g.get_creep_tumor(id),pos(x,y));
             } else {
                 assert(0 && "invalid cmd code");
             }
         }
-        if (!g.anything_to_do()) {
-            printf("DONE nothing to do");
-        }
         if (g.t_q2 >= g.t_limit_q2) {
-            printf("DONE time limit exceeded");
+            std::cout << "DONE time limit exceeded" << std::endl;
         }
         gui.setModel(GuiModelFromGame(g));
     });
@@ -604,32 +601,56 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-TileMatrix GuiModelFromGame(game& game) {
-    TileMatrix model(boost::extents[game.map_dx][game.map_dy]);
+Model GuiModelFromGame(game& game) {
+    TileMatrix tiles(boost::extents[game.map_dx][game.map_dy]);
 
     for (int y = 0; y < game.map_dy; ++y) {
         for (int x = 0; x < game.map_dx; ++x) {
             auto* building = game.map_building[y][x];
             if (game.map_wall[y][x]) {
-                model[x][y] = Wall{};
+                tiles[x][y] = Wall{};
             } else if (building) {
                 if (building->name() == std::string("creep_tumor")) {
-                    model[x][y] = CreepTumor{};
+                    auto* ct = static_cast<creep_tumor*>(building);
+                    CreepTumor creepTumor;
+                    creepTumor.id = ct->id;
+                    if (!ct->spawn_creep_tumor_active) {
+                        creepTumor.state = CreepTumor::State::InActive;
+                    } else if (ct->dt_spawn_creep_tumor_cooldown_q8 > 0) {
+                        creepTumor.state = CreepTumor::State::Cooldown;
+                    } else {
+                        creepTumor.state = CreepTumor::State::Active;
+                    }
+                    tiles[x][y] = creepTumor;
                 } else {
-                    model[x][y] = Hatchery{};
+                    tiles[x][y] = Hatchery{};
                 }
             } else if (game.map_creep[y][x]) {
-                model[x][y] = Creep{};
+                tiles[x][y] = Creep{};
             } else if (0 < game.map_creep_gen[y][x]) {
                 if (game.creep_spread_candidate(pos(x, y))) {
-                    model[x][y] = CreepCandidate{};
+                    tiles[x][y] = CreepCandidate{};
                 } else {
-                    model[x][y] = CreepRadius{};
+                    tiles[x][y] = CreepRadius{};
                 }
             }
         }
     }
 
+    std::vector<Queen> queens;
+
+    for (auto* unit : game.units) {
+        auto* q = static_cast<queen*>(unit);
+        Queen queen;
+        queen.id = q->id;
+        queen.energy = q->energy_q8;
+        queens.push_back(queen);
+    }
+
+    Model model {
+        tiles,
+        queens
+    };
     return model;
 }
 

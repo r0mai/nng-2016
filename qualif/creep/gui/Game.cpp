@@ -1,10 +1,11 @@
 #include "Game.hpp"
 #include <iostream>
+#include <boost/algorithm/string/join.hpp>
 
 namespace gui {
 
-Game::Game(const TileMatrix& model) :
-    window(sf::VideoMode(768, 768), "Title"),
+Game::Game(const Model& model) :
+    window(sf::VideoMode(1024, 1024), "Title"),
     model(model)
 {}
 
@@ -15,7 +16,7 @@ void Game::run() {
     }
 }
 
-void Game::setModel(const TileMatrix& model) {
+void Game::setModel(const Model& model) {
     this->model = model;
 }
 
@@ -33,6 +34,9 @@ void Game::handleEvents() {
             case sf::Event::MouseButtonPressed:
                 handleMouseButtonPressedEvent(event.mouseButton);
                 break;
+            case sf::Event::KeyPressed:
+                handleKeyPressedEvent(event.key);
+                break;
             default:
                 break;
         }
@@ -40,7 +44,89 @@ void Game::handleEvents() {
 }
 
 void Game::handleMouseButtonPressedEvent(const sf::Event::MouseButtonEvent& ev) {
+    auto columns = model.tiles.shape()[0];
+    auto rows = model.tiles.shape()[1];
 
+    float width = window.getSize().x;
+    float height = window.getSize().y;
+
+    if (ev.x < 0 || ev.x >= int(width) ||
+        ev.y < 0 || ev.y >= int(height))
+    {
+        return;
+    }
+
+    int x = ev.x / (width / float(columns));
+    int y = ev.y / (height / float(rows));
+
+    clickOn(x, y);
+}
+
+void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
+    switch (ev.code) {
+        case sf::Keyboard::N:
+            sendCommand(Command{});
+            break;
+        case sf::Keyboard::Q:
+            inputMode = InputMode::QueenSpawn;
+            break;
+        default:
+            break;
+    }
+}
+
+void Game::clickOn(int x, int y) {
+    auto* creepTumor = boost::get<CreepTumor>(&model.tiles[x][y]);
+    auto* creep = boost::get<Creep>(&model.tiles[x][y]);
+    if (creepTumor) {
+        if (creepTumor->state == CreepTumor::State::Active) {
+            inputMode = InputMode::TumorSpawn;
+            activeTumorPos = sf::Vector2i{x, y};
+        }
+    }
+    if (creep) {
+        if (inputMode == InputMode::TumorSpawn) {
+
+        } else if (inputMode == InputMode::QueenSpawn) {
+            for (auto& queen : model.queens) {
+                if (queen.energy >= 6400) {
+                    sendCommand(Command::QueenSpawn(queen.id, x, y));
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Game::sendCommand(const Command& cmd) {
+    if (commandCallback) {
+        commandCallback(cmd);
+        inputMode = InputMode::QueenSpawn;
+    }
+}
+
+std::string Game::GetStatusString() const {
+    std::stringstream ss;
+
+    ss << "Mode: ";
+    if (inputMode == InputMode::QueenSpawn) {
+        ss << "queen";
+    } else {
+        ss << "tumor";
+    }
+
+    ss << " ";
+
+    ss << "Queens: (";
+    if (!model.queens.empty()) {
+        ss << model.queens.front().energy;
+        for (int i = 1; i < model.queens.size(); ++i) {
+            ss << "," << model.queens[i].energy;
+        }
+    }
+    ss << ")";
+
+    return ss.str();
 }
 
 struct TileDrawer : boost::static_visitor<> {
@@ -61,8 +147,8 @@ struct TileDrawer : boost::static_visitor<> {
     }
 
     void drawInnerTile(const sf::Color& color) {
-        sf::RectangleShape rect(tileSize * 0.7f);
-        rect.setPosition(tileTopLeft + 0.15f * tileSize);
+        sf::RectangleShape rect(tileSize * 0.5f);
+        rect.setPosition(tileTopLeft + 0.25f * tileSize);
         rect.setFillColor(color);
         window.draw(rect);
     }
@@ -108,8 +194,8 @@ private:
 void Game::draw() {
     window.clear();
 
-    auto columns = model.shape()[0];
-    auto rows = model.shape()[1];
+    auto columns = model.tiles.shape()[0];
+    auto rows = model.tiles.shape()[1];
 
     float width = window.getSize().x;
     float height = window.getSize().y;
@@ -121,9 +207,10 @@ void Game::draw() {
                 sf::Vector2f{x * width/columns, y * height/rows},
                 sf::Vector2f{width/columns, height/rows}
             };
-            boost::apply_visitor(tileDrawer, model[x][y]);
+            boost::apply_visitor(tileDrawer, model.tiles[x][y]);
         }
     }
+    window.setTitle(GetStatusString());
     window.display();
 }
 
