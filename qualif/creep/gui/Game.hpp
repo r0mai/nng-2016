@@ -20,6 +20,9 @@ private:
     void handleMouseButtonPressedEvent(const sf::Event::MouseButtonEvent& ev);
     void handleKeyPressedEvent(const sf::Event::KeyEvent& ev);
     void clickOn(int x, int y);
+
+    void drawTile(const sf::Vector2i& p, const sf::Color& color);
+    void drawSmallTile(const sf::Vector2i& p, const sf::Color& color);
     void draw();
 
     bool isValidPosition(const sf::Vector2i& p) const;
@@ -43,6 +46,8 @@ private:
     CommandCallback commandCallback;
 
     sf::RenderWindow window;
+
+    struct TileDrawer;
 };
 
 } // namespace gui

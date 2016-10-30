@@ -122,6 +122,7 @@ void Game::clickOn(int x, int y) {
             }
 
             sendCommand(Command::TumorSpawn(spawnTumor->id, x, y));
+            activeTumorPos = {-1, -1};
         } else if (inputMode == InputMode::QueenSpawn) {
             for (auto& queen : model.queens) {
                 if (queen.energy >= 6400) {
@@ -212,77 +213,92 @@ std::string Game::GetStatusString() const {
     return ss.str();
 }
 
-struct TileDrawer : boost::static_visitor<> {
+struct Game::TileDrawer : boost::static_visitor<> {
     TileDrawer(
-        sf::RenderWindow& window,
-        const sf::Vector2f& tileTopLeft,
-        const sf::Vector2f& tileSize) :
-        window(window),
-        tileTopLeft(tileTopLeft),
-        tileSize(tileSize)
+        Game& game,
+        const sf::Vector2i& position) :
+        game(game),
+        position(position)
     {}
 
-    void drawTile(const sf::Color& color) {
-        sf::RectangleShape rect(tileSize);
-        rect.setPosition(tileTopLeft);
-        rect.setFillColor(color);
-        window.draw(rect);
-    }
-
-    void drawInnerTile(const sf::Color& color) {
-        sf::RectangleShape rect(tileSize * 0.5f);
-        rect.setPosition(tileTopLeft + 0.25f * tileSize);
-        rect.setFillColor(color);
-        window.draw(rect);
-    }
-
     void operator()(const Hatchery&) {
-        drawTile(sf::Color::Magenta);
-        drawInnerTile(sf::Color{202, 31, 123});
+        game.drawTile(position, sf::Color::Magenta);
+        game.drawSmallTile(position, sf::Color{202, 31, 123});
     }
 
     void operator()(const Wall&) {
-        drawTile(sf::Color{169, 169, 169});
+        game.drawTile(position, sf::Color{169, 169, 169});
     }
 
     void operator()(const Empty&) {
-        drawTile(sf::Color::Black);
+        game.drawTile(position, sf::Color::Black);
     }
 
     void operator()(const Creep&) {
-        drawTile(sf::Color::Magenta);
+        game.drawTile(position, sf::Color::Magenta);
     }
 
     void operator()(const CreepTumor& ct) {
-        drawTile(sf::Color::Magenta);
+        game.drawTile(position, sf::Color::Magenta);
         switch (ct.state) {
             case CreepTumor::State::Active:
-                drawInnerTile(sf::Color::Green);
+                game.drawSmallTile(position, sf::Color::Green);
                 break;
             case CreepTumor::State::Cooldown:
-                drawInnerTile(sf::Color::Yellow);
+                game.drawSmallTile(position, sf::Color::Yellow);
                 break;
             case CreepTumor::State::InActive:
-                drawInnerTile(sf::Color{202, 31, 123});
+                game.drawSmallTile(position, sf::Color{202, 31, 123});
                 break;
         }
     }
 
     void operator()(const CreepCandidate&) {
-        drawTile(sf::Color::Black);
-        drawInnerTile(sf::Color::Magenta);
+        game.drawTile(position, sf::Color::Black);
+        game.drawSmallTile(position, sf::Color::Magenta);
     }
 
     void operator()(const CreepRadius&) {
-        drawTile(sf::Color::Black);
-        drawInnerTile(sf::Color::Magenta);
+        game.drawTile(position, sf::Color::Black);
+        game.drawSmallTile(position, sf::Color::Magenta);
     }
 
 private:
-    sf::RenderWindow& window;
-    sf::Vector2f tileTopLeft;
-    sf::Vector2f tileSize;
+    Game& game;
+    sf::Vector2i position;
 };
+
+void Game::drawTile(const sf::Vector2i& p, const sf::Color& color) {
+    auto columns = model.tiles.shape()[0];
+    auto rows = model.tiles.shape()[1];
+
+    float width = window.getSize().x;
+    float height = window.getSize().y;
+
+    sf::Vector2f tileTopLeft{p.x * width/columns, p.y * height/rows};
+    sf::Vector2f tileSize{width/columns, height/rows};
+    sf::RectangleShape rect(tileSize);
+
+    rect.setPosition(tileTopLeft);
+    rect.setFillColor(color);
+    window.draw(rect);
+}
+
+void Game::drawSmallTile(const sf::Vector2i& p, const sf::Color& color) {
+    auto columns = model.tiles.shape()[0];
+    auto rows = model.tiles.shape()[1];
+
+    float width = window.getSize().x;
+    float height = window.getSize().y;
+
+    sf::Vector2f tileTopLeft{p.x * width/columns, p.y * height/rows};
+    sf::Vector2f tileSize{width/columns, height/rows};
+
+    sf::RectangleShape rect(tileSize * 0.5f);
+    rect.setPosition(tileTopLeft + 0.25f * tileSize);
+    rect.setFillColor(color);
+    window.draw(rect);
+}
 
 void Game::draw() {
     window.clear();
@@ -295,14 +311,14 @@ void Game::draw() {
 
     for (auto y = 0; y < rows; ++y) {
         for (auto x = 0; x < columns; ++x) {
-            TileDrawer tileDrawer{
-                window,
-                sf::Vector2f{x * width/columns, y * height/rows},
-                sf::Vector2f{width/columns, height/rows}
-            };
+            TileDrawer tileDrawer{*this, {x, y}};
             boost::apply_visitor(tileDrawer, model.tiles[x][y]);
         }
     }
+    if (isValidPosition(activeTumorPos)) {
+        drawTile(activeTumorPos, sf::Color{0, 0, 0, 128});
+    }
+
     window.setTitle(GetStatusString());
     window.display();
 }
