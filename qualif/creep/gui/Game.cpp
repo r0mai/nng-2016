@@ -76,6 +76,9 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
 }
 
 void Game::clickOn(int x, int y) {
+    auto columns = model.tiles.shape()[0];
+    auto rows = model.tiles.shape()[1];
+
     auto* creepTumor = boost::get<CreepTumor>(&model.tiles[x][y]);
     auto* creep = boost::get<Creep>(&model.tiles[x][y]);
     if (creepTumor) {
@@ -86,7 +89,32 @@ void Game::clickOn(int x, int y) {
     }
     if (creep) {
         if (inputMode == InputMode::TumorSpawn) {
+            if (!IsValidPosition(activeTumorPos)) {
+                std::cerr << "Invalid active tumor coordinate" << std::endl;
+                return;
+            }
+            auto spawnTumor = boost::get<CreepTumor>(
+                &model.tiles[activeTumorPos.x][activeTumorPos.y]);
 
+            if (!spawnTumor) {
+                std::cerr << "Target is not a tumor" << std::endl;
+                return;
+            }
+
+            if (spawnTumor->state != CreepTumor::State::Active) {
+                std::cerr << "CreepTumor not active" << std::endl;
+                return;
+            }
+
+            auto candidateCells = CellsAround(activeTumorPos, 10);
+
+            auto it = std::find(begin(candidateCells), end(candidateCells), activeTumorPos);
+            if (it == end(candidateCells)) {
+                std::cerr << "New position too far away" << std::endl;
+                return;
+            }
+
+            sendCommand(Command::TumorSpawn(spawnTumor->id, x, y));
         } else if (inputMode == InputMode::QueenSpawn) {
             for (auto& queen : model.queens) {
                 if (queen.energy >= 6400) {
@@ -96,6 +124,33 @@ void Game::clickOn(int x, int y) {
             }
         }
     }
+}
+
+bool Game::IsValidPosition(const sf::Vector2i& p) const {
+    auto columns = model.tiles.shape()[0];
+    auto rows = model.tiles.shape()[1];
+
+    return p.x >= 0 && p.y >= 0 && p.x < columns && p.y < rows;
+}
+
+std::vector<sf::Vector2i> Game::CellsAround(const sf::Vector2i& p, int radius) const {
+    std::vector<sf::Vector2i> cells;
+    for (int dy = -radius+1; dy < radius; ++dy) {
+        for(int dx = -radius+1; dx < radius; ++dx) {
+            sf::Vector2i cell(p.x + dx, p.y + dy);
+            if (!IsValidPosition(cell)) {
+                continue;
+            }
+
+            int dx_q1 = 2*dx+(0<dx?1:-1);
+            int dy_q1 = 2*dy+(0<dy?1:-1);
+            int d2_q2 = dx_q1*dx_q1 + dy_q1*dy_q1;
+            if (d2_q2 <= radius*radius*4) {
+                cells.push_back(cell);
+            }
+        }
+    }
+    return cells;
 }
 
 void Game::sendCommand(const Command& cmd) {

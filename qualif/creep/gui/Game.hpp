@@ -22,6 +22,9 @@ private:
     void clickOn(int x, int y);
     void draw();
 
+    bool IsValidPosition(const sf::Vector2i& p) const;
+    std::vector<sf::Vector2i> CellsAround(const sf::Vector2i& p, int radius) const;
+
     void sendCommand(const Command& cmd);
 
     std::string GetStatusString() const;
