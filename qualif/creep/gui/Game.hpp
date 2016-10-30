@@ -19,11 +19,14 @@ private:
     void handleEvents();
     void handleMouseButtonPressedEvent(const sf::Event::MouseButtonEvent& ev);
     void handleKeyPressedEvent(const sf::Event::KeyEvent& ev);
-    void clickOn(int x, int y);
+    void handleMouseMovedEvent(const sf::Event::MouseMoveEvent& ev);
+    void clickOn(const sf::Vector2i& p);
 
     void drawTile(const sf::Vector2i& p, const sf::Color& color);
     void drawSmallTile(const sf::Vector2i& p, const sf::Color& color);
     void draw();
+
+    sf::Vector2i windowToTile(int wx, int wy) const;
 
     bool isValidPosition(const sf::Vector2i& p) const;
     std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
@@ -40,6 +43,7 @@ private:
     };
     InputMode inputMode = InputMode::QueenSpawn;
     sf::Vector2i activeTumorPos{-1, -1};
+    std::vector<sf::Vector2i> highlights;
 
     Model model;
 

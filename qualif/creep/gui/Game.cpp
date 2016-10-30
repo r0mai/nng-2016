@@ -37,6 +37,9 @@ void Game::handleEvents() {
             case sf::Event::KeyPressed:
                 handleKeyPressedEvent(event.key);
                 break;
+            case sf::Event::MouseMoved:
+                handleMouseMovedEvent(event.mouseMove);
+                break;
             default:
                 break;
         }
@@ -44,22 +47,29 @@ void Game::handleEvents() {
 }
 
 void Game::handleMouseButtonPressedEvent(const sf::Event::MouseButtonEvent& ev) {
+    auto p = windowToTile(ev.x, ev.y);
+    if (isValidPosition(p)) {
+        clickOn(p);
+    }
+}
+
+sf::Vector2i Game::windowToTile(int wx, int wy) const {
     auto columns = model.tiles.shape()[0];
     auto rows = model.tiles.shape()[1];
 
     float width = window.getSize().x;
     float height = window.getSize().y;
 
-    if (ev.x < 0 || ev.x >= int(width) ||
-        ev.y < 0 || ev.y >= int(height))
+    if (wx < 0 || wx >= int(width) ||
+        wy < 0 || wy >= int(height))
     {
-        return;
+        return {-1, -1};
     }
 
-    int x = ev.x / (width / float(columns));
-    int y = ev.y / (height / float(rows));
+    int x = wx / (width / float(columns));
+    int y = wy / (height / float(rows));
 
-    clickOn(x, y);
+    return sf::Vector2i{x, y};
 }
 
 void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
@@ -76,22 +86,31 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
             break;
         case sf::Keyboard::Q:
             inputMode = InputMode::QueenSpawn;
+            activeTumorPos = {-1, -1};
             break;
         default:
             break;
     }
 }
 
-void Game::clickOn(int x, int y) {
+void Game::handleMouseMovedEvent(const sf::Event::MouseMoveEvent& ev) {
+    highlights.clear();
+    auto p = windowToTile(ev.x, ev.y);
+    if (isValidPosition(p)) {
+        highlights = cellsAround(p, 10);
+    }
+}
+
+void Game::clickOn(const sf::Vector2i& p) {
     auto columns = model.tiles.shape()[0];
     auto rows = model.tiles.shape()[1];
 
-    auto* creepTumor = boost::get<CreepTumor>(&model.tiles[x][y]);
-    auto* creep = boost::get<Creep>(&model.tiles[x][y]);
+    auto* creepTumor = boost::get<CreepTumor>(&model.tiles[p.x][p.y]);
+    auto* creep = boost::get<Creep>(&model.tiles[p.x][p.y]);
     if (creepTumor) {
         if (creepTumor->state == CreepTumor::State::Active) {
             inputMode = InputMode::TumorSpawn;
-            activeTumorPos = sf::Vector2i{x, y};
+            activeTumorPos = sf::Vector2i{p.x, p.y};
         }
     }
     if (creep) {
@@ -121,12 +140,12 @@ void Game::clickOn(int x, int y) {
                 return;
             }
 
-            sendCommand(Command::TumorSpawn(spawnTumor->id, x, y));
+            sendCommand(Command::TumorSpawn(spawnTumor->id, p.x, p.y));
             activeTumorPos = {-1, -1};
         } else if (inputMode == InputMode::QueenSpawn) {
             for (auto& queen : model.queens) {
                 if (queen.energy >= 6400) {
-                    sendCommand(Command::QueenSpawn(queen.id, x, y));
+                    sendCommand(Command::QueenSpawn(queen.id, p.x, p.y));
                     break;
                 }
             }
@@ -317,6 +336,9 @@ void Game::draw() {
     }
     if (isValidPosition(activeTumorPos)) {
         drawTile(activeTumorPos, sf::Color{0, 0, 0, 128});
+    }
+    for (auto& p : highlights) {
+        drawTile(p, sf::Color{255, 255, 66, 128});
     }
 
     window.setTitle(GetStatusString());
