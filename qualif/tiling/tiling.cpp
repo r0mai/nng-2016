@@ -8,26 +8,26 @@
 #include <boost/multiprecision/gmp.hpp>
 
 using Integer = boost::multiprecision::mpz_int;
-using Float = boost::multiprecision::mpf_float_1000;
+using Float = boost::multiprecision::mpf_float;
 
-Integer S(Integer n) {
+Integer S(const Integer& n) {
 	return n * (n + 1) /2;
 }
 
-Integer F(Integer n) {
+Integer F(const Integer& n) {
 	Float two = 2;
 	const Float sqrt2 = boost::multiprecision::sqrt(two);
 	return Integer{boost::multiprecision::floor(n * (sqrt2 - 1))};
 }
 
-Integer S1(Integer n) {
+Integer S1(const Integer& n) {
 	if (n == 0) {
 		return 0;
 	}
 	return 2 * S(n) + F(n) * n - S1(F(n));
 }
 
-Integer S0(Integer n) {
+Integer S0(const Integer& n) {
 	return S(n) + F(n) * n - S1(F(n));
 }
 
@@ -58,6 +58,8 @@ int main(int argc, char** argv) {
 	auto exponent = boost::lexical_cast<std::size_t>(argv[1]);
 	Integer ten = 10;
 	auto n = power(ten, exponent);
+
+	Float::default_precision(10000);
 
 	// https://oeis.org/A022775
 	std::map<Integer, Integer> expectedValues{
