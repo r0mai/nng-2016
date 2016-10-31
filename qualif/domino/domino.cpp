@@ -5,28 +5,23 @@
 #include <vector>
 #include <set>
 #include <unordered_map>
+#include <algorithm>
 
 
 // Data
 
 using StringVec = std::vector<std::string>;
 using IntSet = std::set<int>;
+using PrefixMap = std::unordered_map<std::string, IntSet>;
 
-struct Entry {
-	IntSet prefix_of;
-	IntSet suffix_of;
+struct MergeState {
+	std::string suffix;
+	size_t keep_size = 0;
+	size_t total_len = 0;
+	size_t merged_len = 0;
+	std::ostream* output = nullptr;
 };
 
-struct Domino {
-	int index { -1 };
-	int prev { -1 };
-	int next { -1 };
-	int color { 0 };
-};
-
-using EntryMap = std::unordered_map<std::string, Entry>;
-using MergeMap = std::unordered_map<int, IntSet>;
-using DominoVec = std::vector<Domino>;
 
 // Algo
 
@@ -36,30 +31,26 @@ void Strip(std::string& str) {
 	}
 }
 
-
 bool CompareBySize(const std::string& s1, const std::string& s2) {
 	return (s1.size() < s2.size() ||
 		(s2.size() == s2.size() && s1 < s2));
 }
 
-
 template<typename Function>
 void ForEachPrefix(const std::string& str, Function fn) {
 	if (str.empty()) { return; }
-	for (size_t i = 1, ie = str.size(); i != ie; ++i) {
-		fn(str.substr(0, i));
+	for (size_t i = 0, ie = str.size(); i != ie; ++i) {
+		fn(str.substr(0, i + 1));
 	}
 }
-
 
 template<typename Function>
 void ForEachSuffix(const std::string& str, Function fn) {
 	if (str.empty()) { return; }
-	for (size_t i = 1, ie = str.size(); i != ie; ++i) {
+	for (size_t i = 0, ie = str.size(); i != ie; ++i) {
 		fn(str.substr(i));
 	}
 }
-
 
 StringVec ReadLines(const std::string& fname) {
 	std::ifstream f(fname);
@@ -75,145 +66,86 @@ StringVec ReadLines(const std::string& fname) {
 	return vec;
 }
 
+PrefixMap CreatePrefixes(const StringVec& vec) {
+	PrefixMap pmap;
 
-EntryMap CreateEntries(const StringVec& vec) {
-	EntryMap emap;
 	for (size_t i = 0, ie = vec.size(); i != ie; ++i) {
 		const auto& str = vec[i];
 		ForEachPrefix(str, [&](const std::string& s) {
-			emap[s].prefix_of.insert(i);
-		});
-
-		ForEachSuffix(str, [&](const std::string& s) {
-			emap[s].suffix_of.insert(i);
+			pmap[s].insert(i);
 		});
 	}
-	return emap;
+
+	return pmap;
 }
 
-
-void RemoveRefs(const StringVec& vec, int p_index, int s_index,
-	EntryMap& emap)
+void RemoveRefs(const StringVec& vec, int index, PrefixMap& pmap)
 {
-	ForEachPrefix(vec[p_index], [&](const std::string& s) {
-		auto it = emap.find(s);
-		if (it != end(emap)) { it->second.prefix_of.erase(p_index); }
-	});
-
-	ForEachSuffix(vec[s_index], [&](const std::string& s) {
-		auto it = emap.find(s);
-		if (it != end(emap)) { it->second.suffix_of.erase(s_index); }
+	ForEachPrefix(vec[index], [&](const std::string& s) {
+		auto it = pmap.find(s);
+		if (it != end(pmap)) { it->second.erase(index); }
 	});
 }
 
+void Merge(const std::string w, size_t overlap, MergeState& mm) {
+	auto cc = mm.suffix + w.substr(overlap);
+	mm.suffix = cc.substr(cc.size() - std::min(mm.keep_size, cc.size()));
+	mm.total_len += w.size();
+	mm.merged_len += w.size() - overlap;
 
-MergeMap MergeWords(const StringVec& vec, EntryMap& emap) {
-	MergeMap suffix;
+	if (mm.output) {
+		*mm.output << w << std::endl;
+	}
+}
 
-	int count = 0;
+void Solve(const StringVec& vec, PrefixMap& pmap) {
+	std::ofstream f("domino.out");
+
+	IntSet unused;
+	MergeState mm;
+	mm.output = &f;
+
 	for (size_t i = 0, ie = vec.size(); i != ie; ++i) {
-		auto entry_it = emap.find(vec[i]);
-		if (entry_it != end(emap)) {
-			auto& entry = entry_it->second;
-			if (!entry.suffix_of.empty()) {
-				suffix[*begin(entry.suffix_of)].insert(i);
-			} else {
-				continue;
+		mm.keep_size = std::max(mm.keep_size, vec[i].size());
+		unused.insert(i);
+	}
+
+	while (!unused.empty()) {
+		int p = *unused.begin();
+		unused.erase(p);
+		RemoveRefs(vec, p, pmap);
+		Merge(vec[p], 0, mm);
+
+		bool can_merge = true;
+		while (can_merge) {
+			can_merge = false;
+			for (size_t i = 0, ie = mm.suffix.size(); i != ie; ++i) {
+				auto str = mm.suffix.substr(i);
+				auto it = pmap.find(str);
+				if (it != end(pmap) && !it->second.empty()) {
+					int q = *begin(it->second);
+					it->second.erase(q);
+					unused.erase(q);
+					RemoveRefs(vec, q, pmap);
+					Merge(vec[q], str.size(), mm);
+					can_merge = true;
+					break;
+				}
 			}
-			++count;
-			RemoveRefs(vec, i, i, emap);
-		}
-	}
-	std::cout << count << std::endl;
-	return suffix;
-}
-
-
-DominoVec ConnectWords(const StringVec& vec, EntryMap& emap) {
-	DominoVec dvec(vec.size());
-	StringVec evec;
-
-	for (size_t i = 0, ie = dvec.size(); i != ie; ++i) {
-		dvec[i].index = i;
-	}
-
-	evec.reserve(emap.size());
-	for (const auto& e : emap) { evec.push_back(e.first); }
-	std::sort(evec.begin(), evec.end(), CompareBySize);
-
-	for (auto i = evec.size(); i-- > 0; ) {
-		const auto& k = evec[i];
-		auto& entry = emap[k];
-		while (!entry.suffix_of.empty() && !entry.prefix_of.empty()) {
-			int d1 = *begin(entry.suffix_of);
-			int d2 = *begin(entry.prefix_of);
-
-			dvec[d1].next = d2;
-			dvec[d2].prev = d1;
-			dvec[d1].color = dvec[d2].color = 1;
-
-			RemoveRefs(vec, d2, d1, emap);
 		}
 	}
 
-	return dvec;
+	std::cout << mm.merged_len << " (" << mm.total_len << ")" << std::endl;
+	f.close();
 }
-
-void Colorize(DominoVec& dvec) {
-	IntSet indices;
-	int next_color = 3;
-
-	for (const auto& d : dvec) { indices.insert(d.index); }
-
-	while (!indices.empty()) {
-		int i = *begin(indices);
-		indices.erase(i);
-		std::cout<< i << std::endl;
-		if (dvec[i].color == 1) {
-			int first = i;
-			while (dvec[first].prev != -1) {
-				first = dvec[first].prev;
-			}
-			std::cout << "-\n";
-			for (int p = first; p != -1; p = dvec[p].next) {
-				dvec[p].color = next_color;
-				indices.erase(p);
-			}
-			++next_color;
-		}
-	}
-
-	std::cout << next_color << std::endl;
-}
-
 
 
 // Main
 
 int main() {
 	auto vec = ReadLines("words_final.txt");
-	auto emap = CreateEntries(vec);
-	auto mmap = MergeWords(vec, emap);
-	auto dvec = ConnectWords(vec, emap);
-	int count = 0;
-
-	for (const auto& m : mmap) {
-		for (auto i : m.second) {
-			dvec[i].color = 2;
-		}
-	}
-
-	std::cout << "--\n";
-	// Colorize(dvec);
-
-	// for (const auto& d : dvec) {
-	// 	if (d.color) {
-	// 		++count;
-	// 	} else {
-	// 		std::cout << vec[d.index] << std::endl;
-	// 	}
-	// }
-
-	std::cout << count << std::endl;
+	auto pmap = CreatePrefixes(vec);
+	Solve(vec, pmap);
 	return 0;
 }
+
