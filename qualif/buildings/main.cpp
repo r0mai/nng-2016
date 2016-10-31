@@ -3,6 +3,7 @@
 #include <utility>
 #include <iomanip>
 #include <iostream>
+#include <fstream>
 
 using Buildings = std::vector<std::vector<int>>;
 using Command = std::pair<size_t, size_t>;
@@ -71,6 +72,35 @@ void applyCommandInverse(Buildings& buildings, const Command& command) {
     if (y < h-1) { destructOuterLayer(buildings[y+1][x]); }
 }
 
+bool backtrackRecurse(int h, int w, const Buildings& buildings, std::vector<Command>& commands) {
+    std::cout << "Current:" << std::endl;
+    std::cout << buildings << std::endl;
+    bool has_non_zero = false;
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            switch (buildings[y][x]) {
+                default:
+                    has_non_zero = true;
+                    break;
+                case 1: {
+                    has_non_zero = true;
+                    commands.push_back({y, x});
+                    auto copy = buildings;
+                    applyCommandInverse(copy, commands.back());
+                    if (backtrackRecurse(h, w, copy, commands)) {
+                        return true;
+                    }
+                    commands.pop_back();
+                    break;
+                }
+                case 0:
+                    break;
+            }
+        }
+    }
+    return !has_non_zero;
+}
+
 void CalculateBuildOrder(
     const Buildings& buildings,
     std::vector<Command>& commands)
@@ -80,28 +110,8 @@ void CalculateBuildOrder(
     auto h = buildings.size();
     auto w = buildings.front().size();
 
-    for (int y = 0; y < h; ++y) {
-        for (int x = 0; x < w; ++x) {
-            commands.push_back({y, x});
-        }
-    }
-
-    std::sort(begin(commands), end(commands));
-    do {
-        Buildings testBuildings(h, std::vector<int>(w, 0));
-        bool valid = true;
-
-        for (auto command : commands) {
-            if (testBuildings[command.first][command.second] != 0) {
-                valid = false;
-                break;
-            }
-            applyCommand(testBuildings, command);
-        }
-        if (valid && testBuildings == buildings) {
-            return;
-        }
-    } while (std::next_permutation(begin(commands), end(commands)));
+    backtrackRecurse(h, w, buildings, commands);
+    std::reverse(begin(commands), end(commands));
 }
 
 Buildings applyBuildOrder(int h, int w, const std::vector<Command>& commands) {
@@ -115,15 +125,20 @@ Buildings applyBuildOrder(int h, int w, const std::vector<Command>& commands) {
 }
 
 #ifdef LOCAL
-int main() {
+int main(int argc, char** argv) {
+    std::ifstream in_file;
+    std::istream& in = argc == 2 ? in_file : std::cin;
+    if (argc == 2) {
+        in_file.open(argv[1]);
+    }
     int h, w;
-    std::cin >> h >> w;
+    in >> h >> w;
 
     Buildings buildings(h, std::vector<int>(w));
 
     for (int y = 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
-            std::cin >> buildings[y][x];
+            in >> buildings[y][x];
         }
     }
 
