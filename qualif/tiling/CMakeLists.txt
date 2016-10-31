@@ -6,7 +6,7 @@ find_package(LibGMP)
 include_directories(${Boost_INCLUDE_DIRS})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CXX11_FLAGS "-std=c++11")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_FLAGS} -O3")
 
 add_executable(tiling tiling.cpp)
 target_link_libraries(tiling ${Boost_LIBRARIES} gmp)

@@ -10,17 +10,37 @@
 using Integer = boost::multiprecision::mpz_int;
 using Float = boost::multiprecision::mpf_float_1000;
 
-Integer getIntersections(Integer n) {
+Integer S(Integer n) {
+	return n * (n + 1) /2;
+}
 
-	// https://oeis.org/A022775
-
+Integer F(Integer n) {
 	Float two = 2;
 	const Float sqrt2 = boost::multiprecision::sqrt(two);
-	Integer result = 1;
-	for(Integer k = 1; k <= n; ++k) {
-		result += boost::multiprecision::ceil(sqrt2 * Float{k});
+	return Integer{boost::multiprecision::floor(n * (sqrt2 - 1))};
+}
+
+Integer S1(Integer n) {
+	if (n == 0) {
+		return 0;
 	}
-	return result;
+	return 2 * S(n) + F(n) * n - S1(F(n));
+}
+
+Integer S0(Integer n) {
+	return S(n) + F(n) * n - S1(F(n));
+}
+
+Integer getIntersections(Integer n) {
+
+	// Off-by-one
+	++n;
+
+	if (n == 0) {
+		return 1;
+	}
+	return n + S0(n-1);
+
 }
 
 Integer power(const Integer& base, std::size_t exponent) {
