@@ -21,7 +21,9 @@ std::string printSolution(const std::vector<size_t>& solution) {
 
 class Tester {
 	static std::vector<bool> currentBalls;
+	static std::size_t checkCounter;
 	static bool checker(const std::vector<size_t>& ballIndices) {
+		++checkCounter;
 		for (size_t index: ballIndices) {
 			if (currentBalls[index]) {
 				return true;
@@ -46,6 +48,7 @@ public:
 	}
 
 	void verify() {
+		checkCounter = 0;
 		auto expectedResult = getIndices();
 		auto result = FindRadioactiveBalls(currentBalls.size(),
 				expectedResult.size(),
@@ -56,11 +59,15 @@ public:
 			std::cerr << printSolution(result) << std::endl;
 			std::exit(1);
 		}
+		std::cerr << "Sample size was: " << currentBalls.size()
+				<< ", verified in " << checkCounter << " measurements"
+				<< std::endl;
 	}
 
 };
 
 std::vector<bool> Tester::currentBalls;
+std::size_t Tester::checkCounter;
 
 std::vector<bool> generateRandomSample(std::size_t length) {
 	static std::random_device rd;
