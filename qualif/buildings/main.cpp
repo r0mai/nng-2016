@@ -22,8 +22,16 @@ std::ostream& operator<<(std::ostream& os, const Buildings& buildings) {
 }
 
 void buildOuterLayer(int& building) {
-    if (++building == 5) {
+    if (building != 0 && ++building == 5) {
         building = 1;
+    }
+}
+
+void destructOuterLayer(int& building) {
+    if (building == 1) {
+        building = 4;
+    } else if (building != 0) {
+        --building;
     }
 }
 
@@ -37,12 +45,30 @@ void applyCommand(Buildings& buildings, const Command& command) {
     assert(x < w && y < h);
     assert(buildings[y][x] == 0);
 
-    ++buildings[y][x];
+    buildings[y][x] = 1;
 
     if (x > 0)   { buildOuterLayer(buildings[y][x-1]); }
     if (y > 0)   { buildOuterLayer(buildings[y-1][x]); }
     if (x < w-1) { buildOuterLayer(buildings[y][x+1]); }
     if (y < h-1) { buildOuterLayer(buildings[y+1][x]); }
+}
+
+void applyCommandInverse(Buildings& buildings, const Command& command) {
+    auto h = buildings.size();
+    auto w = buildings.front().size();
+
+    auto y = command.first;
+    auto x = command.second;
+
+    assert(x < w && y < h);
+    assert(buildings[y][x] == 1);
+
+    buildings[y][x] = 0;
+
+    if (x > 0)   { destructOuterLayer(buildings[y][x-1]); }
+    if (y > 0)   { destructOuterLayer(buildings[y-1][x]); }
+    if (x < w-1) { destructOuterLayer(buildings[y][x+1]); }
+    if (y < h-1) { destructOuterLayer(buildings[y+1][x]); }
 }
 
 void CalculateBuildOrder(
