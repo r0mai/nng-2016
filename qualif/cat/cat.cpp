@@ -88,7 +88,7 @@ int main() {
 
 	for(std::size_t length = 20; length < 80; ++length) {
 		std::cerr << "Running test against length of " << length << std::endl;
-		for(std::size_t radioActivity = 1; radioActivity < length /2;
+		for(std::size_t radioActivity = 1; radioActivity < float(length) * 0.1f;
 				++radioActivity) {
 			std::cerr << "Radioactivity: " << radioActivity << std::endl;
 			tester.setBalls(generateRandomSample(length, radioActivity));
