@@ -44,7 +44,14 @@ int main(int argc, char** argv) {
 		{0, 1},
 		{1, 3},
 		{2, 6},
-		{3, 11}
+		{3, 11},
+		{4, 17},
+		{5, 25},
+		{6, 34},
+		{7, 44},
+		{8, 56},
+		{9, 69},
+		{10, 84}
 	};
 
 	for(const auto& expected: expectedValues) {
