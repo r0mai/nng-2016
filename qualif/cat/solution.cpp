@@ -61,7 +61,7 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 	BOOST_ASSERT(removePartition({1, 0}, {0}) == std::vector<size_t>{1});
 
 	size_t iteration = 1;
-	while(!indices.empty()) {
+	while(!indices.empty() || result.size() != RadioActiveBalls) {
 
 		auto partition = firstSegment(indices, iteration);
 		bool testResult = TestFunction(partition);

@@ -71,10 +71,12 @@ public:
 std::vector<bool> Tester::currentBalls;
 std::size_t Tester::checkCounter;
 
-std::vector<bool> generateRandomSample(std::size_t length) {
+std::vector<bool> generateRandomSample(std::size_t length,
+		std::size_t numberOfRadioactiveBalls) {
 	static std::random_device rd;
 	static std::mt19937 gen{rd()};
-	std::bernoulli_distribution coinToss{0.5};
+	std::bernoulli_distribution coinToss{
+			double(numberOfRadioactiveBalls)/length};
 	std::vector<bool> result;
 	std::generate_n(std::back_inserter(result), length, std::bind(coinToss, gen));
 	return result;
@@ -84,10 +86,14 @@ int main() {
 
 	Tester tester;
 
-	for(std::size_t length = 1; length < 100; ++length) {
+	for(std::size_t length = 20; length < 80; ++length) {
 		std::cerr << "Running test against length of " << length << std::endl;
-		tester.setBalls(generateRandomSample(length));
-		tester.verify();
+		for(std::size_t radioActivity = 1; radioActivity < length /2;
+				++radioActivity) {
+			std::cerr << "Radioactivity: " << radioActivity << std::endl;
+			tester.setBalls(generateRandomSample(length, radioActivity));
+			tester.verify();
+		}
 	}
 	std::cerr << "Verification passed" << std::endl;
 }
