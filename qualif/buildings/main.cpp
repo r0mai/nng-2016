@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <boost/lexical_cast.hpp>
 
 using Buildings = std::vector<std::vector<int>>;
 using Command = std::pair<size_t, size_t>;
@@ -72,10 +73,9 @@ void applyCommandInverse(Buildings& buildings, const Command& command) {
     if (y < h-1) { destructOuterLayer(buildings[y+1][x]); }
 }
 
-bool backtrackRecurse(int h, int w, const Buildings& buildings, std::vector<Command>& commands) {
-    std::cout << "Current:" << std::endl;
-    std::cout << buildings << std::endl;
+bool backtrackRecurse(int h, int w, const Buildings& buildings, std::vector<Command>& commands, int depth) {
     bool has_non_zero = false;
+    std::cout << depth << std::endl;
     for (int y = 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
             switch (buildings[y][x]) {
@@ -87,7 +87,7 @@ bool backtrackRecurse(int h, int w, const Buildings& buildings, std::vector<Comm
                     commands.push_back({y, x});
                     auto copy = buildings;
                     applyCommandInverse(copy, commands.back());
-                    if (backtrackRecurse(h, w, copy, commands)) {
+                    if (backtrackRecurse(h, w, copy, commands, depth+1)) {
                         return true;
                     }
                     commands.pop_back();
@@ -110,7 +110,7 @@ void CalculateBuildOrder(
     auto h = buildings.size();
     auto w = buildings.front().size();
 
-    backtrackRecurse(h, w, buildings, commands);
+    backtrackRecurse(h, w, buildings, commands, 1);
     std::reverse(begin(commands), end(commands));
 }
 
@@ -124,47 +124,70 @@ Buildings applyBuildOrder(int h, int w, const std::vector<Command>& commands) {
     return buildings;
 }
 
-#ifdef LOCAL
-int main(int argc, char** argv) {
-    std::ifstream in_file;
-    std::istream& in = argc == 2 ? in_file : std::cin;
-    if (argc == 2) {
-        in_file.open(argv[1]);
-    }
-    int h, w;
-    in >> h >> w;
-
-    Buildings buildings(h, std::vector<int>(w));
-
+Buildings generateRandomMap(int h, int w) {
+    std::vector<Command> commands;
     for (int y = 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
-            in >> buildings[y][x];
+            commands.push_back({y, x});
         }
     }
+    std::random_shuffle(begin(commands), end(commands));
 
-    std::vector<Command> commands;
-    CalculateBuildOrder(buildings, commands);
+    return applyBuildOrder(h, w, commands);
+}
 
-    Buildings resultBuildings = applyBuildOrder(h, w, commands);
-
-    if (buildings == resultBuildings) {
-        std::cout << "Match" << std::endl;
-        std::cout << "Commands:" << std::endl;
-        for (auto command : commands) {
-            std::cout << command.first << " " << command.second << '\n';
-        }
+#ifdef LOCAL
+// usage:
+// ./buildings -g 6 10 > map.map     : generate a 6x10 map
+// ./buildings -f map.map            : solve a map from file
+// ./buildings                       : solve a map from stdin
+int main(int argc, char** argv) {
+    if (argc == 4 && argv[1] == std::string("-g")) {
+        std::cout << generateRandomMap(
+            boost::lexical_cast<int>(argv[2]),
+            boost::lexical_cast<int>(argv[3])) << std::endl;
         return 0;
     } else {
-        std::cout << "Mismatch :(" << std::endl;
-        std::cout << "Commands:" << std::endl;
-        for (auto command : commands) {
-            std::cout << command.first << " " << command.second << '\n';
+        std::ifstream in_file;
+        std::istream& in = argc == 3 ? in_file : std::cin;
+        if (argc == 3) {
+            in_file.open(argv[2]);
         }
-        std::cout << "Input:" << std::endl;
-        std::cout << buildings;
-        std::cout << "Result:" << std::endl;
-        std::cout << resultBuildings;
-        return 1;
+        int h, w;
+        in >> h >> w;
+
+        Buildings buildings(h, std::vector<int>(w));
+
+        for (int y = 0; y < h; ++y) {
+            for (int x = 0; x < w; ++x) {
+                in >> buildings[y][x];
+            }
+        }
+
+        std::vector<Command> commands;
+        CalculateBuildOrder(buildings, commands);
+
+        Buildings resultBuildings = applyBuildOrder(h, w, commands);
+
+        if (buildings == resultBuildings) {
+            std::cout << "Match" << std::endl;
+            std::cout << "Commands:" << std::endl;
+            for (auto command : commands) {
+                std::cout << command.first << " " << command.second << '\n';
+            }
+            return 0;
+        } else {
+            std::cout << "Mismatch :(" << std::endl;
+            std::cout << "Commands:" << std::endl;
+            for (auto command : commands) {
+                std::cout << command.first << " " << command.second << '\n';
+            }
+            std::cout << "Input:" << std::endl;
+            std::cout << buildings;
+            std::cout << "Result:" << std::endl;
+            std::cout << resultBuildings;
+            return 1;
+        }
     }
 }
 #endif
