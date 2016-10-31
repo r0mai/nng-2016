@@ -55,8 +55,10 @@ public:
 				&checker);
 
 		if (expectedResult != result) {
-			std::cerr << "Implementation not correct" << std::endl;
+			std::cerr << "Implementation not correct: " << std::endl;
 			std::cerr << printSolution(result) << std::endl;
+			std::cerr << "!=" << std::endl;
+			std::cerr << printSolution(expectedResult) << std::endl;
 			std::exit(1);
 		}
 		std::cerr << "Sample size was: " << currentBalls.size()
@@ -83,6 +85,7 @@ int main() {
 	Tester tester;
 
 	for(std::size_t length = 1; length < 100; ++length) {
+		std::cerr << "Running test against length of " << length << std::endl;
 		tester.setBalls(generateRandomSample(length));
 		tester.verify();
 	}
