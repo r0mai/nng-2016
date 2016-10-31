@@ -75,7 +75,33 @@ void CalculateBuildOrder(
     const Buildings& buildings,
     std::vector<Command>& commands)
 {
+    commands.clear();
 
+    auto h = buildings.size();
+    auto w = buildings.front().size();
+
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            commands.push_back({y, x});
+        }
+    }
+
+    std::sort(begin(commands), end(commands));
+    do {
+        Buildings testBuildings(h, std::vector<int>(w, 0));
+        bool valid = true;
+
+        for (auto command : commands) {
+            if (testBuildings[command.first][command.second] != 0) {
+                valid = false;
+                break;
+            }
+            applyCommand(testBuildings, command);
+        }
+        if (valid && testBuildings == buildings) {
+            return;
+        }
+    } while (std::next_permutation(begin(commands), end(commands)));
 }
 
 Buildings applyBuildOrder(int h, int w, const std::vector<Command>& commands) {
@@ -108,6 +134,10 @@ int main() {
 
     if (buildings == resultBuildings) {
         std::cout << "Match" << std::endl;
+        std::cout << "Commands:" << std::endl;
+        for (auto command : commands) {
+            std::cout << command.first << " " << command.second << '\n';
+        }
         return 0;
     } else {
         std::cout << "Mismatch :(" << std::endl;
