@@ -18,25 +18,42 @@
 #
 
 from __future__ import print_function
+from fractions import Fraction
 import math
+import sys
+
+
+def Sqrt(k):
+    n = Fraction(k)
+    x = Fraction(1)
+    for i in xrange(14):
+        x = (x + n / x) / Fraction(2)
+    return x
+
+
+sqrt2 = Sqrt(2)
+
 
 def S(n):
     return n * (n + 1) / 2
 
 
 def F(n):
-    return int(n * (math.sqrt(2) - 1))
+    return int(n * (sqrt2 - 1))
 
 
 def S1(n):
     if n == 0:
         return 0
 
-    return 2 * S(n) + F(n) * n - S1(F(n))
+    print('> {}'.format(len(str(n.numerator))), file=sys.stderr)
+    fn = F(n)
+    return 2 * S(n) + fn * n - S1(fn)
 
 
 def S0(n):
-    return S(n) + F(n) * n - S1(F(n))
+    fn = F(n)
+    return S(n) + fn * n - S1(fn)
 
 
 def S0a(n):
@@ -56,5 +73,6 @@ def _oeis(n):
 
 
 if __name__ == '__main__':
-    for i in xrange(2, 10):
-        print('10^{}:'.format(i), oeis(10 ** i))
+    sys.setrecursionlimit(10000)
+    # print(len(str(sqrt2.numerator)))
+    print(oeis(10**100 + 1))
