@@ -281,15 +281,28 @@ void Validate(const std::string& fname) {
 	std::string last_word;
 	int total_len = 0;
 	int merged_len = 0;
+	std::string indent;
+
 	for (const auto& word : vec) {
 		int overlap = Overlap(last_word, word);
-		// std::cout << word << " " << overlap << std::endl;
+		std::string indent_add;
+
+		for (int i = last_word.size() - overlap; i-- > 0; ) {
+			indent_add += ' ';
+		}
+		indent += indent_add;
+		if (indent.size() + word.size() >= 80) {
+			std::cout << last_word << " *" << std::endl;
+			indent = indent_add;
+		}
+
+		std::cout << indent << word << " " << overlap << std::endl;
 
 		total_len += word.size();
 		merged_len += word.size() - overlap;
 		last_word = word;
 	}
-	std::cout << merged_len << " / " << total_len << std::endl;
+	std::cerr << merged_len << " / " << total_len << std::endl;
 }
 
 
@@ -300,6 +313,6 @@ int main() {
 	// Init(mm, "words_final.txt");
 	// Solve(mm, "solution.txt");
 
-	Validate("solution.txt");
+	Validate("solution_464138.txt");
 	return 0;
 }
