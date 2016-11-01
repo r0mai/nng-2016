@@ -115,6 +115,8 @@ void CalculateBuildOrder(
     auto h = buildings.size();
     auto w = buildings.front().size();
 
+    commands.reserve(w * h);
+
     auto copy = buildings;
     backtrackRecurse(h, w, copy, commands, 1);
     std::reverse(begin(commands), end(commands));
