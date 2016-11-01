@@ -90,6 +90,17 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 	return result;
 }
 
+std::vector<size_t> naive(const std::vector<size_t>& balls,
+		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
+	std::vector<size_t> result;
+	for (const auto& ball: balls) {
+		if (testFunction({ball})) {
+			result.push_back(ball);
+		}
+	}
+	return result;
+}
+
 std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest)) {
@@ -103,7 +114,13 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 	BOOST_ASSERT(removePartition({0}, {0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {1, 0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {0}) == std::vector<size_t>{1});
-	auto result = findRadioactivity(indices, RadioActiveBalls, TestFunction);
-	std::sort(result.begin(), result.end());
-	return result;
+	double cutOff = 0.1;
+
+	if (float(RadioActiveBalls) / float(NumberOfBalls) <= cutOff) {
+		auto result = findRadioactivity(indices, RadioActiveBalls,
+				TestFunction);
+		std::sort(result.begin(), result.end());
+		return result;
+	}
+	return naive(indices, TestFunction);
 }
