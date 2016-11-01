@@ -40,6 +40,14 @@ std::vector<size_t> removePartition(std::vector<size_t> from,
 	return result;
 }
 
+std::vector<size_t> add(
+		const std::vector<size_t>& left, const std::vector<size_t>& right) {
+	std::vector<size_t> result;
+	std::set_union(left.begin(), left.end(), right.begin(), right.end(),
+			std::back_inserter(result));
+	return result;
+}
+
 std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 		boost::optional<size_t> radioActiveBalls,
 		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
@@ -68,6 +76,26 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 			return findRadioactivity(partition, 1, testFunction);
 		}
 	}
+	if (radioActiveBalls && *radioActiveBalls == 2) {
+		auto partition = selectFrom(balls);
+		auto others = removePartition(balls, partition);
+		bool leftResult = testFunction(partition);
+		bool rightResult = testFunction(others);
+		if (leftResult && rightResult) {
+			// Both have one each
+			std::vector<size_t> lefts = findRadioactivity(partition,
+					1, testFunction);
+			std::vector<size_t> rights = findRadioactivity(others,
+					1, testFunction);
+			return add(lefts, rights);
+		}
+		if (leftResult) {
+			return findRadioactivity(partition, 2, testFunction);
+		}
+		if (rightResult) {
+			return findRadioactivity(others, 2, testFunction);
+		}
+	}
 
 	auto left = selectFrom(balls);
 	auto right = removePartition(balls, left);
@@ -93,9 +121,7 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 						*radioActiveBalls - lefts.size()} : boost::none,
 				testFunction);
 	}
-	auto result = lefts;
-	result.insert(result.end(), rights.begin(), rights.end());
-	return result;
+	return add(lefts, rights);
 }
 
 std::vector<size_t> naive(const std::vector<size_t>& balls,
