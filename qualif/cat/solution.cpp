@@ -6,6 +6,7 @@
 #include <random>
 
 #include <boost/assert.hpp>
+#include <boost/optional.hpp>
 
 std::vector<size_t> selectFrom(const std::vector<size_t>& from) {
 	static std::random_device rd;
@@ -35,13 +36,57 @@ std::vector<size_t> removePartition(std::vector<size_t> from,
 	return result;
 }
 
+std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
+		boost::optional<size_t> radioActiveBalls,
+		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
+	if (radioActiveBalls && *radioActiveBalls == balls.size()) {
+		return balls;
+	}
+	if (balls.size() == 1) {
+		// Nothing we can really optimize here
+		if (testFunction(balls)) {
+			return balls;
+		} else {
+			return {};
+		}
+	}
+	if (radioActiveBalls && *radioActiveBalls == 0) {
+		return {};
+	}
+	if (radioActiveBalls && *radioActiveBalls == 1) {
+		auto partition = selectFrom(balls);
+		auto others = removePartition(balls, partition);
+		bool testResult = testFunction(partition);
+		if (!testResult) {
+			// Partition is clean, one defective in other
+			return findRadioactivity(others, 1, testFunction);
+		} else {
+			return findRadioactivity(partition, 1, testFunction);
+		}
+	}
+
+	auto left = selectFrom(balls);
+	auto right = removePartition(balls, left);
+
+	auto leftResult = testFunction(left);
+	auto rightResult = testFunction(right);
+
+	std::vector<size_t> lefts;
+	std::vector<size_t> rights;
+	if (leftResult) {
+		lefts = findRadioactivity(left, {}, testFunction);
+	}
+	if (rightResult) {
+		rights = findRadioactivity(right, {}, testFunction);
+	}
+	auto result = lefts;
+	result.insert(result.end(), rights.begin(), rights.end());
+	return result;
+}
+
 std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest)) {
-
-	(void)RadioActiveBalls;
-
-	std::vector<size_t> result;
 
 	std::vector<size_t> indices;
 	for (size_t i = 0; i < NumberOfBalls; ++i) {
@@ -52,33 +97,7 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 	BOOST_ASSERT(removePartition({0}, {0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {1, 0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {0}) == std::vector<size_t>{1});
-
-	auto partition = selectFrom(indices);
-	while(!indices.empty() || result.size() != RadioActiveBalls) {
-
-		bool testResult = TestFunction(partition);
-
-		if (!testResult) {
-			// Whole partition is clean
-			indices = removePartition(indices, partition);
-			if (!indices.empty()) {
-				partition = selectFrom(indices);
-			}
-		} else {
-				if (testResult && partition.size() == 1) {
-				// All of partition is defective
-				std::copy(partition.begin(), partition.end(),
-						std::back_inserter(result));
-				indices = removePartition(indices, partition);
-				if (!indices.empty()) {
-					partition = selectFrom(indices);
-				}
-			} else {
-				partition = selectFrom(partition);
-			}
-		}
-	}
-
+	auto result = findRadioactivity(indices, RadioActiveBalls, TestFunction);
 	std::sort(result.begin(), result.end());
 	return result;
 }
