@@ -19,6 +19,10 @@ std::vector<size_t> selectFrom(const std::vector<size_t>& from) {
 	std::vector<size_t> result;
 	std::copy_if(from.begin(), from.end(), std::back_inserter(result),
 			select);
+	if (result.size() == from.size()) {
+		BOOST_ASSERT_MSG(from.size() > 1, "Attempting infinite recursion");
+		result.pop_back();
+	}
 	if (result.empty()) {
 		result.push_back(from.front());
 	}
@@ -74,10 +78,12 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 	std::vector<size_t> lefts;
 	std::vector<size_t> rights;
 	if (leftResult) {
-		lefts = findRadioactivity(left, {}, testFunction);
+		lefts = findRadioactivity(left,
+				rightResult ? boost::none : radioActiveBalls, testFunction);
 	}
 	if (rightResult) {
-		rights = findRadioactivity(right, {}, testFunction);
+		rights = findRadioactivity(right,
+				leftResult ? boost::none : radioActiveBalls, testFunction);
 	}
 	auto result = lefts;
 	result.insert(result.end(), rights.begin(), rights.end());
