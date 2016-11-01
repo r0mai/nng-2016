@@ -43,7 +43,7 @@ public:
         h(buildings.size()),
         w(buildings.front().size())
     {
-        rewrite();
+        // rewrite();
     }
 
     const Buildings& getBuildings() const { return buildings; }
@@ -75,7 +75,7 @@ public:
 
         for (const Point& n : getNeighbors(p)) {
             int& height = buildings[n.y][n.x];
-            assert(height == 0 || height > 1);
+            // assert(height == 0 || height > 1);
             height = std::max(height - 1, 0);
         }
     }
@@ -91,10 +91,31 @@ public:
         return boost::none;
     }
 
+    boost::optional<Point> FindHeightOnSide(int height) {
+        for (int y = 0; y < h; ++y) {
+            for (int x = 0; x < w; ++x) {
+                if (buildings[y][x] == height) {
+                    auto ns = getNeighbors({y, x});
+                    if (ns.size() <= 3) {
+                        return Point{y, x};
+                    }
+                    for (auto n : ns) {
+                        if (buildings[n.y][n.x] == 0) {
+                            return Point{y, x};
+                        }
+                    }
+                }
+            }
+        }
+        return boost::none;
+    }
+
     bool demolish() {
         Point p;
-        auto p1 = FindHeight(1);
+        auto p1 = FindHeightOnSide(1);
         if (!p1) {
+            std::cout << "Not found 1 on side" << std::endl;
+            return false;
             auto p5 = FindHeight(5);
             if (!p5) {
                 return false;

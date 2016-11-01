@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+import sys
 
 
 class Parcel:
@@ -88,7 +89,7 @@ def load(fname):
 
 
 if __name__ == '__main__':
-    p = load('test.map')
+    p = load(sys.argv[1])
     p.show_layout()
     while p.demolish():
         p.show_layout()
