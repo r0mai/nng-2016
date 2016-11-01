@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <set>
 
 #include <boost/lexical_cast.hpp>
 
@@ -75,11 +76,30 @@ void applyCommandInverse(Buildings& buildings, const Command& command) {
     if (y < h-1) { destructOuterLayer(buildings[y+1][x]); }
 }
 
+int getZeroNeighbourCount(int h, int w, int y, int x, const Buildings& buildings) {
+    int count = 0;
+    count += (x > 0 && buildings[y][x-1] == 0);
+    count += (y > 0 && buildings[y-1][x] == 0);
+    count += (x < w-1 && buildings[y][x+1] == 0);
+    count += (y < h-1 && buildings[y+1][x] == 0);
+    return count;
+}
+
+std::set<Buildings> buildingsHistory;
+
 bool backtrackRecurse(int h, int w, Buildings& buildings, std::vector<Command>& commands, int depth) {
+    if (!buildingsHistory.insert(buildings).second) {
+        std::cout << "Repeat at depth: " << depth << std::endl;
+        std::cout << buildings << std::endl;
+        return false;
+    }
+
     bool has_non_zero = false;
-#ifdef LOCAL
     std::cout << depth << std::endl;
-#endif
+
+    std::vector<std::pair<Command, int>> candidates;
+    candidates.reserve(w * h);
+
     for (int y = 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
             switch (buildings[y][x]) {
@@ -89,13 +109,7 @@ bool backtrackRecurse(int h, int w, Buildings& buildings, std::vector<Command>& 
                 case 1: {
                     has_non_zero = true;
                     Command cmd = {y, x};
-                    commands.push_back(cmd);
-                    applyCommandInverse(buildings, cmd);
-                    if (backtrackRecurse(h, w, buildings, commands, depth+1)) {
-                        return true;
-                    }
-                    applyCommand(buildings, cmd);
-                    commands.pop_back();
+                    candidates.push_back({cmd, getZeroNeighbourCount(h, w, y, x, buildings)});
                     break;
                 }
                 case 0:
@@ -103,7 +117,32 @@ bool backtrackRecurse(int h, int w, Buildings& buildings, std::vector<Command>& 
             }
         }
     }
-    return !has_non_zero;
+    if (!has_non_zero) {
+        return true;
+    }
+
+    std::sort(begin(candidates), end(candidates),
+        [](const std::pair<Command, int>& lhs, const std::pair<Command, int>& rhs) {
+            int l = lhs.second;
+            int r = rhs.second;
+            if (l == 0) { l = 5; }
+            if (r == 0) { r = 5; }
+            return l < r;
+        }
+    );
+
+    for (const auto& candidate : candidates) {
+        auto& cmd = candidate.first;
+        commands.push_back(cmd);
+        applyCommandInverse(buildings, cmd);
+        if (backtrackRecurse(h, w, buildings, commands, depth+1)) {
+            return true;
+        }
+        applyCommand(buildings, cmd);
+        commands.pop_back();
+    }
+
+    return false;
 }
 
 void CalculateBuildOrder(
