@@ -75,10 +75,15 @@ std::vector<bool> generateRandomSample(std::size_t length,
 		std::size_t numberOfRadioactiveBalls) {
 	static std::random_device rd;
 	static std::mt19937 gen{rd()};
-	std::bernoulli_distribution coinToss{
-			double(numberOfRadioactiveBalls)/length};
 	std::vector<bool> result;
-	std::generate_n(std::back_inserter(result), length, std::bind(coinToss, gen));
+	for(std::size_t i = 0; i < length; ++i) {
+		result.push_back(false);
+	}
+	for(std::size_t i = 0; i < numberOfRadioactiveBalls; ++i) {
+		result[i] = true;
+	}
+
+	std::shuffle(result.begin(), result.end(), gen);
 	return result;
 }
 
@@ -86,9 +91,9 @@ int main() {
 
 	Tester tester;
 
-	for(std::size_t length = 20; length < 80; ++length) {
+	for(std::size_t length = 20; length < 64; ++length) {
 		std::cerr << "Running test against length of " << length << std::endl;
-		for(std::size_t radioActivity = 1; radioActivity < float(length) * 0.5f;
+		for(std::size_t radioActivity = 0; radioActivity < float(length) * 0.5f;
 				++radioActivity) {
 			std::cerr << "Radioactivity: " << radioActivity << std::endl;
 			tester.setBalls(generateRandomSample(length, radioActivity));
