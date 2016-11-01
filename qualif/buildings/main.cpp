@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <chrono>
+
 #include <boost/lexical_cast.hpp>
 
 using Buildings = std::vector<std::vector<int>>;
@@ -73,9 +75,11 @@ void applyCommandInverse(Buildings& buildings, const Command& command) {
     if (y < h-1) { destructOuterLayer(buildings[y+1][x]); }
 }
 
-bool backtrackRecurse(int h, int w, const Buildings& buildings, std::vector<Command>& commands, int depth) {
+bool backtrackRecurse(int h, int w, Buildings& buildings, std::vector<Command>& commands, int depth) {
     bool has_non_zero = false;
+#ifdef LOCAL
     std::cout << depth << std::endl;
+#endif
     for (int y = 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
             switch (buildings[y][x]) {
@@ -84,12 +88,13 @@ bool backtrackRecurse(int h, int w, const Buildings& buildings, std::vector<Comm
                     break;
                 case 1: {
                     has_non_zero = true;
-                    commands.push_back({y, x});
-                    auto copy = buildings;
-                    applyCommandInverse(copy, commands.back());
-                    if (backtrackRecurse(h, w, copy, commands, depth+1)) {
+                    Command cmd = {y, x};
+                    commands.push_back(cmd);
+                    applyCommandInverse(buildings, cmd);
+                    if (backtrackRecurse(h, w, buildings, commands, depth+1)) {
                         return true;
                     }
+                    applyCommand(buildings, cmd);
                     commands.pop_back();
                     break;
                 }
@@ -110,7 +115,8 @@ void CalculateBuildOrder(
     auto h = buildings.size();
     auto w = buildings.front().size();
 
-    backtrackRecurse(h, w, buildings, commands, 1);
+    auto copy = buildings;
+    backtrackRecurse(h, w, copy, commands, 1);
     std::reverse(begin(commands), end(commands));
 }
 
@@ -165,23 +171,24 @@ int main(int argc, char** argv) {
         }
 
         std::vector<Command> commands;
+        auto before = std::chrono::high_resolution_clock::now();
         CalculateBuildOrder(buildings, commands);
+        auto after = std::chrono::high_resolution_clock::now();
+
+        auto time_taken = std::chrono::duration_cast<std::chrono::microseconds>(after - before);
 
         Buildings resultBuildings = applyBuildOrder(h, w, commands);
 
+        std::cout << "Commands:" << std::endl;
+        for (auto command : commands) {
+            std::cout << command.first << " " << command.second << '\n';
+        }
         if (buildings == resultBuildings) {
             std::cout << "Match" << std::endl;
-            std::cout << "Commands:" << std::endl;
-            for (auto command : commands) {
-                std::cout << command.first << " " << command.second << '\n';
-            }
+            std::cout << "Time taken " << time_taken.count() << "us" << std::endl;
             return 0;
         } else {
             std::cout << "Mismatch :(" << std::endl;
-            std::cout << "Commands:" << std::endl;
-            for (auto command : commands) {
-                std::cout << command.first << " " << command.second << '\n';
-            }
             std::cout << "Input:" << std::endl;
             std::cout << buildings;
             std::cout << "Result:" << std::endl;
