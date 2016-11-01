@@ -72,6 +72,12 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 	auto left = selectFrom(balls);
 	auto right = removePartition(balls, left);
 
+	// left traversal has less information, make sure it is smaller
+	if (left.size() > right.size() ) {
+		using std::swap;
+		swap(left, right);
+	}
+
 	auto leftResult = testFunction(left);
 	auto rightResult = testFunction(right);
 
@@ -83,7 +89,9 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 	}
 	if (rightResult) {
 		rights = findRadioactivity(right,
-				leftResult ? boost::none : radioActiveBalls, testFunction);
+				radioActiveBalls ? 	boost::optional<size_t>{
+						*radioActiveBalls - lefts.size()} : boost::none,
+				testFunction);
 	}
 	auto result = lefts;
 	result.insert(result.end(), rights.begin(), rights.end());
