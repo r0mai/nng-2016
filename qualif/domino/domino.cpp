@@ -6,7 +6,7 @@
 #include <set>
 #include <unordered_map>
 #include <algorithm>
-
+#include <climits>
 
 // Data
 
@@ -20,6 +20,18 @@ struct MergeState {
 	size_t total_len = 0;
 	size_t merged_len = 0;
 	std::ostream* output = nullptr;
+
+	IntSet pwords;
+	IntSet unused;
+	StringVec vec;
+	PrefixMap pmap;
+};
+
+
+struct Mergeable {
+	std::string str;
+	size_t overlap = 0;
+	int index = -1;
 };
 
 
@@ -33,7 +45,7 @@ void Strip(std::string& str) {
 
 bool CompareBySize(const std::string& s1, const std::string& s2) {
 	return (s1.size() < s2.size() ||
-		(s2.size() == s2.size() && s1 < s2));
+		(s1.size() == s2.size() && s1 < s2));
 }
 
 template<typename Function>
@@ -79,6 +91,20 @@ PrefixMap CreatePrefixes(const StringVec& vec) {
 	return pmap;
 }
 
+IntSet FindPrefixWords(const StringVec& vec, const PrefixMap& pmap) {
+	IntSet pwords;
+	size_t index = -1;
+	for (const auto& s : vec) {
+		++index;
+		auto it = pmap.find(s);
+		if (it == end(pmap)) { continue; }
+		if (it->second.size() > 1) {
+			pwords.insert(index);
+		}
+	}
+	return pwords;
+}
+
 void RemoveRefs(const StringVec& vec, int index, PrefixMap& pmap)
 {
 	ForEachPrefix(vec[index], [&](const std::string& s) {
@@ -87,7 +113,8 @@ void RemoveRefs(const StringVec& vec, int index, PrefixMap& pmap)
 	});
 }
 
-void Merge(const std::string w, size_t overlap, MergeState& mm) {
+void Merge(size_t index, size_t overlap, MergeState& mm) {
+	const auto& w = mm.vec[index];
 	auto cc = mm.suffix + w.substr(overlap);
 	mm.suffix = cc.substr(cc.size() - std::min(mm.keep_size, cc.size()));
 	mm.total_len += w.size();
@@ -96,41 +123,66 @@ void Merge(const std::string w, size_t overlap, MergeState& mm) {
 	if (mm.output) {
 		*mm.output << w << std::endl;
 	}
+
+	mm.unused.erase(index);
+	mm.pwords.erase(index);
+	RemoveRefs(mm.vec, index, mm.pmap);
 }
 
-void Solve(const StringVec& vec, PrefixMap& pmap) {
-	std::ofstream f("domino.out");
+int Fitness(const Mergeable& w) {
+	if (w.index < 0) {
+		return INT_MIN;
+	}
+	return w.overlap;
+}
 
-	IntSet unused;
-	MergeState mm;
+bool IsEmpty(const MergeState& mm) {
+	return mm.unused.empty();
+}
+
+int Pick(const MergeState& mm) {
+	if (!mm.pwords.empty()) {
+		return *mm.pwords.rbegin();
+	}
+	return *begin(mm.unused);
+}
+
+void Solve(MergeState& mm) {
+	std::ofstream f("solution.txt");
 	mm.output = &f;
 
-	for (size_t i = 0, ie = vec.size(); i != ie; ++i) {
-		mm.keep_size = std::max(mm.keep_size, vec[i].size());
-		unused.insert(i);
+	for (size_t i = 0, ie = mm.vec.size(); i != ie; ++i) {
+		mm.keep_size = std::max(mm.keep_size, mm.vec[i].size());
+		mm.unused.insert(i);
 	}
 
-	while (!unused.empty()) {
-		int p = *unused.begin();
-		unused.erase(p);
-		RemoveRefs(vec, p, pmap);
-		Merge(vec[p], 0, mm);
+	while (!IsEmpty(mm)) {
+		int p = Pick(mm);
+		Merge(p, 0, mm);
 
 		bool can_merge = true;
 		while (can_merge) {
+			Mergeable best;
+
 			can_merge = false;
 			for (size_t i = 0, ie = mm.suffix.size(); i != ie; ++i) {
 				auto str = mm.suffix.substr(i);
-				auto it = pmap.find(str);
-				if (it != end(pmap) && !it->second.empty()) {
-					int q = *begin(it->second);
-					it->second.erase(q);
-					unused.erase(q);
-					RemoveRefs(vec, q, pmap);
-					Merge(vec[q], str.size(), mm);
+				auto it = mm.pmap.find(str);
+				if (it != end(mm.pmap) && !it->second.empty()) {
+					Mergeable w;
+					w.index = *begin(it->second);
+					w.str = mm.vec[w.index];
+					w.overlap = str.size();
+					if (Fitness(w) > Fitness(best)) {
+						best = w;
+					}
 					can_merge = true;
-					break;
 				}
+			}
+
+			if (can_merge) {
+				int q = best.index;
+				Merge(q, best.overlap, mm);
 			}
 		}
 	}
@@ -143,9 +195,11 @@ void Solve(const StringVec& vec, PrefixMap& pmap) {
 // Main
 
 int main() {
-	auto vec = ReadLines("words_final.txt");
-	auto pmap = CreatePrefixes(vec);
-	Solve(vec, pmap);
+	MergeState mm;
+	mm.vec = ReadLines("words_final.txt");
+	mm.pmap = CreatePrefixes(mm.vec);
+	mm.pwords = FindPrefixWords(mm.vec, mm.pmap);
+	Solve(mm);
 	return 0;
 }
 
