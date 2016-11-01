@@ -5,9 +5,10 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <set>
+#include <unordered_set>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/functional/hash.hpp>
 
 using Buildings = std::vector<std::vector<int>>;
 using Command = std::pair<size_t, size_t>;
@@ -85,17 +86,33 @@ int getZeroNeighbourCount(int h, int w, int y, int x, const Buildings& buildings
     return count;
 }
 
-std::set<Buildings> buildingsHistory;
+struct BuildingsHash {
+    size_t operator()(const Buildings& buildings) const {
+        size_t hash = 0;
+
+        auto h = buildings.size();
+        auto w = buildings.front().size();
+
+        for (int y = 0; y < h; ++y) {
+            for (int x = 0; x < w; ++x) {
+                boost::hash_combine(hash, buildings[y][x]);
+            }
+        }
+
+        return hash;
+    }
+};
+
+std::unordered_set<Buildings, BuildingsHash> buildingsHistory;
 
 bool backtrackRecurse(int h, int w, Buildings& buildings, std::vector<Command>& commands, int depth) {
     if (!buildingsHistory.insert(buildings).second) {
-        std::cout << "Repeat at depth: " << depth << std::endl;
-        std::cout << buildings << std::endl;
+#ifdef LOCAL
+#endif
         return false;
     }
 
     bool has_non_zero = false;
-    std::cout << depth << std::endl;
 
     std::vector<std::pair<Command, int>> candidates;
     candidates.reserve(w * h);
@@ -125,8 +142,8 @@ bool backtrackRecurse(int h, int w, Buildings& buildings, std::vector<Command>& 
         [](const std::pair<Command, int>& lhs, const std::pair<Command, int>& rhs) {
             int l = lhs.second;
             int r = rhs.second;
-            if (l == 0) { l = 5; }
-            if (r == 0) { r = 5; }
+            if (l == 0) { l = 20; }
+            if (r == 0) { r = 20; }
             return l < r;
         }
     );
