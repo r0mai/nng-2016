@@ -2,14 +2,14 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
-
+#include <chrono>
 
 // Node
 
 struct Node {
-    Node() {
-        next = prev = this;
-    }
+	Node() {
+		next = prev = this;
+	}
 
 	Node* next = nullptr;
 	Node* prev = nullptr;
@@ -42,7 +42,8 @@ enum Dir {
 
 struct Block {
 	Block* buddy[4] = {};
-	Node edge;
+	Node older;
+	Node newer;
 
 	int neighbors = 0;
 	int height = 0;
@@ -54,21 +55,40 @@ struct Block {
 using NodePtr = Node Block::*;
 
 
-Block* FromEdgeNode(Node* node) {
-	NodePtr edge = &Block::edge;
+Block* GetOlderBlock(Node* node) {
+	NodePtr ptr = &Block::older;
 	Block* obj = nullptr;
-	char* delta = reinterpret_cast<char*>(&(obj->*edge));
+	char* delta = reinterpret_cast<char*>(&(obj->*ptr));
+	return reinterpret_cast<Block*>(
+		reinterpret_cast<const char*>(node) - delta);
+}
+
+Block* GetNewerBlock(Node* node) {
+	NodePtr ptr = &Block::newer;
+	Block* obj = nullptr;
+	char* delta = reinterpret_cast<char*>(&(obj->*ptr));
 	return reinterpret_cast<Block*>(
 		reinterpret_cast<const char*>(node) - delta);
 }
 
 
+bool IsOlder(Block& block) {
+	return (block.height > 0 && block.height < 5 &&
+		block.height == block.neighbors + 1);
+}
+
+
+bool IsNewer(Block& block) {
+	return (block.height == 1 || (block.height == 5 && block.neighbors < 4));
+}
+
+
 template<typename Function>
 void ForEachNeighbor(Block& block, Function fn) {
-	if (block.buddy[kLeft]) 	{ fn(*block.buddy[kLeft], kRight); }
-	if (block.buddy[kRight]) 	{ fn(*block.buddy[kRight], kLeft); }
-	if (block.buddy[kTop]) 		{ fn(*block.buddy[kTop], kBottom); }
-	if (block.buddy[kBottom]) 	{ fn(*block.buddy[kBottom], kTop); }
+	if (block.buddy[kLeft])		{ fn(*block.buddy[kLeft], kRight); }
+	if (block.buddy[kRight])	{ fn(*block.buddy[kRight], kLeft); }
+	if (block.buddy[kTop])		{ fn(*block.buddy[kTop], kBottom); }
+	if (block.buddy[kBottom])	{ fn(*block.buddy[kBottom], kTop); }
 }
 
 
@@ -99,8 +119,11 @@ public:
 		int count = 0;
 		for (auto& vec : layout_) {
 			for (auto& block : vec) {
-				if (block.neighbors > 0 && block.neighbors < 4) {
-					Insert(&edge_, &block.edge);
+				if (IsOlder(block)) {
+					Insert(&older_, &block.older);
+					++count;
+				} else if (IsNewer(block)) {
+					Insert(&newer_, &block.newer);
 					++count;
 				}
 			}
@@ -140,70 +163,66 @@ public:
 		}
 	}
 
-	Node* ResetBlock(Block& block) {
+	void ResetBlock(Block& block) {
 		block.height = 0;
 		block.neighbors = 0;
 		for (int i = 0; i < 4; ++i) {
 			block.buddy[i] = nullptr;
 		}
 
-		auto p = block.edge.prev;
-		Unlink(&block.edge);
-		return p;
+		Unlink(&block.older);
+		Unlink(&block.newer);
 	}
 
-	Node* ErodeBlock(Block& block) {
+	void ErodeBlock(Block& block) {
 		ForEachNeighbor(block, [&](Block& nb, Dir dir) {
 			--nb.neighbors;
 			nb.buddy[dir] = nullptr;
-			if (nb.height == nb.neighbors + 1 || nb.height == 5) {
-				Insert(&edge_, &nb.edge);
+			if (IsOlder(nb)) {
+				Insert(&older_, &nb.older);
+			} else if (IsNewer(nb)) {
+				Insert(&newer_, &nb.newer);
 			}
 		});
 
-		return ResetBlock(block);
+		ResetBlock(block);
 	}
 
-	int Erode() {
+	void Erode() {
 		int count = 0;
-		int result = 0;
-		for (Node* p = edge_.next; p != &edge_; p = p->next) {
-			Block& block = *FromEdgeNode(p);
+		while (older_.next != &older_) {
+			Block& block = *GetOlderBlock(older_.next);
+			ErodeBlock(block);
 			++count;
-
-			if (block.height == 5) {
-				block.height = 1;
-				++result;
-			} else if (block.height == block.neighbors + 1) {
-				p = ErodeBlock(block);
-			}
 		}
 		steps_ += count;
-		return result;
+		// std::cout << count << std::endl;
 	}
 
-	Node* UnbuildBlock(Block& block) {
+	void UnbuildBlock(Block& block) {
 		ForEachNeighbor(block, [&](Block& nb, Dir dir) {
-			Insert(&edge_, &nb.edge);
 			--nb.neighbors;
 			--nb.height;
 			nb.buddy[dir] = nullptr;
+			if (IsOlder(nb)) {
+				Insert(&older_, &nb.older);
+			} else if (IsNewer(nb)) {
+				Insert(&newer_, &nb.newer);
+			}
 		});
 
-		return ResetBlock(block);
+		ResetBlock(block);
 	}
 
 	void Unbuild() {
 		int count = 0;
-		for (Node* p = edge_.next; p != &edge_; p = p->next) {
-			Block& block = *FromEdgeNode(p);
+		while (newer_.next != &newer_) {
+			Block& block = *GetNewerBlock(newer_.next);
 			++count;
-
-			if (block.height == 1) {
-				p = UnbuildBlock(block);
-			}
+			UnbuildBlock(block);
 		}
 		steps_ += count;
+		// std::cout << count << std::endl;
 	}
 
 
@@ -225,7 +244,7 @@ public:
 					} else {
 						std::cout << " ";
 					}
-				 	std::cout << block.height;
+					std::cout << block.height;
 				}
 				std::cout << std::endl;
 			}
@@ -243,7 +262,7 @@ public:
 					} else {
 						std::cout << " ";
 					}
-				 	std::cout << block.neighbors;
+					std::cout << block.neighbors;
 				}
 				std::cout << std::endl;
 			}
@@ -254,7 +273,7 @@ public:
 			std::cout << "Steps: " << steps_ << std::endl;
 		}
 
-		show_buildings = false;
+		show_buildings = true;
 		if (show_buildings) {
 			int bs = 0;
 			for (const auto& vec : layout_) {
@@ -266,22 +285,54 @@ public:
 		}
 	}
 
+	bool HasOlder() const {
+		return older_.next != &older_;
+	}
+
+	bool HasNewer() const {
+		return newer_.next != &newer_;
+	}
+
+
 private:
 	int rows_ = 0;
 	int cols_ = 0;
-	Node edge_;
+	Node older_;
+	Node newer_;
 	Layout layout_;
 	int steps_ = 0;
 };
 
 
+using Clock = std::chrono::high_resolution_clock;
+
+double DeltaT(Clock::time_point t1, Clock::time_point t2) {
+	using Duration = std::chrono::duration<double>;
+	return std::chrono::duration_cast<Duration>(t2 - t1).count();
+}
+
+
 int main() {
 	Parcel p;
-	p.Load("test1000.map");
+	p.Load("test100.map");
 
-	while (p.Erode()) {
-		p.Unbuild();
+	auto start_t = Clock::now();
+	bool loop = true;
+	while (loop) {
+		loop = false;
+		if (p.HasNewer()) {
+			p.Unbuild();
+			loop = true;
+		}
+		if (p.HasOlder()) {
+			p.Erode();
+			loop = true;
+		}
 	}
+	auto end_t = Clock::now();
 	p.Visual();
+
+	std::cout << "Elapsed: " << DeltaT(start_t, end_t) << "s" << std::endl;
+
 	return 0;
 }
