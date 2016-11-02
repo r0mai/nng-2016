@@ -81,6 +81,11 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
                 std::cerr << "You have a valid move (P to force)" << std::endl;
             }
             break;
+        case sf::Keyboard::C:
+            while (!hasValidMove()) {
+                sendCommand(Command{});
+            }
+            break;
         case sf::Keyboard::P:
             sendCommand(Command{});
             break;
