@@ -124,12 +124,33 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 	return add(lefts, rights);
 }
 
-std::vector<size_t> naive(const std::vector<size_t>& balls,
+std::vector<size_t> linearStart(const std::vector<size_t>& balls,
+		size_t radioActiveBalls,
 		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
+	double cutOff = 0.1;
 	std::vector<size_t> result;
+	std::vector<size_t> checked;
 	for (const auto& ball: balls) {
-		if (testFunction({ball})) {
-			result.push_back(ball);
+		auto remainingBallCount = balls.size() - checked.size();
+		auto remainingRadioactive = radioActiveBalls - result.size();
+		auto ratio = float(remainingRadioactive) / float(remainingBallCount);
+
+		if (result.size() == radioActiveBalls) {
+			return result;
+		}
+
+		if (ratio <= cutOff) {
+			std::cerr << "Switching to logarithmic after " << checked.size()
+					<< " with " << remainingRadioactive << " left to find"
+					<< std::endl;
+			auto remaining = findRadioactivity(removePartition(balls, checked),
+					remainingRadioactive, testFunction);
+			return add(result, remaining);
+		} else {
+			checked.push_back(ball);
+			if (testFunction({ball})) {
+				result.push_back(ball);
+			}
 		}
 	}
 	return result;
@@ -139,22 +160,19 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest)) {
 
+	static std::random_device rd;
+	static std::mt19937 gen{rd()};
 	std::vector<size_t> indices;
 	for (size_t i = 0; i < NumberOfBalls; ++i) {
 		indices.push_back(i);
 	}
+	std::shuffle(indices.begin(), indices.end(), gen);
 
 	BOOST_ASSERT(removePartition({}, {}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({0}, {0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {1, 0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {0}) == std::vector<size_t>{1});
-	double cutOff = 0.1;
-
-	if (float(RadioActiveBalls) / float(NumberOfBalls) <= cutOff) {
-		auto result = findRadioactivity(indices, RadioActiveBalls,
-				TestFunction);
-		std::sort(result.begin(), result.end());
-		return result;
-	}
-	return naive(indices, TestFunction);
+	auto result = linearStart(indices, RadioActiveBalls, TestFunction);
+	std::sort(result.begin(), result.end());
+	return result;
 }
