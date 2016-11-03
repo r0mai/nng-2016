@@ -57,14 +57,14 @@ public:
 		auto index = BlockIndex(row, col);
 		auto& block = blocks_[index];
 
+		block.index = index;
+		block.height = (h == 1 ? 5 : h);	// rewrite rule
+		block.row = row;
+		block.col = col;
+
 		if (h == 0) {
 			return;
 		}
-
-		block.index = index;
-		block.height = (h > 1 ? h : 5);	// rewrite rule
-		block.row = row;
-		block.col = col;
 
 		if (col > 0) {
 			auto& left = blocks_[NeighborIndex(index, kLeft)];
