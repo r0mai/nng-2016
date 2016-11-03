@@ -57,9 +57,14 @@ public:
 		auto& block = blocks_[index];
 
 		block.index = index;
-		block.height = (h == 1 ? 5 : h);	// rewrite rule
+		block.height = (h == 1 ? 5 : h); // rewrite rule
 		block.row = row;
 		block.col = col;
+
+		// debug height
+		if (h == 6) {
+			block.height = 1;
+		}
 
 		if (h == 0) {
 			return;
@@ -136,6 +141,7 @@ public:
 	void EliminateBlock(Block& block, bool is_newer) {
 		ForEachNeighbor(block, [&](Block& nb, Direction dir) {
 			if (is_newer) {
+				assert(nb.height > 1);
 				--nb.height;
 			}
 			--nb.neighbor_count;
