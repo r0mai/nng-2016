@@ -88,6 +88,9 @@ public:
 	}
 
 	void InitStacks() {
+		older_.reserve(rows_ * cols_);
+		newer_.reserve(rows_ * cols_);
+
 		for (auto& block : blocks_) {
 			if (IsOlder(block)) {
 				older_.push_back(block.index);
@@ -196,9 +199,10 @@ public:
 
 	CommandVec GetCommands() const {
 		CommandVec vec;
-		auto inserter = std::back_inserter(vec);
-		std::copy(forward_.begin(), forward_.end(), inserter);
-		std::copy(backward_.rbegin(), backward_.rend(), inserter);
+		vec.reserve(forward_.size() + backward_.size());
+		vec = forward_;
+		std::copy(backward_.rbegin(), backward_.rend(),
+			std::back_inserter(vec));
 		return vec;
 	}
 
