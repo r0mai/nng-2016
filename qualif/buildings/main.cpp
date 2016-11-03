@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
             std::cout << "Match" << std::endl;
             return 0;
         } else {
-            std::cout << "Mismatch :(" << std::endl;
+            std::cout << "Mismatch" << std::endl;
             // std::cout << "Input:" << std::endl;
             // std::cout << buildings;
             // std::cout << "Result:" << std::endl;
