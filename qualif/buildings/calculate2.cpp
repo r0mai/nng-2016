@@ -33,7 +33,6 @@ bool IsNewer(const Block& block) {
 		(block.height == 5 && block.neighbor_count < 4));
 }
 
-
 using BlockVec = std::vector<Block>;
 using IntVec = std::vector<int>;
 using CommandVec = std::vector<Command>;
@@ -106,10 +105,18 @@ public:
 		return col + row * cols_;
 	}
 
-	int NeighborIndex(int index, Direction dir) const {
+	int NeighborIndex(int index, Direction dir) {
 		auto mul = ((dir & 1) == 0 ? -1 : 1);
 		auto diff = ((dir & 2) == 0 ? 1 : cols_);
 		return mul * diff + index;
+	}
+
+	int NeighborHeight(int index, Direction dir) {
+		return blocks_[NeighborIndex(index, dir)].height;
+	}
+
+	int CornerHeight(int index, Direction dir1, Direction dir2) {
+		return NeighborHeight(NeighborIndex(index, dir1), dir2);
 	}
 
 	template<typename Function>
@@ -173,11 +180,47 @@ public:
 		return false;
 	}
 
-	bool EliminateNext() {
-		return EliminateNewer() || EliminateOlder();
+	bool IsTrapForNewer(const Block& block) {
+		if (block.height != 5) {
+			return false;
+		}
+
+		auto index = block.index;
+		Direction vert[] = {kTop, kBottom};
+		Direction horz[] = {kLeft, kRight};
+
+		for (int v = 0; v < 2; ++v) {
+			if (NeighborHeight(index, vert[v]) != 2) {
+				continue;
+			}
+
+			for (int h = 0; h < 2; ++h) {
+				if (NeighborHeight(index, horz[h]) == 2 &&
+					CornerHeight(index, vert[v], horz[h]) == 2)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
-	void Visual() const {
+	bool EliminateTrap() {
+		// TODO: make this faster
+		for (auto& block : blocks_) {
+			if (IsTrapForNewer(block)) {
+				EliminateBlock(block, false);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool EliminateNext() {
+		return EliminateNewer() || EliminateOlder() || EliminateTrap();
+	}
+
+	void Visual() {
 		// can has stdio?
 		bool show_height = false;
 
@@ -197,7 +240,7 @@ public:
 		}
 	}
 
-	CommandVec GetCommands() const {
+	CommandVec GetCommands() {
 		CommandVec vec;
 		vec.reserve(forward_.size() + backward_.size());
 		vec = forward_;
@@ -233,7 +276,7 @@ void CalculateBuildOrder(const Buildings& buildings,
 		// p.Visual();
 		++count;
 	}
-	// p.Visual();
+	p.Visual();
 	std::cout << "Steps: " << count << std::endl;
 	solution = p.GetCommands();
 }
