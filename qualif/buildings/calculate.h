@@ -1,5 +1,6 @@
 #include <vector>
 #include <utility>
+#include <cstddef>
 
 using Command = std::pair<size_t, size_t>;
 using Buildings = std::vector<std::vector<int>>;
