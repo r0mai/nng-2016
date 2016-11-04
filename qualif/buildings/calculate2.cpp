@@ -1,7 +1,14 @@
-#include "calculate.h"
+// do not include any local headers here
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#include <utility>
 #include <cassert>
+#include <cstddef>
+
+
+using Command = std::pair<size_t, size_t>;
+using Buildings = std::vector<std::vector<int>>;
 
 
 namespace {
@@ -268,6 +275,12 @@ private:
 };
 
 } // namespace
+
+
+// TODO:
+//	- track true 5s (also for trap elimination)
+//	- detect inconsistent state
+//	- optimize command storage
 
 
 void CalculateBuildOrder(const Buildings& buildings,
