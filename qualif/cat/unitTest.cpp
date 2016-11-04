@@ -22,8 +22,8 @@ struct Fixture {
 		std::size_t measurementCount = 10000; \
 		float measurements = 0; \
 		for(std::size_t i = 0; i < measurementCount; ++i) { \
-			auto cost = (call); \
-			BOOST_CHECK_LE(cost, worst); \
+			std::size_t cost = 0; \
+			BOOST_CHECK_LE(cost=(call), worst); \
 			measurements += cost; \
 		} \
 		BOOST_CHECK_LE(measurements / measurementCount, (usually)); \

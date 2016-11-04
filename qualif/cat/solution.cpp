@@ -89,10 +89,6 @@ std::vector<size_t> findRadioactivity2(const std::vector<size_t>& balls,
 
 	auto left = selectFrom(balls);
 	auto right = removePartition(balls, left);
-	if (left.size() > right.size()) {
-		using std::swap;
-		swap(left, right);
-	}
 	bool leftResult = testFunction(left);
 	bool rightResult = !leftResult || testFunction(right);
 	if (leftResult && rightResult) {
@@ -109,6 +105,20 @@ std::vector<size_t> findRadioactivity2(const std::vector<size_t>& balls,
 	}
 	BOOST_ASSERT_MSG(false, "Searching for two, but neither had it");
 	return {};
+}
+
+std::vector<size_t> linear(const std::vector<size_t>& balls, size_t n,
+		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
+	std::vector<size_t> result;
+	for (const auto& ball: balls) {
+		if (result.size() == n) {
+			break;
+		}
+		if (testFunction({ball})) {
+			result.push_back(ball);
+		}
+	}
+	return result;
 }
 
 std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
@@ -134,17 +144,16 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 		return findRadioactivity2(balls, testFunction);
 	}
 
+	if (radioActiveBalls && *radioActiveBalls >= balls.size()/2) {
+		// Most are radioactive, don't be clever
+		return linear(balls, *radioActiveBalls, testFunction);
+	}
+
 	auto left = selectFrom(balls);
 	auto right = removePartition(balls, left);
 
-	// left traversal has less information, make sure it is smaller
-	if (left.size() > right.size() ) {
-		using std::swap;
-		swap(left, right);
-	}
-
 	auto leftResult = testFunction(left);
-	auto rightResult = testFunction(right);
+	auto rightResult = !leftResult || testFunction(right);
 
 	std::vector<size_t> lefts;
 	std::vector<size_t> rights;
