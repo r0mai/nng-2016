@@ -47,7 +47,7 @@ public:
 		currentBalls = std::move(balls);
 	}
 
-	void verify() {
+	std::tuple<std::size_t, std::size_t, std::size_t> verify() {
 		checkCounter = 0;
 		auto expectedResult = getIndices();
 		auto result = FindRadioactiveBalls(currentBalls.size(),
@@ -64,6 +64,8 @@ public:
 		std::cerr << "Sample size was: " << currentBalls.size()
 				<< ", verified in " << checkCounter << " measurements"
 				<< std::endl;
+		return std::make_tuple(
+				currentBalls.size(), expectedResult.size(), checkCounter);
 	}
 
 };
@@ -91,13 +93,22 @@ int main() {
 
 	Tester tester;
 
-	for(std::size_t length = 20; length < 64; ++length) {
+	for(std::size_t length = 64; length < 65; ++length) {
 		std::cerr << "Running test against length of " << length << std::endl;
-		for(std::size_t radioActivity = 0; radioActivity < float(length) * 0.5f;
+		for(std::size_t radioActivity = 0; radioActivity <= 7;
 				++radioActivity) {
+			std::vector<std::size_t> tests;
 			std::cerr << "Radioactivity: " << radioActivity << std::endl;
-			tester.setBalls(generateRandomSample(length, radioActivity));
-			tester.verify();
+			for(std::size_t i = 0; i < 10; ++i) {
+				tester.setBalls(generateRandomSample(length, radioActivity));
+				auto result = tester.verify();
+				tests.push_back(std::get<2>(result));
+			}
+			auto best = *std::min_element(tests.begin(), tests.end());
+			auto worst = *std::max_element(tests.begin(), tests.end());
+			auto sum = std::accumulate(tests.begin(), tests.end(), 0);
+			std::cout << radioActivity << " " << float(sum)/tests.size() << " "
+					<< best << " " << worst << std::endl;
 		}
 	}
 	std::cerr << "Verification passed" << std::endl;
