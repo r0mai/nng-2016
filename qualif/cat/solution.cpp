@@ -1,9 +1,9 @@
-#include "solution.hpp"
-
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <random>
+
+#include <stddef.h> // These idiots are using size_t instead of std::size_t.
 
 #include <boost/assert.hpp>
 #include <boost/optional.hpp>
