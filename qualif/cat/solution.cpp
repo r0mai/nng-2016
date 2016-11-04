@@ -107,27 +107,24 @@ std::vector<size_t> findRadioactivity2(const std::vector<size_t>& balls,
 	return {};
 }
 
-std::vector<size_t> linear(const std::vector<size_t>& balls, size_t n,
+std::vector<size_t> dlogn(std::vector<size_t> balls, size_t n,
 		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
 	std::vector<size_t> result;
-	for (const auto& ball: balls) {
-		if (result.size() == n) {
-			break;
-		}
-		if (testFunction({ball})) {
-			result.push_back(ball);
-		}
+	while(result.size() < n) {
+		auto match = findRadioactivity1(balls, testFunction).front();
+		balls.erase(std::find(balls.begin(), balls.end(), match));
+		result.push_back(match);
 	}
 	return result;
 }
 
 std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
-		boost::optional<size_t> radioActiveBalls,
+		size_t radioActiveBalls,
 		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
-	if (radioActiveBalls && *radioActiveBalls == 0) {
+	if (radioActiveBalls == 0) {
 		return {};
 	}
-	if (radioActiveBalls && *radioActiveBalls == balls.size()) {
+	if (radioActiveBalls == balls.size()) {
 		return balls;
 	}
 	if (balls.size() == 1) {
@@ -137,37 +134,14 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 			return {};
 		}
 	}
-	if (radioActiveBalls && *radioActiveBalls == 1) {
+	switch(radioActiveBalls) {
+	case 1:
 		return findRadioactivity1(balls, testFunction);
-	}
-	if (radioActiveBalls && *radioActiveBalls == 2) {
+	case 2:
 		return findRadioactivity2(balls, testFunction);
+	default:
+		return dlogn(balls, radioActiveBalls, testFunction);
 	}
-
-	if (radioActiveBalls && *radioActiveBalls >= balls.size()/2) {
-		// Most are radioactive, don't be clever
-		return linear(balls, *radioActiveBalls, testFunction);
-	}
-
-	auto left = selectFrom(balls);
-	auto right = removePartition(balls, left);
-
-	auto leftResult = testFunction(left);
-	auto rightResult = !leftResult || testFunction(right);
-
-	std::vector<size_t> lefts;
-	std::vector<size_t> rights;
-	if (leftResult) {
-		lefts = findRadioactivity(left,
-				rightResult ? boost::none : radioActiveBalls, testFunction);
-	}
-	if (rightResult) {
-		rights = findRadioactivity(right,
-				radioActiveBalls ? 	boost::optional<size_t>{
-						*radioActiveBalls - lefts.size()} : boost::none,
-				testFunction);
-	}
-	return add(lefts, rights);
 }
 
 std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
