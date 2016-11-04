@@ -20,6 +20,10 @@ enum Direction {
 	kBottom = 3,
 };
 
+Direction Opposite(Direction k) {
+	return Direction(k ^ 1);
+}
+
 struct Block {
 	bool neighbor[4] = {};
 	int neighbor_count = 0;
@@ -29,6 +33,11 @@ struct Block {
 	int row = -1;
 };
 
+std::ostream& operator<<(std::ostream& stream, const Block& block) {
+	stream << "[" << block.row << ", " << block.col << "]";
+	stream << "(h=" << block.height << ", n=" << block.neighbor_count << ")";
+	return stream;
+}
 
 bool IsOlder(const Block& block) {
 	return (block.height > 1 && block.height < 5 &&
@@ -137,10 +146,7 @@ public:
 
 		for (int k = 0; k < 4; ++k) {
 			if (block.neighbor[k]) {
-				// points to the current block
-				// from the neighbor's perspective
-				Direction current = Direction(k ^ 1);
-				fn(blocks_[NeighborIndex(index, Direction(k))], current);
+				fn(blocks_[NeighborIndex(index, Direction(k))], Direction(k));
 			}
 		}
 	}
@@ -152,7 +158,8 @@ public:
 				--nb.height;
 			}
 			--nb.neighbor_count;
-			nb.neighbor[dir] = false;
+			assert(nb.height == 5 || nb.height <= nb.neighbor_count + 1);
+			nb.neighbor[Opposite(dir)] = false;
 			if (IsOlder(nb)) {
 				older_.push_back(nb.index);
 			} else if (IsNewer(nb)) {
