@@ -99,7 +99,7 @@ int main() {
 				++radioActivity) {
 			std::vector<std::size_t> tests;
 			std::cerr << "Radioactivity: " << radioActivity << std::endl;
-			for(std::size_t i = 0; i < 10; ++i) {
+			for(std::size_t i = 0; i < 100; ++i) {
 				tester.setBalls(generateRandomSample(length, radioActivity));
 				auto result = tester.verify();
 				tests.push_back(std::get<2>(result));
