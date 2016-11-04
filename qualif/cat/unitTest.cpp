@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(oneRadioactive) {
 BOOST_AUTO_TEST_CASE(twoRadioactive) {
 	BOOST_CHECK_EQUAL(check({true, true}), 0);
 	BOOST_CHECK_LE(check({true, true, false}), 2);
-	BOOST_CHECK_LE(check({true, true, false, false}), 3);
+	BOOST_CHECK_LE(check({false, true, true, false}), 4);
 	BOOST_CHECK_LE(check({true, true, false, false, false}), 4);
 	BOOST_CHECK_LE(check({true, true, false, false, false, false}), 5);
 	BOOST_CHECK_LE(check({true, true, false, false, false, false, false}), 6);
