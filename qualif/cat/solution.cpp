@@ -13,7 +13,7 @@ std::vector<size_t> selectFrom(const std::vector<size_t>& from) {
 	static std::mt19937 gen{rd()};
 
 	auto result = from;
-	// std::shuffle(result.begin(), result.end(), gen);
+	std::shuffle(result.begin(), result.end(), gen);
 
 	BOOST_ASSERT_MSG(from.size() > 1, "What would be the point of that then?");
 
@@ -40,6 +40,76 @@ std::vector<size_t> add(
 			std::back_inserter(result));
 	return result;
 }
+std::vector<size_t> findRadioactivity1(const std::vector<size_t>& balls,
+		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
+	if (balls.size() == 1) {
+		return balls;
+	}
+	auto partition = selectFrom(balls);
+	auto others = removePartition(balls, partition);
+	bool testResult = testFunction(partition);
+	if (!testResult) {
+		// Partition is clean, one defective in other
+		return findRadioactivity1(others, testFunction);
+	} else {
+		return findRadioactivity1(partition, testFunction);
+	}
+}
+std::vector<size_t> findRadioactivity2(const std::vector<size_t>& balls,
+		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
+
+	BOOST_ASSERT_MSG(balls.size() >=2, "Less than two can't have two balls");
+
+	if (balls.size() == 2) {
+		return balls;
+	}
+
+	if (balls.size() == 3) {
+		bool first = testFunction({balls[0]});
+		if (!first) {
+			return {balls[1], balls[2]};
+		} else {
+			bool second = testFunction({balls[1]});
+			if (!second) {
+				return {balls[0], balls[2]};
+			}
+			return {balls[0], balls[1]};
+		}
+	}
+
+	if (balls.size() == 4) {
+		bool first = testFunction({balls[0]});
+		if (first) {
+			return add({balls[0]}, findRadioactivity1(removePartition(balls,
+					{balls[0]}), testFunction));
+		}
+		return findRadioactivity2(removePartition(balls, {balls[0]}),
+				testFunction);
+	}
+
+	auto left = selectFrom(balls);
+	auto right = removePartition(balls, left);
+	if (left.size() > right.size()) {
+		using std::swap;
+		swap(left, right);
+	}
+	bool leftResult = testFunction(left);
+	bool rightResult = !leftResult || testFunction(right);
+	if (leftResult && rightResult) {
+		// Both have one each
+		std::vector<size_t> lefts = findRadioactivity1(left, testFunction);
+		std::vector<size_t> rights = findRadioactivity1(right, testFunction);
+		return add(lefts, rights);
+	}
+	if (leftResult) {
+		return findRadioactivity2(left, testFunction);
+	}
+	if (rightResult) {
+		return findRadioactivity2(right, testFunction);
+	}
+	BOOST_ASSERT_MSG(false, "Searching for two, but neither had it");
+	return {};
+}
 
 std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 		boost::optional<size_t> radioActiveBalls,
@@ -58,39 +128,10 @@ std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
 		}
 	}
 	if (radioActiveBalls && *radioActiveBalls == 1) {
-		auto partition = selectFrom(balls);
-		auto others = removePartition(balls, partition);
-		bool testResult = testFunction(partition);
-		if (!testResult) {
-			// Partition is clean, one defective in other
-			return findRadioactivity(others, 1, testFunction);
-		} else {
-			return findRadioactivity(partition, 1, testFunction);
-		}
+		return findRadioactivity1(balls, testFunction);
 	}
 	if (radioActiveBalls && *radioActiveBalls == 2) {
-		auto left = selectFrom(balls);
-		auto right = removePartition(balls, left);
-		if (left.size() > right.size()) {
-			using std::swap;
-			swap(left, right);
-		}
-		bool leftResult = testFunction(left);
-		bool rightResult = !leftResult || left.size() < 2 || testFunction(right);
-		if (leftResult && rightResult) {
-			// Both have one each
-			std::vector<size_t> lefts = findRadioactivity(left,
-					1, testFunction);
-			std::vector<size_t> rights = findRadioactivity(right,
-					1, testFunction);
-			return add(lefts, rights);
-		}
-		if (leftResult) {
-			return findRadioactivity(left, 2, testFunction);
-		}
-		if (rightResult) {
-			return findRadioactivity(right, 2, testFunction);
-		}
+		return findRadioactivity2(balls, testFunction);
 	}
 
 	auto left = selectFrom(balls);
@@ -130,7 +171,7 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 	for (size_t i = 0; i < NumberOfBalls; ++i) {
 		indices.push_back(i);
 	}
-	// std::shuffle(indices.begin(), indices.end(), gen);
+	std::shuffle(indices.begin(), indices.end(), gen);
 
 	BOOST_ASSERT(removePartition({}, {}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({0}, {0}) == std::vector<size_t>{});

@@ -17,35 +17,49 @@ struct Fixture {
 	}
 };
 
+#define SHOULDBE(call, worst, usually) \
+	do { \
+		std::size_t measurementCount = 100; \
+		float measurements = 0; \
+		for(std::size_t i = 0; i < measurementCount; ++i) { \
+			auto cost = (call); \
+			BOOST_CHECK_LE(cost, worst); \
+			measurements += cost; \
+		} \
+		BOOST_CHECK_LE(measurements / measurementCount, (usually)); \
+	} while(0)
+
+
 BOOST_FIXTURE_TEST_SUITE(Radioactive, Fixture)
 
 BOOST_AUTO_TEST_CASE(noRadioactive) {
-	BOOST_CHECK_EQUAL(check({}), 0);
-	BOOST_CHECK_EQUAL(check({false}), 0);
-	BOOST_CHECK_EQUAL(check({false, false}), 0);
-	BOOST_CHECK_EQUAL(check({false, false, false}), 0);
+	SHOULDBE(check({}), 0, 0);
+	SHOULDBE(check({false}), 0, 0);
+	SHOULDBE(check({false, false}), 0, 0);
+	SHOULDBE(check({false, false, false}), 0, 0);
 }
 
 BOOST_AUTO_TEST_CASE(oneRadioactive) {
-	BOOST_CHECK_EQUAL(check({true}), 0);
-	BOOST_CHECK_EQUAL(check({true, false}), 1);
-	BOOST_CHECK_EQUAL(check({false, true}), 1);
-	BOOST_CHECK_LE(check({false, false, true}), 2);
-	BOOST_CHECK_EQUAL(check({false, false, true, false}), 2);
-	BOOST_CHECK_LE(check({false, false, true, false, false}), 3);
-	BOOST_CHECK_LE(check({false, false, true, false, false, false}), 3);
-	BOOST_CHECK_LE(check({false, false, true, false, false, false, false}), 3);
-	BOOST_CHECK_EQUAL(check(
-			{false, false, true, false, false, false, false, false}), 3);
+	SHOULDBE(check({true}), 0, 0);
+	SHOULDBE(check({true, false}), 1, 1);
+	SHOULDBE(check({false, true}), 1, 1);
+	SHOULDBE(check({false, false, true}), 2, 0.0);
+	SHOULDBE(check({false, false, true, false}), 2, 2);
+	SHOULDBE(check({false, false, true, false, false}), 3, 3);
+	SHOULDBE(check({false, false, true, false, false, false}), 3, 3);
+	SHOULDBE(check(
+			{false, false, true, false, false, false, false}), 3, 3);
+	SHOULDBE(check(
+			{false, false, true, false, false, false, false, false}), 3, 3);
 }
 
 BOOST_AUTO_TEST_CASE(twoRadioactive) {
-	BOOST_CHECK_EQUAL(check({true, true}), 0);
-	BOOST_CHECK_LE(check({true, true, false}), 2);
-	BOOST_CHECK_LE(check({false, true, true, false}), 4);
-	BOOST_CHECK_LE(check({true, true, false, false, false}), 4);
-	BOOST_CHECK_LE(check({true, true, false, false, false, false}), 5);
-	BOOST_CHECK_LE(check({true, true, false, false, false, false, false}), 6);
+ 	SHOULDBE(check({true, true}), 0, 0);
+	SHOULDBE(check({true, true, false}), 2, 1.7);
+	SHOULDBE(check({false, true, true, false}), 3, 2.7);
+	SHOULDBE(check({true, true, false, false, false}), 5, 5);
+	SHOULDBE(check({true, true, false, false, false, false}), 6, 6);
+	SHOULDBE(check({true, true, false, false, false, false, false}), 6, 6);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
