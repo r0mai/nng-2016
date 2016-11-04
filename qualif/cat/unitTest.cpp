@@ -19,7 +19,7 @@ struct Fixture {
 
 #define SHOULDBE(call, worst, usually) \
 	do { \
-		std::size_t measurementCount = 100; \
+		std::size_t measurementCount = 10000; \
 		float measurements = 0; \
 		for(std::size_t i = 0; i < measurementCount; ++i) { \
 			auto cost = (call); \
@@ -43,23 +43,25 @@ BOOST_AUTO_TEST_CASE(oneRadioactive) {
 	SHOULDBE(check({true}), 0, 0);
 	SHOULDBE(check({true, false}), 1, 1);
 	SHOULDBE(check({false, true}), 1, 1);
-	SHOULDBE(check({false, false, true}), 2, 0.0);
+	SHOULDBE(check({false, false, true}), 2, 1.68);
 	SHOULDBE(check({false, false, true, false}), 2, 2);
-	SHOULDBE(check({false, false, true, false, false}), 3, 3);
-	SHOULDBE(check({false, false, true, false, false, false}), 3, 3);
+	SHOULDBE(check({false, false, true, false, false}), 3, 2.7);
+	SHOULDBE(check({false, false, true, false, false, false}), 3, 2.8);
 	SHOULDBE(check(
-			{false, false, true, false, false, false, false}), 3, 3);
+			{false, false, true, false, false, false, false}), 3, 2.9);
 	SHOULDBE(check(
 			{false, false, true, false, false, false, false, false}), 3, 3);
 }
 
 BOOST_AUTO_TEST_CASE(twoRadioactive) {
  	SHOULDBE(check({true, true}), 0, 0);
-	SHOULDBE(check({true, true, false}), 2, 1.7);
-	SHOULDBE(check({false, true, true, false}), 3, 2.7);
-	SHOULDBE(check({true, true, false, false, false}), 5, 5);
-	SHOULDBE(check({true, true, false, false, false, false}), 6, 6);
-	SHOULDBE(check({true, true, false, false, false, false, false}), 6, 6);
+	SHOULDBE(check({true, true, false}), 2, 1.68);
+	SHOULDBE(check({false, true, true, false}), 3, 2.59);
+	SHOULDBE(check({true, true, false, false, false}), 5, 3.92);
+	SHOULDBE(check({true, true, false, false, false, false}), 6, 4.55);
+	SHOULDBE(check({true, true, false, false, false, false, false}), 6, 4.82);
+	SHOULDBE(check(
+			{true, true, false, false, false, false, false, false}), 6, 5.3);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

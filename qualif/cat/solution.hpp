@@ -67,9 +67,6 @@ public:
 			std::cerr << printSolution(expectedResult) << std::endl;
 			std::exit(1);
 		}
-		std::cerr << "Sample size was: " << currentBalls.size()
-				<< ", verified in " << checkCounter << " measurements"
-				<< std::endl;
 		return std::make_tuple(
 				currentBalls.size(), expectedResult.size(), checkCounter);
 	}
