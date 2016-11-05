@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include <random>
 
 using Buildings = std::vector<std::vector<int>>;
 using Command = std::pair<int, int>;
@@ -87,14 +88,14 @@ Commands checkerBoard(int rows, int cols) {
 	return commands;
 }
 
-Commands randomMap(int rows, int cols) {
+Commands randomMap(int rows, int cols, std::mt19937& rng) {
     std::vector<Command> commands;
     for (int y = 0; y < rows; ++y) {
         for (int x = 0; x < cols; ++x) {
             commands.push_back({y, x});
         }
     }
-    std::random_shuffle(begin(commands), end(commands));
+    std::shuffle(begin(commands), end(commands), rng);
 
 	return commands;
 }
@@ -114,7 +115,7 @@ int main(int argc, char **argv) {
 	}
 
 	std::cerr << "Seed is " << seed << std::endl;
-	std::srand(seed);
+	std::mt19937 rng(seed);
 
 	Commands commands;
 	if (type == "rowmajor") {
@@ -122,7 +123,7 @@ int main(int argc, char **argv) {
 	} else if (type == "checker") {
 		commands = checkerBoard(rows, cols);
 	} else if (type == "random") {
-		commands = randomMap(rows, cols);
+		commands = randomMap(rows, cols, rng);
 	} else {
 		std::cerr << "Unknown type" << std::endl;
 		return 1;
