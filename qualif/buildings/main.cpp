@@ -114,19 +114,19 @@ int main(int argc, char** argv) {
 
         auto time_taken = std::chrono::duration_cast<std::chrono::microseconds>(after - before);
 
+        std::cerr << "Commands:" << std::endl;
+        for (auto command : commands) {
+            std::cout << command.first << " " << command.second << '\n';
+        }
+
+        std::cerr << "Elapsed: " << time_taken.count() << "us" << std::endl;
+
         Buildings resultBuildings = applyBuildOrder(h, w, commands);
-
-        // std::cout << "Commands:" << std::endl;
-        // for (auto command : commands) {
-        //     std::cout << command.first << " " << command.second << '\n';
-        // }
-
-        std::cout << "Elapsed: " << time_taken.count() << "us" << std::endl;
         if (buildings == resultBuildings) {
-            std::cout << "Match" << std::endl;
+            std::cerr << "Match" << std::endl;
             return 0;
         } else {
-            std::cout << "Mismatch" << std::endl;
+            std::cerr << "Mismatch" << std::endl;
             // std::cout << "Input:" << std::endl;
             // std::cout << buildings;
             // std::cout << "Result:" << std::endl;

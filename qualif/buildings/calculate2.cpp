@@ -2,9 +2,11 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <unordered_set>
 #include <utility>
 #include <cassert>
 #include <cstddef>
+#include <cstdlib>
 
 
 using Command = std::pair<size_t, size_t>;
@@ -20,24 +22,40 @@ enum Direction {
 	kBottom = 3,
 };
 
-Direction Opposite(Direction k) {
+inline Direction Opposite(Direction k) {
 	return Direction(k ^ 1);
 }
 
 struct Block {
 	bool neighbor[4] = {};
+	int index = -1;
 	int neighbor_count = 0;
 	int height = 0;
-	int index = -1;
-	int col = -1;
+	int last_height = 0;
 	int row = -1;
+	int col = -1;
+	bool in_stack = false;
 };
 
-std::ostream& operator<<(std::ostream& stream, const Block& block) {
-	stream << "[" << block.row << ", " << block.col << "]";
-	stream << "(h=" << block.height << ", n=" << block.neighbor_count << ")";
-	return stream;
+struct Item {
+	Item(int index, bool is_newer = false, bool mark = false)
+		: index(index)
+		, is_newer(is_newer)
+		, mark(mark) {
+	}
+
+	unsigned index : 24;
+	unsigned is_newer : 1;
+	unsigned mark : 1;
+};
+
+
+std::ostream& operator<<(std::ostream& ss, const Block& block) {
+	ss << block.row + 1 << " " << block.col + 1;
+	ss << " (h=" << block.height << ") ";
+	return ss;
 }
+
 
 bool IsOlder(const Block& block) {
 	return (block.height > 1 && block.height < 5 &&
@@ -52,10 +70,13 @@ bool IsNewer(const Block& block) {
 using BlockVec = std::vector<Block>;
 using IntVec = std::vector<int>;
 using CommandVec = std::vector<Command>;
+using IntSet = std::unordered_set<int>;
+using ItemVec = std::vector<Item>;
 
 class Parcel {
 public:
 	void Init(const Buildings& bs) {
+		size_ = 0;
 		rows_ = bs.size();
 		cols_ = bs.front().size();
 		blocks_.resize(rows_ * cols_);
@@ -74,6 +95,7 @@ public:
 
 		block.index = index;
 		block.height = (h == 1 ? 5 : h); // rewrite rule
+		block.neighbor_count = 0;
 		block.row = row;
 		block.col = col;
 
@@ -86,6 +108,7 @@ public:
 			return;
 		}
 
+		++size_;
 		if (col > 0) {
 			auto& left = blocks_[NeighborIndex(index, kLeft)];
 			if (left.height) {
@@ -108,18 +131,19 @@ public:
 	}
 
 	void InitStacks() {
-		older_.reserve(rows_ * cols_);
-		newer_.reserve(rows_ * cols_);
+		stack_.reserve(rows_ * cols_);
+		history_.reserve(rows_ * cols_);
 
 		for (auto& block : blocks_) {
 			if (IsOlder(block)) {
-				older_.push_back(block.index);
+				Push(block);
 			} else if (IsNewer(block)) {
-				newer_.push_back(block.index);
+				Push(block, true);
 			}
 		}
-		std::cout << "Older: " << older_.size() << std::endl;
-		std::cout << "Newer: " << newer_.size() << std::endl;
+
+		std::cerr << "# " << stack_.size() << " ";
+		std::cerr << history_.size() << std::endl;
 	}
 
 	int BlockIndex(int row, int col) {
@@ -140,104 +164,164 @@ public:
 		return NeighborHeight(NeighborIndex(index, dir1), dir2);
 	}
 
-	template<typename Function>
-	void ForEachNeighbor(const Block& block, Function fn) {
+	void Push(Block& block, bool is_newer = false) {
+		if (!block.in_stack) {
+			// std::cerr << "> " << is_newer << " " << block.index << std::endl;
+			block.in_stack = true;
+			stack_.push_back({block.index, is_newer});
+		}
+	}
+
+	Block& Pop(bool& is_newer) {
+		auto item = stack_.back();
+		is_newer = item.is_newer;
+		auto& block = blocks_[item.index];
+		block.in_stack = false;
+		// std::cerr << "< " << is_newer << " " << block.index << std::endl;
+
+		stack_.pop_back();
+		history_.push_back(item);
+		return block;
+	}
+
+	bool EliminateBlock(Block& block, bool is_newer) {
 		auto index = block.index;
+		bool invalid = false;
 
 		for (int k = 0; k < 4; ++k) {
 			if (block.neighbor[k]) {
-				fn(blocks_[NeighborIndex(index, Direction(k))], Direction(k));
-			}
-		}
-	}
-
-	void EliminateBlock(Block& block, bool is_newer) {
-		ForEachNeighbor(block, [&](Block& nb, Direction dir) {
-			if (is_newer) {
-				assert(nb.height > 1);
-				--nb.height;
-			}
-			--nb.neighbor_count;
-			assert(nb.height == 5 || nb.height <= nb.neighbor_count + 1);
-			nb.neighbor[Opposite(dir)] = false;
-			if (IsOlder(nb)) {
-				older_.push_back(nb.index);
-			} else if (IsNewer(nb)) {
-				newer_.push_back(nb.index);
-			}
-		});
-
-		block.height = 0;
-		block.neighbor_count = 0;
-
-		auto& target = (is_newer ? backward_ : forward_);
-		target.push_back({block.row, block.col});
-	}
-
-	bool EliminateNewer() {
-		while (!newer_.empty()) {
-			auto index = newer_.back();
-			auto& block = blocks_[index];
-			newer_.pop_back();
-			if (block.height > 0) {
-				EliminateBlock(block, true);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	bool EliminateOlder() {
-		while (!older_.empty()) {
-			auto index = older_.back();
-			auto& block = blocks_[index];
-			older_.pop_back();
-			if (block.height > 0) {
-				EliminateBlock(block, false);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	bool IsTrapForNewer(const Block& block) {
-		if (block.height != 5) {
-			return false;
-		}
-
-		auto index = block.index;
-		Direction vert[] = {kTop, kBottom};
-		Direction horz[] = {kLeft, kRight};
-
-		for (int v = 0; v < 2; ++v) {
-			if (NeighborHeight(index, vert[v]) != 2) {
-				continue;
-			}
-
-			for (int h = 0; h < 2; ++h) {
-				if (NeighborHeight(index, horz[h]) == 2 &&
-					CornerHeight(index, vert[v], horz[h]) == 2)
+				auto dir = Direction(k);
+				auto& nb = blocks_[NeighborIndex(index, dir)];
+				if ((is_newer && nb.height <= 1) ||
+					(nb.height < 5 && nb.height > nb.neighbor_count + 1))
 				{
-					return true;
+					invalid = true;
+					break;
 				}
 			}
 		}
+
+		if (invalid) {
+			return false;
+		}
+
+		for (int k = 0; k < 4; ++k) {
+			if (block.neighbor[k]) {
+				auto dir = Direction(k);
+				auto& nb = blocks_[NeighborIndex(index, dir)];
+				if (is_newer) {
+					--nb.height;
+				}
+				--nb.neighbor_count;
+				nb.neighbor[Opposite(dir)] = false;
+				if (IsOlder(nb)) {
+					Push(nb);
+				} else if (IsNewer(nb)) {
+					Push(nb, true);
+				}
+			}
+		}
+
+		block.last_height = block.height;
+		block.height = 0;
+		return true;
+	}
+
+	void RestoreBlock(Block& block, bool is_newer) {
+		auto index = block.index;
+		for (int k = 0; k < 4; ++k) {
+			if (block.neighbor[k]) {
+				auto dir = Direction(k);
+				auto& nb = blocks_[NeighborIndex(index, dir)];
+				if (is_newer) {
+					++nb.height;
+				}
+				++nb.neighbor_count;
+				nb.neighbor[Opposite(dir)] = true;
+			}
+		}
+		block.height = block.last_height;
+	}
+
+	Block* FindNext() {
+		for (auto& block : blocks_) {
+			if (block.height == 5) {
+				return &block;
+			}
+		}
+		return nullptr;
+	}
+
+	void ClearStack() {
+		for (auto item : stack_) {
+			blocks_[item.index].in_stack = false;
+		}
+		stack_.clear();
+	}
+
+	bool Rollback() {
+		ClearStack();
+		while (!history_.empty()) {
+			auto item = history_.back();
+			auto& block = blocks_[item.index];
+			history_.pop_back();
+
+			if (item.mark) {
+				Push(block, item.is_newer);
+				std::cerr << "Retry " << block << std::endl;
+				return true;
+			}
+			if (block.height == 0) {
+				RestoreBlock(block, item.is_newer);
+			}
+		}
+
+		std::cerr << "No luck" << std::endl;
 		return false;
 	}
 
-	bool EliminateTrap() {
-		// TODO: make this faster
-		for (auto& block : blocks_) {
-			if (IsTrapForNewer(block)) {
-				EliminateBlock(block, false);
-				return true;
-			}
+	bool Sanity() {
+		int sum = 0;
+		int rank2 = 0;
+		for (auto& b : blocks_) {
+			if (b.height == 0) { continue; }
+			sum += b.height;
+			rank2 += b.neighbor_count + 2;
 		}
-		return false;
+		bool sane = abs(sum - rank2 / 2) % 4 == 0;
+		if (!sane) {
+			std::cerr << "SANITY CHECK FAILED" << std::endl;
+		}
+		return sane;
 	}
 
 	bool EliminateNext() {
-		return EliminateNewer() || EliminateOlder() || EliminateTrap();
+		++steps_;
+		while (!stack_.empty()) {
+			bool is_newer = false;
+			auto& block = Pop(is_newer);
+
+			if (block.height > 0) {
+				bool success = EliminateBlock(block, is_newer);
+				if (!success) {
+					std::cerr << "Failed " << block;
+					std::cerr << "  Hsize=" << history_.size() << std::endl;
+					return Rollback();
+				}
+				return true;
+			}
+		}
+
+		auto next = FindNext();
+		if (next) {
+			// Leave a mark behind in the history,
+			// so backtrack stops here
+			history_.push_back({next->index, true, true});
+			std::cerr << "Guess " << *next << std::endl;
+			Push(*next);
+			return true;
+		}
+		return false;
 	}
 
 	void Visual() {
@@ -246,12 +330,14 @@ public:
 
 		show_height = true;
 		if (show_height) {
-			std::cout << "Height:" << std::endl;
+			std::cout << rows_ << " " << cols_ << std::endl;
 
 			for (const auto& block : blocks_) {
-				if (block.col > 0) {
+				int row = block.row;
+				int col = block.col;
+				if (col > 0) {
 					std::cout << " ";
-				} else if (block.row > 0) {
+				} else if (row > 0) {
 					std::cout << std::endl;
 				}
 				std::cout << block.height;
@@ -260,34 +346,49 @@ public:
 		}
 	}
 
+	void Stats() {
+		std::cerr << "Steps: " << steps_ << std::endl;
+		std::cerr << "History: " << history_.size() << std::endl;
+	}
+
 	CommandVec GetCommands() {
 		CommandVec vec;
-		vec.reserve(forward_.size() + backward_.size());
-		vec = forward_;
-		std::copy(backward_.rbegin(), backward_.rend(),
-			std::back_inserter(vec));
+		int older = 0;
+		int newer = size_ - 1;
+
+		vec.resize(size_);
+		for (auto item : history_) {
+			if (item.mark) {
+				continue;
+			}
+
+			auto d = div(item.index, cols_);
+			int row = d.quot;
+			int col = d.rem;
+
+			assert(older <= newer);
+			if (item.is_newer) {
+				vec[newer--] = {row, col};
+			} else {
+				vec[older++] = {row, col};
+			}
+		}
+
 		return vec;
 	}
 
 private:
 	int rows_ = 0;
 	int cols_ = 0;
+	int steps_ = 0;
+	int size_ = 0;
 
 	BlockVec blocks_;
-	IntVec older_;
-	IntVec newer_;
-
-	CommandVec forward_;
-	CommandVec backward_;
+	ItemVec stack_;
+	ItemVec history_;
 };
 
 } // namespace
-
-
-// TODO:
-//	- track true 5s (also for trap elimination)
-//	- detect inconsistent state
-//	- optimize command storage
 
 
 void CalculateBuildOrder(const Buildings& buildings,
@@ -295,14 +396,12 @@ void CalculateBuildOrder(const Buildings& buildings,
 {
 	Parcel p;
 	p.Init(buildings);
-	// p.Visual();
 
-	int count = 0;
+	// p.Visual();
 	while (p.EliminateNext()) {
-		// p.Visual();
-		++count;
+		// loop
 	}
-	p.Visual();
-	std::cout << "Steps: " << count << std::endl;
+
+	p.Stats();
 	solution = p.GetCommands();
 }
