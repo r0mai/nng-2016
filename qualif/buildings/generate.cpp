@@ -119,6 +119,29 @@ Commands snail(int rows, int cols) {
 	return commands;
 }
 
+Commands randomBox3(int rows, int cols, std::mt19937& rng) {
+	Commands commands;
+    for (int y = 0; y < rows; y += 3) {
+        for (int x = 0; x < cols; x += 3) {
+			Commands subCommands;
+			int r, c;
+			r = y  ; c = x  ; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y+1; c = x  ; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y+2; c = x  ; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y+2; c = x+1; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y+2; c = x+2; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y+1; c = x+2; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y  ; c = x+1; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y  ; c = x+2; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+			r = y+1; c = x+1; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
+
+			std::shuffle(subCommands.begin(), subCommands.end(), rng);
+			commands.insert(commands.end(), subCommands.begin(), subCommands.end());
+		}
+	}
+	return commands;
+}
+
 Commands box3(int rows, int cols) {
 	Commands commands;
     for (int y = 0; y < rows; y += 3) {
@@ -178,6 +201,8 @@ int main(int argc, char **argv) {
 		commands = snail(rows, cols);
 	} else if (type == "box3") {
 		commands = box3(rows, cols);
+	} else if (type == "randombox3") {
+		commands = randomBox3(rows, cols, rng);
 	} else {
 		std::cerr << "Unknown type" << std::endl;
 		return 1;
