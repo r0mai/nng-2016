@@ -10,3 +10,7 @@ add_executable(buildings
     main.cpp
     calculate2.cpp
 )
+
+add_executable(generate
+    generate.cpp
+)
