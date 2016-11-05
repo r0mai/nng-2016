@@ -52,14 +52,14 @@ struct Item {
 
 std::ostream& operator<<(std::ostream& ss, const Block& block) {
 	ss << block.row + 1 << " " << block.col + 1;
-	ss << " (h=" << block.height << ") ";
+	ss << " (h=" << block.height << ", n=" << block.neighbor_count << ")";
 	return ss;
 }
 
 
 bool IsOlder(const Block& block) {
 	return (block.height > 1 && block.height < 5 &&
-		block.height == block.neighbor_count + 1);
+		block.height >= block.neighbor_count + 1);
 }
 
 bool IsNewer(const Block& block) {
@@ -188,13 +188,22 @@ public:
 		auto index = block.index;
 		bool invalid = false;
 
+		if ((is_newer && (block.height & 3) != 1) ||
+			(!is_newer && block.height > block.neighbor_count + 1))
+		{
+			std::cerr << "- Invalid" << std::endl;
+			return false;
+		}
+
 		for (int k = 0; k < 4; ++k) {
 			if (block.neighbor[k]) {
 				auto dir = Direction(k);
 				auto& nb = blocks_[NeighborIndex(index, dir)];
-				if ((is_newer && nb.height <= 1) ||
-					(nb.height < 5 && nb.height > nb.neighbor_count + 1))
+				// std::cerr << "? " << is_newer << " " << nb << std::endl;
+				if ((is_newer && nb.height == 1) ||
+					(nb.height < 5 && nb.height > nb.neighbor_count + is_newer))
 				{
+					std::cerr << "? " << is_newer << " " << nb << std::endl;
 					invalid = true;
 					break;
 				}
@@ -267,6 +276,7 @@ public:
 			history_.pop_back();
 
 			if (item.mark) {
+				--marks_;
 				Push(block, item.is_newer);
 				std::cerr << "Retry " << block << std::endl;
 				return true;
@@ -304,8 +314,9 @@ public:
 			if (block.height > 0) {
 				bool success = EliminateBlock(block, is_newer);
 				if (!success) {
-					std::cerr << "Failed " << block;
+					std::cerr << "- Failed " << block;
 					std::cerr << "  Hsize=" << history_.size() << std::endl;
+					// Visual();
 					return Rollback();
 				}
 				return true;
@@ -316,11 +327,19 @@ public:
 		if (next) {
 			// Leave a mark behind in the history,
 			// so backtrack stops here
+			++marks_;
 			history_.push_back({next->index, true, true});
 			std::cerr << "Guess " << *next << std::endl;
+			// Visual();
 			Push(*next);
 			return true;
 		}
+
+		if (history_.size() - marks_ != size_) {
+			std::cerr << "Invalid state" << std::endl;
+			return Rollback();
+		}
+
 		return false;
 	}
 
@@ -348,7 +367,7 @@ public:
 
 	void Stats() {
 		std::cerr << "Steps: " << steps_ << std::endl;
-		std::cerr << "History: " << history_.size() << std::endl;
+		std::cerr << "History: " << history_.size() << " - " << marks_ << std::endl;
 	}
 
 	CommandVec GetCommands() {
@@ -373,7 +392,11 @@ public:
 				vec[older++] = {row, col};
 			}
 		}
-
+		if (older != newer + 1) {
+			std::cerr << "Invalid history ";
+			std::cerr << older << " + " << (size_ - 1 - newer) << std::endl;
+			assert(false);
+		}
 		return vec;
 	}
 
@@ -382,6 +405,7 @@ private:
 	int cols_ = 0;
 	int steps_ = 0;
 	int size_ = 0;
+	int marks_ = 0;
 
 	BlockVec blocks_;
 	ItemVec stack_;
@@ -399,8 +423,11 @@ void CalculateBuildOrder(const Buildings& buildings,
 
 	// p.Visual();
 	while (p.EliminateNext()) {
-		// loop
+		if (!p.Sanity()) {
+			break;
+		}
 	}
+	// p.Visual();
 
 	p.Stats();
 	solution = p.GetCommands();
