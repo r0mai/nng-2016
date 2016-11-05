@@ -119,6 +119,25 @@ Commands snail(int rows, int cols) {
 	return commands;
 }
 
+Commands box3(int rows, int cols) {
+	Commands commands;
+    for (int y = 0; y < rows; y += 3) {
+        for (int x = 0; x < cols; x += 3) {
+			int r, c;
+			r = y  ; c = x  ; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y+1; c = x  ; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y+2; c = x  ; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y+2; c = x+1; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y+2; c = x+2; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y+1; c = x+2; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y  ; c = x+2; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y  ; c = x+1; if (r < rows && c < cols) { commands.push_back({r, c}); }
+			r = y+1; c = x+1; if (r < rows && c < cols) { commands.push_back({r, c}); }
+		}
+	}
+	return commands;
+}
+
 Commands randomMap(int rows, int cols, std::mt19937& rng) {
     std::vector<Command> commands;
     for (int y = 0; y < rows; ++y) {
@@ -157,6 +176,8 @@ int main(int argc, char **argv) {
 		commands = randomMap(rows, cols, rng);
 	} else if (type == "snail") {
 		commands = snail(rows, cols);
+	} else if (type == "box3") {
+		commands = box3(rows, cols);
 	} else {
 		std::cerr << "Unknown type" << std::endl;
 		return 1;
