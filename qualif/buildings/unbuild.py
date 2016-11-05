@@ -101,7 +101,7 @@ class Parcel:
                     count += 1
                 if col + 1 < self.cols and self.height(row, col + 1) > 0:
                     count += 1
-        return count, hsum, abs(hsum - count) / 4
+        return count, hsum, abs(hsum - count) / 4.0
 
     def demolish(self):
         mark = ''
@@ -172,9 +172,9 @@ def load(fname):
 
 
 if __name__ == '__main__':
-    p = load('test.map')
-    while p.demolish():
-        pass
+    p = load('testhard5.map')
+    print(p.rank())
+    # while p.demolish():
+    #     pass
 
-    p.show_layout()
-
+    # p.show_layout()

@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <unordered_set>
 #include <utility>
 #include <cassert>
 #include <cstddef>
@@ -70,7 +69,6 @@ bool IsNewer(const Block& block) {
 using BlockVec = std::vector<Block>;
 using IntVec = std::vector<int>;
 using CommandVec = std::vector<Command>;
-using IntSet = std::unordered_set<int>;
 using ItemVec = std::vector<Item>;
 
 class Parcel {
@@ -142,8 +140,8 @@ public:
 			}
 		}
 
-		std::cerr << "# " << stack_.size() << " ";
-		std::cerr << history_.size() << std::endl;
+		// std::cerr << "# " << stack_.size() << " ";
+		// std::cerr << history_.size() << std::endl;
 	}
 
 	int BlockIndex(int row, int col) {
@@ -305,6 +303,65 @@ public:
 		return sane;
 	}
 
+	bool IsCorner2x2(int index, Direction d1, Direction d2) {
+		auto& b = blocks_[index];
+		return (b.height == 2 && b.neighbor_count == 2 &&
+			b.neighbor[d1] && b.neighbor[d2]);
+	}
+
+	int IsMiddle3x2(int index, Direction nd) {
+		auto& b = blocks_[index];
+		if (((b.height == 2 || b.height == 3) && b.neighbor_count == 3) &&
+			!b.neighbor[nd])
+		{
+			return b.height;
+		}
+		return 0;
+	}
+
+	bool IsInvalid() {
+		int m1 = 0;
+		int m2 = 0;
+
+		// I wrote this code out of desperation
+		for (const auto& b : blocks_) {
+			auto index = b.index;
+			if (IsCorner2x2(index, kRight, kBottom)) {
+				if (IsCorner2x2(index + 1, kLeft, kBottom)) {
+					// 2x2 or 3x2
+					if (IsCorner2x2(index + cols_, kRight, kTop)) {
+						// 2x2
+						if (IsCorner2x2(index + cols_ + 1, kLeft, kTop)) {
+							return true;
+						}
+					} else if ((m1 = IsMiddle3x2(index + cols_, kLeft))) {
+						// 3x2
+						if ((m2 = IsMiddle3x2(index + cols_ + 1, kRight))) {
+							if (m1 + m2 == 5 &&
+								IsCorner2x2(index + 2 * cols_, kRight, kTop) &&
+								IsCorner2x2(index + 2 * cols_ + 1, kLeft, kTop))
+							{
+								return true;
+							}
+						}
+					}
+				} else if ((m1 = IsMiddle3x2(index + 1, kTop))) {
+					// 2x3
+					if ((m2 = IsMiddle3x2(index + cols_ + 1, kBottom))) {
+						if (m1 + m2 == 5 &&
+							IsCorner2x2(index + 2, kLeft, kBottom) &&
+							IsCorner2x2(index + cols_, kRight, kTop) &&
+							IsCorner2x2(index + cols_ + 2, kLeft, kTop))
+						{
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	bool EliminateNext() {
 		++steps_;
 		while (!stack_.empty()) {
@@ -314,13 +371,18 @@ public:
 			if (block.height > 0) {
 				bool success = EliminateBlock(block, is_newer);
 				if (!success) {
-					std::cerr << "- Failed " << block;
-					std::cerr << "  Hsize=" << history_.size() << std::endl;
+					// std::cerr << "- Failed " << block;
+					// std::cerr << "  Hsize=" << history_.size() << std::endl;
 					// Visual();
 					return Rollback();
 				}
 				return true;
 			}
+		}
+
+		if (IsInvalid()) {
+			std::cerr << "- Invalid state" << std::endl;
+			return Rollback();
 		}
 
 		auto next = FindNext();
@@ -329,14 +391,16 @@ public:
 			// so backtrack stops here
 			++marks_;
 			history_.push_back({next->index, true, true});
-			std::cerr << "Guess " << *next << std::endl;
+			// std::cerr << "Guess " << *next << std::endl;
 			// Visual();
 			Push(*next);
 			return true;
 		}
 
 		if (history_.size() - marks_ != size_) {
-			std::cerr << "Invalid state" << std::endl;
+			std::cerr << marks_ << " Invalid state" << std::endl;
+			Visual();
+			return false;
 			return Rollback();
 		}
 
@@ -423,12 +487,9 @@ void CalculateBuildOrder(const Buildings& buildings,
 
 	// p.Visual();
 	while (p.EliminateNext()) {
-		// if (!p.Sanity()) {
-		// 	break;
-		// }
+		// loop
 	}
 	// p.Visual();
-
-	p.Stats();
+	// p.Stats();
 	solution = p.GetCommands();
 }

@@ -134,10 +134,10 @@ int main(int argc, char** argv) {
             return 0;
         } else {
             std::cerr << "Mismatch" << std::endl;
-            // std::cout << "Input:" << std::endl;
-            // std::cout << buildings;
-            // std::cout << "Result:" << std::endl;
-            // std::cout << resultBuildings;
+            std::cout << "Input:" << std::endl;
+            std::cout << buildings;
+            std::cout << "Result:" << std::endl;
+            std::cout << resultBuildings;
             return 1;
         }
     }
