@@ -68,6 +68,25 @@ Commands rowMajor(int rows, int cols) {
 	return commands;
 }
 
+Commands checkerBoard(int rows, int cols) {
+	Commands commands;
+	for (int y = 0; y < rows; ++y) {
+		for (int x = 0; x < cols; ++x) {
+			if ((x + y) % 2 == 0) {
+				commands.push_back({y, x});
+			}
+		}
+	}
+	for (int y = 0; y < rows; ++y) {
+		for (int x = 0; x < cols; ++x) {
+			if ((x + y) % 2 == 1) {
+				commands.push_back({y, x});
+			}
+		}
+	}
+	return commands;
+}
+
 int main(int argc, char **argv) {
 	if (argc != 4) {
 		std::cerr << "Usage ./generate <type> <rows> <cols>" << std::endl;
@@ -81,6 +100,8 @@ int main(int argc, char **argv) {
 	Commands commands;
 	if (type == "rowmajor") {
 		commands = rowMajor(rows, cols);
+	} else if (type == "checker") {
+		commands = checkerBoard(rows, cols);
 	} else {
 		std::cerr << "Unknown type" << std::endl;
 		return 1;
