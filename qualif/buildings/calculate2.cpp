@@ -191,7 +191,7 @@ public:
 		if ((is_newer && (block.height & 3) != 1) ||
 			(!is_newer && block.height > block.neighbor_count + 1))
 		{
-			std::cerr << "- Invalid" << std::endl;
+			// std::cerr << "- Invalid" << std::endl;
 			return false;
 		}
 
@@ -203,7 +203,7 @@ public:
 				if ((is_newer && nb.height == 1) ||
 					(nb.height < 5 && nb.height > nb.neighbor_count + is_newer))
 				{
-					std::cerr << "? " << is_newer << " " << nb << std::endl;
+					// std::cerr << "? " << is_newer << " " << nb << std::endl;
 					invalid = true;
 					break;
 				}
@@ -278,7 +278,7 @@ public:
 			if (item.mark) {
 				--marks_;
 				Push(block, item.is_newer);
-				std::cerr << "Retry " << block << std::endl;
+				// std::cerr << "Retry " << block << std::endl;
 				return true;
 			}
 			if (block.height == 0) {
@@ -286,7 +286,7 @@ public:
 			}
 		}
 
-		std::cerr << "No luck" << std::endl;
+		// std::cerr << "No luck" << std::endl;
 		return false;
 	}
 
@@ -423,9 +423,9 @@ void CalculateBuildOrder(const Buildings& buildings,
 
 	// p.Visual();
 	while (p.EliminateNext()) {
-		if (!p.Sanity()) {
-			break;
-		}
+		// if (!p.Sanity()) {
+		// 	break;
+		// }
 	}
 	// p.Visual();
 
