@@ -70,7 +70,7 @@ Commands rowMajor(int rows, int cols) {
 
 int main(int argc, char **argv) {
 	if (argc != 4) {
-		std::cout << "Usage ./generate <type> <rows> <cols>";
+		std::cerr << "Usage ./generate <type> <rows> <cols>" << std::endl;
 		return 1;
 	}
 
@@ -81,6 +81,9 @@ int main(int argc, char **argv) {
 	Commands commands;
 	if (type == "rowmajor") {
 		commands = rowMajor(rows, cols);
+	} else {
+		std::cerr << "Unknown type" << std::endl;
+		return 1;
 	}
 
 	std::cout << applyCommands(rows, cols, commands) << std::endl;
