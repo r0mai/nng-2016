@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include <random>
 
 using Buildings = std::vector<std::vector<int>>;
 using Command = std::pair<int, int>;
@@ -68,19 +69,61 @@ Commands rowMajor(int rows, int cols) {
 	return commands;
 }
 
+Commands checkerBoard(int rows, int cols) {
+	Commands commands;
+	for (int y = 0; y < rows; ++y) {
+		for (int x = 0; x < cols; ++x) {
+			if ((x + y) % 2 == 0) {
+				commands.push_back({y, x});
+			}
+		}
+	}
+	for (int y = 0; y < rows; ++y) {
+		for (int x = 0; x < cols; ++x) {
+			if ((x + y) % 2 == 1) {
+				commands.push_back({y, x});
+			}
+		}
+	}
+	return commands;
+}
+
+Commands randomMap(int rows, int cols, std::mt19937& rng) {
+    std::vector<Command> commands;
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            commands.push_back({y, x});
+        }
+    }
+    std::shuffle(begin(commands), end(commands), rng);
+
+	return commands;
+}
+
 int main(int argc, char **argv) {
-	if (argc != 4) {
-		std::cerr << "Usage ./generate <type> <rows> <cols>" << std::endl;
+	if (argc != 4 && argc != 5) {
+		std::cerr << "Usage ./generate <type> <rows> <cols> [<seed>]" << std::endl;
 		return 1;
 	}
 
 	std::string type = argv[1];
 	int rows = std::stoi(argv[2]);
 	int cols = std::stoi(argv[3]);
+	int seed = std::time(nullptr);
+	if (argc == 5) {
+		seed = std::stoi(argv[4]);
+	}
+
+	std::cerr << "Seed is " << seed << std::endl;
+	std::mt19937 rng(seed);
 
 	Commands commands;
 	if (type == "rowmajor") {
 		commands = rowMajor(rows, cols);
+	} else if (type == "checker") {
+		commands = checkerBoard(rows, cols);
+	} else if (type == "random") {
+		commands = randomMap(rows, cols, rng);
 	} else {
 		std::cerr << "Unknown type" << std::endl;
 		return 1;
