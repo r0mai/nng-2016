@@ -114,12 +114,19 @@ int main(int argc, char** argv) {
 
         auto time_taken = std::chrono::duration_cast<std::chrono::microseconds>(after - before);
 
-        std::cerr << "Commands:" << std::endl;
-        for (auto command : commands) {
-            std::cout << command.first << " " << command.second << '\n';
-        }
+        // std::cerr << "Commands:" << std::endl;
+        // for (auto command : commands) {
+        //     std::cout << command.first << " " << command.second << '\n';
+        // }
 
         std::cerr << "Elapsed: " << time_taken.count() << "us" << std::endl;
+
+        for (int y = 0; y < h; ++y) {
+            for (int x = 0; x < w; ++x) {
+                auto& h = buildings[y][x];
+                if (h == 5 || h == 6) { h = 1; }
+            }
+        }
 
         Buildings resultBuildings = applyBuildOrder(h, w, commands);
         if (buildings == resultBuildings) {
