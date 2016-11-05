@@ -133,10 +133,11 @@ Commands randomBox3(int rows, int cols, std::mt19937& rng) {
 			r = y+1; c = x+2; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
 			r = y  ; c = x+1; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
 			r = y  ; c = x+2; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
-			r = y+1; c = x+1; if (r < rows && c < cols) { subCommands.push_back({r, c}); }
 
 			std::shuffle(subCommands.begin(), subCommands.end(), rng);
 			commands.insert(commands.end(), subCommands.begin(), subCommands.end());
+
+			r = y+1; c = x+1; if (r < rows && c < cols) { commands.push_back({r, c}); }
 		}
 	}
 	return commands;
