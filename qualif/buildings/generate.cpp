@@ -88,6 +88,37 @@ Commands checkerBoard(int rows, int cols) {
 	return commands;
 }
 
+Commands snail(int rows, int cols) {
+	Commands commands;
+	int begin_y = 0;
+	int begin_x = 0;
+	int end_y = rows;
+	int end_x = cols;
+	while (commands.size() < rows * cols) {
+		// 1
+		for (int x = begin_x; x < end_x; ++x) {
+			commands.push_back({begin_y, x});
+		}
+		// 2
+		for (int y = begin_y+1; y < end_y; ++y) {
+			commands.push_back({y, end_x - 1});
+		}
+		// 3
+		for (int x = end_x - 2; x >= begin_x; --x) {
+			commands.push_back({end_y - 1, x});
+		}
+		// 4
+		for (int y = end_y - 2; y >= begin_y + 1; --y) {
+			commands.push_back({y, begin_x});
+		}
+		++begin_y;
+		++begin_x;
+		--end_x;
+		--end_y;
+	}
+	return commands;
+}
+
 Commands randomMap(int rows, int cols, std::mt19937& rng) {
     std::vector<Command> commands;
     for (int y = 0; y < rows; ++y) {
@@ -124,6 +155,8 @@ int main(int argc, char **argv) {
 		commands = checkerBoard(rows, cols);
 	} else if (type == "random") {
 		commands = randomMap(rows, cols, rng);
+	} else if (type == "snail") {
+		commands = snail(rows, cols);
 	} else {
 		std::cerr << "Unknown type" << std::endl;
 		return 1;
