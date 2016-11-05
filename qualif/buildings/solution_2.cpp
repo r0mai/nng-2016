@@ -398,7 +398,9 @@ public:
 		}
 
 		if (history_.size() - marks_ != size_) {
-			std::cerr << marks_ << " Invalid state" << std::endl;
+			// std::cerr << marks_ << " Invalid state" << std::endl;
+			// Visual();
+			// return false;
 			return Rollback();
 		}
 
