@@ -107,6 +107,10 @@ std::vector<size_t> findRadioactivity2(const std::vector<size_t>& balls,
 }
 
 struct Linear {
+	bool applicable(size_t, size_t) {
+		return true;
+	}
+
 	std::vector<size_t> apply(const std::vector<size_t>& balls,
 			size_t d,
 			std::function<bool(const std::vector<size_t>&)> testFunction) {
@@ -124,6 +128,10 @@ struct Linear {
 };
 
 struct BinarySearch {
+	bool applicable(size_t, size_t) {
+		return true;
+	}
+
 	std::vector<size_t> apply(std::vector<size_t> balls,
 			size_t d,
 			std::function<bool(const std::vector<size_t>&)> testFunction) {
@@ -133,7 +141,35 @@ struct BinarySearch {
 			balls.erase(std::find(balls.begin(), balls.end(), match));
 			result.push_back(match);
 		}
+		std::sort(result.begin(), result.end());
 		return result;
+	}
+};
+
+struct AllRadioactiveOptimization {
+	bool applicable(size_t n, size_t d) {
+		return n == d;
+	}
+
+	std::vector<size_t> apply(std::vector<size_t> balls,
+			size_t d,
+			std::function<bool(const std::vector<size_t>&)>) {
+		(void)d;
+		BOOST_ASSERT_MSG(d == balls.size(), "Optimization not applicable");
+		return balls;
+	}
+};
+
+struct SpecialCaseFor2 {
+	bool applicable(size_t n, size_t d) {
+		return d == 2 && n >= d;
+	}
+	std::vector<size_t> apply(std::vector<size_t> balls,
+			size_t d,
+			std::function<bool(const std::vector<size_t>&)> testFunction) {
+		(void)d;
+		BOOST_ASSERT_MSG(d == 2, "Optimization not applicable");
+		return findRadioactivity2(balls, testFunction);
 	}
 };
 
@@ -143,6 +179,10 @@ class Launchpad;
 template<typename Approach>
 class Launchpad<Approach> {
 public:
+	bool applicable(size_t n, size_t d) {
+		return approach.applicable(n, d);
+	}
+
 	std::vector<size_t> apply(const std::vector<size_t>& balls,
 			std::size_t d,
 			std::function<bool(const std::vector<size_t>&)> tester) {
@@ -155,6 +195,10 @@ private:
 template<typename Approach, typename... Approaches>
 class Launchpad<Approach, Approaches...> {
 public:
+	bool applicable(size_t n, size_t d) {
+		return approach.applicable(n, d) || others.applicable(n, d);
+	}
+
 	std::vector<size_t> apply(const std::vector<size_t>& balls,
 			std::size_t d,
 			std::function<bool(const std::vector<size_t>&)> tester) {
@@ -170,10 +214,19 @@ public:
 	Launchpad() {
 		for (size_t length = 0; length <= 64; ++length) {
 			for(size_t d = 0; d <= std::min(length, 7ul); ++d) {
+				if (!others.applicable(length, d)) {
+					// No point in checking performance of other
+					useFirst.push_back(std::make_pair(length, d));
+					continue;
+				}
+				if (!approach.applicable(length, d)) {
+					// We aren't applicable, so don't use us.
+					continue;
+				}
 				size_t betterCount = 0;
 				size_t iterations = 10;
 				for(size_t iteration = 0; iteration < iterations; ++iteration) {
-					if (isBetter(length, d)) {
+					if (isOursBetter(length, d)) {
 						++betterCount;
 					}
 				}
@@ -184,21 +237,8 @@ public:
 		}
 	}
 
-	~Launchpad() {
-		std::cerr << "First approach was best for "<<std::endl;
-		auto configs = getOptimalConfigurations();
-		for(const auto& config: configs) {
-			std::cerr << config.first<< ", " << config.second << std::endl;
-		}
-	}
-
-	std::vector<std::pair<size_t, size_t>> getOptimalConfigurations() const {
-		return useFirst;
-	}
-
 private:
-
-	bool isBetter(size_t length, size_t d) {
+	bool isOursBetter(size_t length, size_t d) {
 		auto testSample = getSample(length, d);
 		size_t checkCount = 0;
 		auto testFunction = [&checkCount, &testSample](
@@ -216,12 +256,18 @@ private:
 			balls.push_back(i);
 		}
 
-		approach.apply(balls, d, testFunction);
+		auto leftResult = approach.apply(balls, d, testFunction);
 		size_t left = checkCount;
 		checkCount = 0;
-		others.apply(balls, d, testFunction);
+		auto rightResult = others.apply(balls, d, testFunction);
 		size_t right = checkCount;
-		return left < right;
+		if (length == d) {
+			BOOST_ASSERT(0 == std::min(left, right));
+		}
+		if (leftResult == rightResult) {
+			return left < right;
+		}
+		return true;
 	}
 
 	std::vector<bool> getSample(size_t length, size_t d) {
@@ -231,6 +277,7 @@ private:
 			result[i] = true;
 		}
 		std::shuffle(result.begin(), result.end(), gen);
+		BOOST_ASSERT(std::count(result.begin(), result.end(), true) == d);
 		return result;
 	}
 
@@ -244,7 +291,9 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest)) {
 
-	static Launchpad<Linear, BinarySearch> launchpad{};
+	static Launchpad<Linear, BinarySearch, AllRadioactiveOptimization,
+			SpecialCaseFor2>
+			launchpad{};
 
 	static std::mt19937 gen{3};
 	std::vector<size_t> indices;
