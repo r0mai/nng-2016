@@ -28,27 +28,52 @@ std::vector<bool> generateRandomSample(std::size_t length,
 	return result;
 }
 
+class Measurement {
+public:
+	size_t getBest() const {
+		return *std::min_element(measurements.begin(), measurements.end());
+	}
+	size_t getWorst() const {
+		return *std::max_element(measurements.begin(), measurements.end());
+	}
+
+	float getAverage() const {
+		return float(
+				std::accumulate(measurements.begin(), measurements.end(), 0))
+				/ float(measurements.size());
+	}
+
+	void addResult(size_t value) {
+		measurements.push_back(value);
+	}
+private:
+	std::vector<size_t> measurements;
+};
+
 int main() {
 
 	Tester tester;
 
-	for(std::size_t length = 64; length < 65; ++length) {
-		std::cerr << "Running test against length of " << length << std::endl;
-		for(std::size_t radioActivity = 0; radioActivity <= 7;
-				++radioActivity) {
-			std::vector<std::size_t> tests;
-			std::cerr << "Radioactivity: " << radioActivity << std::endl;
-			for(std::size_t i = 0; i < 100; ++i) {
-				tester.setBalls(generateRandomSample(length, radioActivity));
-				auto result = tester.verify();
-				tests.push_back(std::get<2>(result));
-			}
-			auto best = *std::min_element(tests.begin(), tests.end());
-			auto worst = *std::max_element(tests.begin(), tests.end());
-			auto sum = std::accumulate(tests.begin(), tests.end(), 0);
-			std::cout << radioActivity << " " << float(sum)/tests.size() << " "
-					<< best << " " << worst << std::endl;
-		}
+	std::cout << "Total";
+	for(std::size_t radioactivity = 0; radioactivity <= 7; ++radioactivity) {
+		std::cout << "\t" << radioactivity;
 	}
+	std::cout << std::endl;
+	for (std::size_t length = 0; length <= 64; ++length) {
+		std::cout << length << "\t";
+		for (std::size_t radioactivity = 0;
+				radioactivity <= std::min(length, 7ul); ++radioactivity) {
+			Measurement m;
+			for (std::size_t sample = 0; sample < 100; ++sample) {
+				auto balls = generateRandomSample(length, radioactivity);
+				tester.setBalls(balls);
+				auto count = std::get<2>(tester.verify());
+				m.addResult(count);
+			}
+			std::cout << m.getAverage() << "\t";
+		}
+		std::cerr << std::endl;
+	}
+
 	std::cerr << "Verification passed" << std::endl;
 }
