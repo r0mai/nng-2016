@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+#include <fstream>
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
@@ -587,11 +588,40 @@ void executeCommand(game& g, const Command& command) {
     }
 }
 
-int main(int argc, char **argv) {
-    assert(argc==2 && "./creep map < in");
-    auto g = std::make_unique<game>(argv[1]);
-
+std::vector<Command> LoadCommands(const std::string& file) {
     std::vector<Command> commands;
+    std::ifstream in(file);
+
+    int count;
+    in >> count;
+    int last_command = 0;
+    for (int i = 0; i < count; ++i) {
+        Command cmd;
+        in >> cmd.t >> cmd.command >> cmd.id >> cmd.x >> cmd.y;
+        for (int j = last_command; j < cmd.t; ++j) {
+            commands.push_back(Command{});
+            commands.back().t = j;
+            last_command = cmd.t;
+        }
+        commands.push_back(cmd);
+    }
+    return commands;
+}
+
+int main(int argc, char **argv) {
+    assert(argc == 2 || argc == 3);
+
+    auto g = std::make_unique<game>(argv[1]);
+    std::vector<Command> commands;
+
+    if (argc == 3) {
+        commands = LoadCommands(argv[2]);
+    }
+
+    for (auto& cmd : commands) {
+        assert(cmd.t == g->t_q2);
+        executeCommand(*g, cmd);
+    }
 
     gui::Game gui(GuiModelFromGame(*g));
     gui.setCommandCallback([&](const Command& copy) {
