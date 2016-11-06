@@ -71,6 +71,7 @@ struct Command {
         return cmd;
     }
 
+    int t = -1;
     int command = -1;
     int id;
     int x;

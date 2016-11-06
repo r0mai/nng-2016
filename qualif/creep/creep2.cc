@@ -594,7 +594,9 @@ int main(int argc, char **argv) {
     std::vector<Command> commands;
 
     gui::Game gui(GuiModelFromGame(*g));
-    gui.setCommandCallback([&](const Command& command) {
+    gui.setCommandCallback([&](const Command& copy) {
+        auto command = copy;
+        command.t = g->t_q2;
         commands.push_back(command);
         executeCommand(*g, command);
         gui.setModel(GuiModelFromGame(*g));
@@ -613,6 +615,18 @@ int main(int argc, char **argv) {
         gui.setModel(GuiModelFromGame(*g));
     });
     gui.run();
+
+    std::vector<Command> final_commands;
+    for (auto& command : commands) {
+        if (command.command > 0) {
+            final_commands.push_back(command);
+        }
+    }
+    std::cout << final_commands.size() << std::endl;
+    for (auto& command : final_commands) {
+        printf("%d %d %d %d %d\n",
+            command.t, command.command, command.id, command.x, command.y);
+    }
 
     return 0;
 }
