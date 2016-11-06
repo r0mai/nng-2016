@@ -9,8 +9,7 @@
 #include <boost/optional.hpp>
 
 std::vector<size_t> selectFrom(const std::vector<size_t>& from) {
-	static std::random_device rd;
-	static std::mt19937 gen{rd()};
+	static std::mt19937 gen{3};
 
 	auto result = from;
 	std::shuffle(result.begin(), result.end(), gen);
@@ -148,8 +147,7 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest)) {
 
-	static std::random_device rd;
-	static std::mt19937 gen{rd()};
+	static std::mt19937 gen{3};
 	std::vector<size_t> indices;
 	for (size_t i = 0; i < NumberOfBalls; ++i) {
 		indices.push_back(i);
