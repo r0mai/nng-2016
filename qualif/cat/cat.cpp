@@ -72,7 +72,7 @@ int main() {
 			}
 			std::cout << m.getAverage() << "\t";
 		}
-		std::cerr << std::endl;
+		std::cout << std::endl;
 	}
 
 	std::cerr << "Verification passed" << std::endl;

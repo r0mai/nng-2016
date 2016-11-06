@@ -106,46 +106,145 @@ std::vector<size_t> findRadioactivity2(const std::vector<size_t>& balls,
 	return {};
 }
 
-std::vector<size_t> dlogn(std::vector<size_t> balls, size_t n,
-		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
-	std::vector<size_t> result;
-	while(result.size() < n) {
-		auto match = findRadioactivity1(balls, testFunction).front();
-		balls.erase(std::find(balls.begin(), balls.end(), match));
-		result.push_back(match);
+struct Linear {
+	std::vector<size_t> apply(const std::vector<size_t>& balls,
+			size_t d,
+			std::function<bool(const std::vector<size_t>&)> testFunction) {
+		std::vector<size_t> result;
+		for (const auto& ball: balls) {
+			if (result.size() == d) {
+				break;
+			}
+			if (testFunction({ball})) {
+				result.push_back(ball);
+			}
+		}
+		return result;
 	}
-	return result;
-}
+};
 
-std::vector<size_t> findRadioactivity(const std::vector<size_t>& balls,
-		size_t radioActiveBalls,
-		const std::function<bool(const std::vector<size_t>&)>& testFunction) {
-	if (radioActiveBalls == 0) {
-		return {};
+struct BinarySearch {
+	std::vector<size_t> apply(std::vector<size_t> balls,
+			size_t d,
+			std::function<bool(const std::vector<size_t>&)> testFunction) {
+		std::vector<size_t> result;
+		while(result.size() < d) {
+			auto match = findRadioactivity1(balls, testFunction).front();
+			balls.erase(std::find(balls.begin(), balls.end(), match));
+			result.push_back(match);
+		}
+		return result;
 	}
-	if (radioActiveBalls == balls.size()) {
-		return balls;
+};
+
+template<typename... Approaches>
+class Launchpad;
+
+template<typename Approach>
+class Launchpad<Approach> {
+public:
+	std::vector<size_t> apply(const std::vector<size_t>& balls,
+			std::size_t d,
+			std::function<bool(const std::vector<size_t>&)> tester) {
+		return approach.apply(balls, d, tester);
 	}
-	if (balls.size() == 1) {
-		if (testFunction(balls)) {
-			return balls;
-		} else {
-			return {};
+private:
+	Approach approach;
+};
+
+template<typename Approach, typename... Approaches>
+class Launchpad<Approach, Approaches...> {
+public:
+	std::vector<size_t> apply(const std::vector<size_t>& balls,
+			std::size_t d,
+			std::function<bool(const std::vector<size_t>&)> tester) {
+		auto it = std::find(useFirst.begin(), useFirst.end(),
+				std::make_pair(balls.size(), d));
+		if (it != useFirst.end()) {
+			// Approach is best
+			return approach.apply(balls, d, tester);
+		}
+		return others.apply(balls, d, tester);
+	}
+
+	Launchpad() {
+		for (size_t length = 0; length <= 64; ++length) {
+			for(size_t d = 0; d <= std::min(length, 7ul); ++d) {
+				size_t betterCount = 0;
+				size_t iterations = 10;
+				for(size_t iteration = 0; iteration < iterations; ++iteration) {
+					if (isBetter(length, d)) {
+						++betterCount;
+					}
+				}
+				if (betterCount > iterations / 2) {
+					useFirst.push_back(std::make_pair(length, d));
+				}
+			}
 		}
 	}
-	switch(radioActiveBalls) {
-	case 1:
-		return findRadioactivity1(balls, testFunction);
-	case 2:
-		return findRadioactivity2(balls, testFunction);
-	default:
-		return dlogn(balls, radioActiveBalls, testFunction);
+
+	~Launchpad() {
+		std::cerr << "First approach was best for "<<std::endl;
+		auto configs = getOptimalConfigurations();
+		for(const auto& config: configs) {
+			std::cerr << config.first<< ", " << config.second << std::endl;
+		}
 	}
-}
+
+	std::vector<std::pair<size_t, size_t>> getOptimalConfigurations() const {
+		return useFirst;
+	}
+
+private:
+
+	bool isBetter(size_t length, size_t d) {
+		auto testSample = getSample(length, d);
+		size_t checkCount = 0;
+		auto testFunction = [&checkCount, &testSample](
+				const std::vector<size_t>& balls) mutable {
+			++checkCount;
+			for (const auto& ball: balls) {
+				if (testSample[ball]) {
+					return true;
+				}
+			}
+			return false;
+		};
+		std::vector<size_t> balls;
+		for (size_t i = 0; i < length; ++i) {
+			balls.push_back(i);
+		}
+
+		approach.apply(balls, d, testFunction);
+		size_t left = checkCount;
+		checkCount = 0;
+		others.apply(balls, d, testFunction);
+		size_t right = checkCount;
+		return left < right;
+	}
+
+	std::vector<bool> getSample(size_t length, size_t d) {
+		std::vector<bool> result;
+		result.resize(length);
+		for(size_t i=0; i<d; ++i) {
+			result[i] = true;
+		}
+		std::shuffle(result.begin(), result.end(), gen);
+		return result;
+	}
+
+	std::mt19937 gen{3};
+	std::vector<std::pair<size_t, size_t>> useFirst;
+	Approach approach;
+	Launchpad<Approaches...> others;
+};
 
 std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest)) {
+
+	static Launchpad<Linear, BinarySearch> launchpad{};
 
 	static std::mt19937 gen{3};
 	std::vector<size_t> indices;
@@ -158,7 +257,7 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 	BOOST_ASSERT(removePartition({0}, {0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {1, 0}) == std::vector<size_t>{});
 	BOOST_ASSERT(removePartition({1, 0}, {0}) == std::vector<size_t>{1});
-	auto result = findRadioactivity(indices, RadioActiveBalls, TestFunction);
+	auto result = launchpad.apply(indices, RadioActiveBalls, TestFunction);
 	std::sort(result.begin(), result.end());
 	return result;
 }
