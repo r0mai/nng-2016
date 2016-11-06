@@ -1,6 +1,8 @@
 #include "Game.hpp"
-#include <iostream>
 #include <boost/algorithm/string/join.hpp>
+#include <iostream>
+#include <chrono>
+#include <thread>
 
 namespace gui {
 
@@ -43,6 +45,7 @@ void Game::handleEvents() {
             default:
                 break;
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
 }
 
@@ -219,6 +222,9 @@ std::string Game::GetStatusString() const {
     ss << "Mode: ";
     if (inputMode == InputMode::QueenSpawn) {
         ss << "q";
+        for (const auto& q: model.queens) {
+            if (q.energy >= 6400) { ss << "*"; }
+        }
     } else {
         ss << "t";
     }
