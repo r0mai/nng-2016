@@ -26,6 +26,10 @@ void Game::setCommandCallback(const CommandCallback& callback) {
     commandCallback = callback;
 }
 
+void Game::setUndoCallback(const UndoCallback& callback) {
+    undoCallback = callback;
+}
+
 void Game::handleEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -95,6 +99,11 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
         case sf::Keyboard::Q:
             inputMode = InputMode::QueenSpawn;
             activeTumorPos = {-1, -1};
+            break;
+        case sf::Keyboard::U:
+            if (undoCallback) {
+                undoCallback();
+            }
             break;
         default:
             break;

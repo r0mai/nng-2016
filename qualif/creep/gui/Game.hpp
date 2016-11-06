@@ -8,12 +8,14 @@ namespace gui {
 class Game {
 public:
     using CommandCallback = std::function<void(const Command& cmd)>;
+    using UndoCallback = std::function<void()>;
 
     Game(const Model& model);
 
     void run();
     void setModel(const Model& model);
     void setCommandCallback(const CommandCallback& callback);
+    void setUndoCallback(const UndoCallback& callback);
 
 private:
     void handleEvents();
@@ -48,6 +50,7 @@ private:
     Model model;
 
     CommandCallback commandCallback;
+    UndoCallback undoCallback;
 
     sf::RenderWindow window;
 

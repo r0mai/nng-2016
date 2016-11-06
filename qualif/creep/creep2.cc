@@ -569,32 +569,48 @@ struct game
     building* map_building[map_max_dy][map_max_dx];
 };
 
+void executeCommand(game& g, const Command& command) {
+    if (command.command <= 0) {
+        g.tick();
+    } else {
+        int cmd = command.command;
+        int id = command.id;
+        int x = command.x;
+        int y = command.y;
+        if (cmd == 1) {
+            g.queen_spawn_creep_tumor(g.get_queen(id),pos(x,y));
+        } else if (cmd == 2) {
+            g.creep_tumor_spawn_creep_tumor(g.get_creep_tumor(id),pos(x,y));
+        } else {
+            assert(0 && "invalid cmd code");
+        }
+    }
+}
+
 int main(int argc, char **argv) {
     assert(argc==2 && "./creep map < in");
-    game g(argv[1]);
+    auto g = std::make_unique<game>(argv[1]);
 
-    gui::Game gui(GuiModelFromGame(g));
-    gui.setCommandCallback([&g, &gui](const Command& command) {
-        if (command.command <= 0) {
-            g.tick();
-        } else {
-            int cmd = command.command;
-            int id = command.id;
-            int x = command.x;
-            int y = command.y;
-            printf("%d %d %d %d %d\n", g.t_q2, cmd, id, x, y);
-            if (cmd == 1) {
-                g.queen_spawn_creep_tumor(g.get_queen(id),pos(x,y));
-            } else if (cmd == 2) {
-                g.creep_tumor_spawn_creep_tumor(g.get_creep_tumor(id),pos(x,y));
-            } else {
-                assert(0 && "invalid cmd code");
-            }
+    std::vector<Command> commands;
+
+    gui::Game gui(GuiModelFromGame(*g));
+    gui.setCommandCallback([&](const Command& command) {
+        commands.push_back(command);
+        executeCommand(*g, command);
+        gui.setModel(GuiModelFromGame(*g));
+    });
+    gui.setUndoCallback([&]() {
+        while (!commands.empty() && commands.back().command <= 0) {
+            commands.pop_back();
         }
-        if (g.t_q2 >= g.t_limit_q2) {
-            std::cout << "DONE time limit exceeded" << std::endl;
+        if (!commands.empty()) {
+            commands.pop_back();
         }
-        gui.setModel(GuiModelFromGame(g));
+        g = std::make_unique<game>(argv[1]);
+        for (auto& command : commands) {
+            executeCommand(*g, command);
+        }
+        gui.setModel(GuiModelFromGame(*g));
     });
     gui.run();
 
