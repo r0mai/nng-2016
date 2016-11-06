@@ -15,6 +15,15 @@ struct Fixture {
 		auto result = tester.verify();
 		return std::get<2>(result);
 	}
+
+	std::vector<bool> getBalls(size_t length, size_t d) {
+		std::vector<bool> result;
+		result.resize(length);
+		for(size_t i=0; i < d; ++i) {
+			result[i] = true;
+		}
+		return result;
+	}
 };
 
 #define SHOULDBE(call, worst, usually) \
@@ -62,6 +71,16 @@ BOOST_AUTO_TEST_CASE(twoRadioactive) {
 	SHOULDBE(check({true, true, false, false, false, false, false}), 6, 4.83);
 	SHOULDBE(check(
 			{true, true, false, false, false, false, false, false}), 6, 5.3);
+}
+
+BOOST_AUTO_TEST_CASE(totalRegression) {
+	std::size_t totalMeasurements = 0;
+	for(std::size_t length = 0; length <= 64; ++length) {
+		for(std::size_t d=0; d <= std::min(7ul, length); ++d) {
+			totalMeasurements += check(getBalls(length, d));
+		}
+	}
+	BOOST_CHECK_LE(totalMeasurements, 7358);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
