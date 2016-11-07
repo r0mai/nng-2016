@@ -153,10 +153,16 @@ struct Linear {
 			size_t d,
 			std::function<bool(const std::vector<size_t>&)> testFunction) {
 		std::vector<size_t> result;
-		for (const auto& ball: balls) {
+		for (size_t ballIndex = 0; ballIndex < balls.size(); ++ballIndex) {
 			if (result.size() == d) {
 				break;
 			}
+			if (d - result.size() == (balls.size() - ballIndex)) {
+				std::copy(balls.begin() + ballIndex, balls.end(),
+						std::back_inserter(result));
+				break;
+			}
+			const auto& ball = balls[ballIndex];
 			if (testFunction({ball})) {
 				result.push_back(ball);
 			}
