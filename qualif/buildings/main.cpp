@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
         //     std::cout << command.first << " " << command.second << '\n';
         // }
 
-        std::cerr << "Elapsed: " << time_taken.count() << "us" << std::endl;
+        std::cerr << "Elapsed: " << time_taken.count() << " us" << std::endl;
 
         for (int y = 0; y < h; ++y) {
             for (int x = 0; x < w; ++x) {
@@ -134,10 +134,10 @@ int main(int argc, char** argv) {
             return 0;
         } else {
             std::cerr << "Mismatch" << std::endl;
-            std::cout << "Input:" << std::endl;
-            std::cout << buildings;
-            std::cout << "Result:" << std::endl;
-            std::cout << resultBuildings;
+            // std::cout << "Input:" << std::endl;
+            // std::cout << buildings;
+            // std::cout << "Result:" << std::endl;
+            // std::cout << resultBuildings;
             return 1;
         }
     }
