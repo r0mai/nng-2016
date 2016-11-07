@@ -80,6 +80,7 @@ BOOST_AUTO_TEST_CASE(totalRegression) {
 			totalMeasurements += check(getBalls(length, d));
 		}
 	}
+	std::cerr << totalMeasurements << std::endl;
 	BOOST_CHECK_LE(totalMeasurements, 7358);
 }
 
