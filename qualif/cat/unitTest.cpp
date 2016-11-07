@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(totalRegression) {
 		}
 	}
 	std::cerr << totalMeasurements << std::endl;
-	BOOST_CHECK_LE(totalMeasurements, 7358);
+	BOOST_CHECK_LE(totalMeasurements, 6643);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
