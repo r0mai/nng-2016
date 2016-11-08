@@ -3,6 +3,7 @@
 #include <cassert>
 #include <algorithm>
 #include <ctime>
+#include <random>
 
 using Buildings = std::vector<std::vector<int>>;
 using Command = std::pair<int, int>;
