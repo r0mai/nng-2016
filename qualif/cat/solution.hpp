@@ -8,6 +8,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <numeric>
 
 std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
