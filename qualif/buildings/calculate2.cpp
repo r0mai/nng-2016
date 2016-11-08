@@ -16,11 +16,23 @@ using Buildings = std::vector<std::vector<int>>;
 
 namespace {
 
+enum Color {
+	kClear,
+	kRed,
+	kGreen
+	// should fit into 2 bits
+};
+
 enum Direction {
 	kLeft = 0,
 	kRight = 1,
 	kTop = 2,
-	kBottom = 3,
+	kBottom = 3
+};
+
+enum Mode {
+	kExact,
+	kGuess
 };
 
 inline Direction Opposite(Direction k) {
@@ -31,6 +43,7 @@ struct Block {
 	Block() {
 		neighbor = 0;
 		in_stack = 0;
+		color = kClear;
 	}
 
 	int index = -1;
@@ -39,23 +52,38 @@ struct Block {
 	uint8_t last_height = 0;
 	uint8_t neighbor : 4;
 	uint8_t in_stack : 1;
+	uint8_t color : 2;
 };
 
 struct Item {
 	Item(int index, bool is_newer = false, bool mark = false)
 		: index(index)
 		, is_newer(is_newer)
-		, mark(mark) {
-	}
+		, mark(mark)
+	{}
 
 	unsigned index : 24;
 	unsigned is_newer : 1;
 	unsigned mark : 1;
 };
 
+struct Position {
+	int row;
+	int col;
+};
+
+struct Range {
+	int range_begin;
+	int range_end;
+};
+
+
+std::ostream& operator<<(std::ostream& ss, const Position& pos) {
+	ss << (pos.row + 1) << " " << (pos.col + 1);
+	return ss;
+}
 
 std::ostream& operator<<(std::ostream& ss, const Block& block) {
-	// ss << block.row + 1 << " " << block.col + 1;
 	ss << " (h=" << int(block.height) << ", n=";
 	ss << int(block.neighbor_count) << ")";
 	return ss;
@@ -77,6 +105,7 @@ using BlockPtrVec = std::vector<Block*>;
 using IntVec = std::vector<int>;
 using CommandVec = std::vector<Command>;
 using ItemVec = std::vector<Item>;
+using RangeVec = std::vector<Range>;
 
 
 class BitArray {
@@ -117,6 +146,96 @@ private:
 };
 
 
+class Partition {
+public:
+	struct Iterator {
+		int index;
+		RangeVec::iterator it;
+		RangeVec::iterator it_end;
+
+		bool operator==(const Iterator& it) const {
+			return index == it.index;
+		}
+
+		bool operator!=(const Iterator& it) const {
+			return index != it.index;
+		}
+
+		int operator*() const {
+			return index;
+		}
+
+		Iterator operator++(int) {
+			Iterator copy = *this;
+			++copy;
+			return copy;
+		}
+
+		Iterator& operator++() {
+			if (index != -1) {
+				if (index + 1 < it->range_end) {
+					++index;
+				} else {
+					++it;
+					if (it == it_end) {
+						index = -1;
+					} else {
+						index = it->range_begin;
+					}
+				}
+			}
+			return *this;
+		}
+	};
+
+	Iterator begin() {
+		if (ranges_.empty()) {
+			return end();
+		}
+		return {ranges_.front().range_begin, ranges_.begin(), ranges_.end()};
+	}
+
+	Iterator end() {
+		return {-1, ranges_.end(), ranges_.end()};
+	}
+
+	void Insert(const Range& range) {
+		assert(range.range_begin < range.range_end);
+		ranges_.push_back(range);
+		size_ += range.range_end - range.range_begin;
+	}
+
+	void Insert(int range_begin, int range_end) {
+		if (range_begin < range_end) {
+			ranges_.push_back({range_begin, range_end});
+			size_ += range_end - range_begin;
+		} else {
+			assert(false);
+		}
+	}
+
+	int Size() const {
+		return size_;
+	}
+
+	void SetEye(int index) {
+		eye_ = index;
+	}
+
+	int Eye() const {
+		return eye_;
+	}
+
+private:
+	int eye_ = -1;
+	int size_ = 0;
+	RangeVec ranges_;
+};
+
+
+using PartitionVec = std::vector<Partition>;
+
+
 class Parcel {
 public:
 	void Init(const Buildings& bs) {
@@ -153,8 +272,6 @@ public:
 		if (col > 0) {
 			auto& left = blocks_[NeighborIndex(index, kLeft)];
 			if (left.height) {
-				// left.neighbor[kRight] = true;
-				// block.neighbor[kLeft] = true;
 				left.neighbor |= (1<<kRight);
 				block.neighbor |= (1<<kLeft);
 				++left.neighbor_count;
@@ -165,8 +282,6 @@ public:
 		if (row > 0) {
 			auto& top = blocks_[NeighborIndex(index, kTop)];
 			if (top.height) {
-				// top.neighbor[kBottom] = true;
-				// block.neighbor[kTop] = true;
 				top.neighbor |= (1<<kBottom);
 				block.neighbor |= (1<<kTop);
 				++top.neighbor_count;
@@ -179,7 +294,10 @@ public:
 		stack_.reserve(rows_ * cols_);
 		history_.reserve(rows_ * cols_);
 		block_ptrs_.reserve(rows_ * cols_);
-		colors_.Init(rows_ * cols_);
+
+		Partition full_area;
+		full_area.Insert(0, rows_ * cols_);
+		areas_.push_back(std::move(full_area));
 
 		for (auto& block : blocks_) {
 			if (IsOlder(block)) {
@@ -195,6 +313,12 @@ public:
 
 	int BlockIndex(int row, int col) {
 		return col + row * cols_;
+	}
+
+	Position GetPosition(int index) {
+		assert(cols_ > 0);
+		auto d = div(index, cols_);
+		return {d.quot, d.rem};
 	}
 
 	inline int NeighborIndex(int index, Direction dir) {
@@ -329,75 +453,89 @@ public:
 		return false;
 	}
 
-	struct ColorizeResult {
-		int size = 0;
-		int index = -1;
-		int ccount = 0;
-	};
-
-	ColorizeResult ColorizeDfs(Block& block) {
+	Partition ColorizeDfs(Block& block) {
 		// Returns
 		//	size	- size of the area
 		//	index	- index of a block with h=5, or -1
 		//	ccount	- candidate count
 		//
 		BlockPtrVec& vec = block_ptrs_;
-		ColorizeResult result;
+		Partition result;
 		vec.clear();
 
-		colors_.Set(block.index);
+		int row_max = 0;
+		int col_max = 0;
+		int row_min = rows_;
+		int col_min = cols_;
+
+		block.color = kGreen;
 		vec.push_back(&block);
 
 		while (!vec.empty()) {
 			auto& b = *vec.back();
 			vec.pop_back();
 
-			++result.size;
-
 			if (b.height == 5) {
-				result.index = b.index;
-				++result.ccount;
+				result.SetEye(b.index);
 			}
+
+			auto d = div(b.index, cols_);
+			int row = d.quot;
+			int col = d.rem;
+
+			row_min = std::min(row_min, row);
+			row_max = std::max(row_max, row + 1);
+			col_min = std::min(col_min, col);
+			col_max = std::max(col_max, col + 1);
 
 			for (int i = 0; i < 4; ++i) {
 				if ((b.neighbor & (1<<i))) {
 					auto& nb = blocks_[NeighborIndex(b.index, Direction(i))];
-					if (colors_.IsSet(nb.index)) {
+					if (nb.color != kClear) {
 						continue;
 					}
-					colors_.Set(nb.index);
+					nb.color = kGreen;
 					vec.push_back(&nb);
 				}
 			}
 		}
 
-		return result;
-	}
-
-	struct Best {
-		bool empty = true;
-		int value = 0;
-	};
-
-	bool IsBetter(const ColorizeResult& cc, Best& best) {
-		// int value = cc.ccount;
-		int value = 0;
-		if (best.empty || value < best.value) {
-			best.empty = false;
-			best.value = value;
-			return true;
+		for (int row = row_min; row < row_max; ++row) {
+			Range current {-1, -1};
+			bool in_range = false;
+			int index = row * cols_ + col_min;
+			for (int i = col_max - col_min; i-- > 0; ++index) {
+				auto& b = blocks_[index];
+				if (!in_range && b.color == kGreen) {
+					in_range = true;
+					current.range_begin = index;
+				} else if (in_range && b.color != kGreen) {
+					in_range = false;
+					current.range_end = index;
+					result.Insert(current);
+				}
+			}
+			if (in_range) {
+				current.range_end = index;
+				result.Insert(current);
+			}
 		}
-		return false;
+
+		for (auto i : result) {
+			blocks_[i].color = kRed;
+		}
+
+		assert(result.Size() > 0);
+
+		return result;
 	}
 
 	struct ColorCheckResult {
 		bool valid = true;
-		int size = 0;
-		int index = -1;
-		int ccount = 0;
+		PartitionVec areas;
 	};
 
-	ColorCheckResult ColorCheck() {
+	ColorCheckResult ColorCheck(bool collect_partitions) {
 		// Returns
 		//	valid	- true, if the map is solvable
 		//	size	- size of the best same-colored area
@@ -405,27 +543,37 @@ public:
 		//
 		++checks_;
 
-		Best best;
+		int best = -1;
 		ColorCheckResult result;
-		int k = 0;
+		int isolated = 0;
+		auto& current_area = areas_.back();
 
-		colors_.Clear();
-		for (auto& b : blocks_) {
-			if (b.height == 0 || colors_.IsSet(b.index)) {
+		for (auto index : current_area) {
+			auto& b = blocks_[index];
+			b.color = kClear;
+		}
+
+		for (auto index : current_area) {
+			auto& b = blocks_[index];
+			if (b.height == 0 || b.color != kClear) {
 				continue;
 			}
 
 			auto cc = ColorizeDfs(b);
-			if (cc.index == -1) {
+			if (cc.Eye() == -1) {
 				result.valid = false;
 				break;
 			}
-			if (cc.index != -1 && IsBetter(cc, best)) {
-				result.size = cc.size;
-				result.index = cc.index;
-				result.ccount = cc.ccount;
+
+			if (collect_partitions) {
+				result.areas.push_back(std::move(cc));
+			} else if (best == -1 || cc.Size() < best) {
+				best = cc.Size();
+				result.areas.clear();
+				result.areas.push_back(std::move(cc));
 			}
 		}
+
 		return result;
 	}
 
@@ -447,37 +595,44 @@ public:
 			}
 		}
 
-		auto cc = ColorCheck();
-		// cc = ColorCheck();
+		auto exact = (mode_ == kExact);
+		auto cc = ColorCheck(exact);
+
 		if (!cc.valid) {
 			// std::cerr << "- Invalid state" << std::endl;
 			return Rollback();
 		}
 
-		if (cc.index != -1) {
-			auto& nb = blocks_[cc.index];
+		if (exact) {
+			std::move(cc.areas.begin(), cc.areas.end(),
+				std::back_inserter(areas_));
+			mode_ = kGuess;
+			return true;
+		}
+
+		if (!cc.areas.empty()) {
+			auto& next_area = cc.areas.back();
+			auto& nb = blocks_[next_area.Eye()];
 			bool is_newer = true;
 
 			// Leave a mark behind in the history,
 			// so backtrack stops here
-			++marks_;
 			history_.push_back({nb.index, !is_newer, true});
-			// std::cerr << "Area " << cc.size << std::endl;
-			// std::cerr << "Guess #" << marks_ << " " << nb;
-			// std::cerr << " ccount=" << cc.ccount << std::endl;
+			++marks_;
+
+			// std::cerr << "Area " << next_area.Size() << std::endl;
+			// std::cerr << "Guess #" << marks_ << " " << nb << std::endl;
 			// Visual();
 			Push(nb, is_newer);
 			return true;
 		}
 
-		if (history_.size() - marks_ != size_) {
-			std::cerr << marks_ << " Invalid state" << std::endl;
-			// Visual();
-			// return false;
-			return Rollback();
+		areas_.pop_back();
+		if (areas_.empty()) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	void Visual() {
@@ -533,8 +688,9 @@ public:
 			}
 		}
 		if (older != newer + 1) {
+			// Visual();
 			std::cerr << "Invalid history ";
-			std::cerr << older << " + " << (size_ - 1 - newer) << std::endl;
+			std::cerr << older << " != " << newer + 1 << std::endl;
 			assert(false);
 		}
 		return vec;
@@ -548,24 +704,27 @@ private:
 	int marks_ = 0;
 	int checks_ = 0;
 
+	Mode mode_ = kExact;
+
 	BlockVec blocks_;
 	BlockPtrVec block_ptrs_;
-	BitArray colors_;
 	ItemVec stack_;
 	ItemVec history_;
+	PartitionVec areas_;
 };
 
 } // namespace
 
 
+
+
 void CalculateBuildOrder(const Buildings& buildings,
 	std::vector<Command>& solution)
 {
+	// std::cerr << sizeof(Partition) << std::endl;
 	// std::cerr << sizeof(Block) << std::endl;
-
 	Parcel p;
 	p.Init(buildings);
-	// return;
 
 	// p.Visual();
 	while (p.EliminateNext()) {
@@ -575,4 +734,3 @@ void CalculateBuildOrder(const Buildings& buildings,
 	// p.Stats();
 	solution = p.GetCommands();
 }
-
