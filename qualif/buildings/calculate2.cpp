@@ -1,3 +1,6 @@
+#pragma GCC optimize ("O3")
+#pragma GCC optimize ("no-rtti")
+
 // do not include any local headers here
 #include <iostream>
 #include <algorithm>
@@ -15,6 +18,7 @@ using Buildings = std::vector<std::vector<int>>;
 
 
 namespace {
+
 
 enum Color {
 	kClear,
@@ -664,6 +668,7 @@ public:
 		std::cerr << "Checks: " << checks_ << std::endl;
 		std::cerr << std::endl;
 	}
+
 
 	CommandVec GetCommands() {
 		CommandVec vec;
