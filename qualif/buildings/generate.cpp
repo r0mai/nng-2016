@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
-#include <random>
+#include <algorithm>
+#include <ctime>
 
 using Buildings = std::vector<std::vector<int>>;
 using Command = std::pair<int, int>;
