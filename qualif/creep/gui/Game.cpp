@@ -3,6 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 namespace gui {
 
@@ -92,6 +93,7 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
             while (!hasValidMove()) {
                 sendCommand(Command{});
             }
+            selectNextTumor();
             break;
         case sf::Keyboard::P:
             sendCommand(Command{});
@@ -105,6 +107,9 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
                 undoCallback();
             }
             break;
+        case sf::Keyboard::Tab:
+            selectNextTumor(!ev.shift);
+            break;
         default:
             break;
     }
@@ -116,6 +121,37 @@ void Game::handleMouseMovedEvent(const sf::Event::MouseMoveEvent& ev) {
     if (isValidPosition(p)) {
         highlights = cellsAround(p, 10);
     }
+}
+
+void Game::selectNextTumor(bool forward) {
+    auto xmax = model.tiles.shape()[0];
+    auto ymax = model.tiles.shape()[1];
+    std::vector<sf::Vector2i> tumors;
+
+    for (int y = 0; y < ymax; ++y) {
+        for (int x = 0; x < xmax; ++x) {
+            auto* tumor = boost::get<CreepTumor>(&model.tiles[x][y]);
+            if (!tumor || tumor->state != CreepTumor::State::Active) {
+                continue;
+            }
+            tumors.push_back({x, y});
+        }
+    }
+
+    if (tumors.empty()) {
+        return;
+    }
+
+    auto current = std::find(tumors.begin(), tumors.end(), activeTumorPos);
+    int pos = current - tumors.begin();
+    if (pos < tumors.size()) {
+        pos = (pos + (forward ? 1 : -1)) % tumors.size();
+    } else {
+        pos = (forward ? 0 : tumors.size() - 1);
+    }
+
+    activeTumorPos = tumors[pos];
+    inputMode = InputMode::TumorSpawn;
 }
 
 void Game::clickOn(const sf::Vector2i& p) {
