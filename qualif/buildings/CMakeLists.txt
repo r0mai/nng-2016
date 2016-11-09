@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++11")
 
 add_executable(buildings
     main.cpp
-    calculate2.cpp
+    calculate.cpp
 )
 
 add_executable(generate
