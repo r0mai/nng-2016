@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <fstream>
 #include <unistd.h>
+#include <array>
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -140,6 +141,8 @@ struct object
     virtual char const *map_cell_code() const { return "?"; }
     virtual void dump_available_abilities(std::ostream &o) const {}
 
+    virtual object* clone() = 0;
+
     int id;
     bound_rect br;
     int max_health_q8;
@@ -160,6 +163,9 @@ struct building: public object
         max_health_q8=max_health*256;
         health_q8=max_health_q8;
     }
+
+    virtual building* clone() = 0;
+
     virtual ~building() {}
     virtual creep_tumor& a_creep_tumor_i_suppose() { assert(0 && "not a creep tumor"); }
 };
@@ -170,6 +176,9 @@ struct hatchery: public building
     {
         creep_spread_radius=10;
     }
+
+    virtual hatchery* clone() override { return new hatchery(*this); }
+
     virtual ~hatchery() {}
     virtual char const *name() const { return "hatchery"; }
     virtual char const *map_cell_code() const { return print_hatchery; }
@@ -183,6 +192,9 @@ struct creep_tumor: public building
         spawn_creep_tumor_active=1;
         dt_spawn_creep_tumor_cooldown_q8=15.0*256;
     }
+
+    virtual creep_tumor* clone() override { return new creep_tumor(*this); }
+
     virtual ~creep_tumor() {}
     virtual void tick()
     {
@@ -223,6 +235,9 @@ struct unit: public object
         max_health_q8=max_health*256;
         health_q8=max_health_q8;
     }
+
+    virtual unit* clone() = 0;
+
     virtual ~unit() {}
     virtual queen& a_queen_i_suppose() { assert(0 && "not a queen"); }
 };
@@ -234,6 +249,9 @@ struct queen: public unit
         max_energy_q8=200.0*256;
         energy_q8=25.0*256;
     }
+
+    virtual queen* clone() override { return new queen(*this); }
+
     virtual ~queen() {}
     virtual char const *name() const { return "queen"; }
     virtual void dump_available_abilities(std::ostream &o) const
@@ -563,11 +581,45 @@ struct game
     std::vector<building*> buildings;
     std::vector<unit*> units;
     int map_dx,map_dy;
-    int map_creep_gen[map_max_dy][map_max_dx];
-    bool map_creep[map_max_dy][map_max_dx];
+    std::array<std::array<int, map_max_dx>, map_max_dy> map_creep_gen;
+    std::array<std::array<bool, map_max_dx>, map_max_dy> map_creep;
     int creep_cover;
-    bool map_wall[map_max_dy][map_max_dx];
+    std::array<std::array<bool, map_max_dx>, map_max_dy> map_wall;
     building* map_building[map_max_dy][map_max_dx];
+
+    std::unique_ptr<game> clone() {
+        std::unique_ptr<game> other;
+        other->next_id = next_id;
+        other->t_q2 = t_q2;
+        other->t_limit_q2 = t_limit_q2;
+        other->p_base = p_base;
+        other->map_dx = map_dx;
+        other->map_dy = map_dy;
+        other->map_creep_gen = map_creep_gen;
+        other->map_creep = map_creep;
+        other->creep_cover = creep_cover;
+        other->map_wall = map_wall;
+
+        for (building* b : buildings) {
+            other->buildings.push_back(b->clone());
+        }
+
+        for (unit* u : units) {
+            other->units.push_back(u->clone());
+        }
+
+        for (int x = 0; x < map_max_dx; ++x) {
+            for (int y = 0; y < map_max_dy; ++y) {
+                other->map_building[y][x] = map_building[y][x];
+                if (map_building[y][x]) {
+                    int index = std::find(begin(buildings), end(buildings), map_building[y][x]) - begin(buildings);
+                    other->map_building[y][x] = other->buildings[index];
+                }
+            }
+        }
+
+        return other;
+    }
 };
 
 void executeCommand(game& g, const Command& command) {
