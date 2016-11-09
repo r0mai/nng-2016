@@ -292,6 +292,11 @@ std::string Game::GetStatusString() const {
     return ss.str();
 }
 
+sf::Color cooldownColor(int ticks) {
+    // ticks: 0..60
+    return sf::Color(255, 255 - ticks * 4, 0);
+}
+
 struct Game::TileDrawer : boost::static_visitor<> {
     TileDrawer(
         Game& game,
@@ -301,8 +306,8 @@ struct Game::TileDrawer : boost::static_visitor<> {
     {}
 
     void operator()(const Hatchery&) {
-        game.drawTile(position, sf::Color::Magenta);
-        game.drawSmallTile(position, sf::Color{202, 31, 123});
+        game.drawTile(position, sf::Color{192, 0, 192});
+        game.drawSmallTile(position, sf::Color{144, 0, 255});
     }
 
     void operator()(const Wall&) {
@@ -314,32 +319,32 @@ struct Game::TileDrawer : boost::static_visitor<> {
     }
 
     void operator()(const Creep&) {
-        game.drawTile(position, sf::Color::Magenta);
+        game.drawTile(position, sf::Color{192, 0, 192});
     }
 
     void operator()(const CreepTumor& ct) {
-        game.drawTile(position, sf::Color::Magenta);
+        game.drawTile(position, sf::Color{192, 0, 192});
         switch (ct.state) {
             case CreepTumor::State::Active:
                 game.drawSmallTile(position, sf::Color::Green);
                 break;
             case CreepTumor::State::Cooldown:
-                game.drawSmallTile(position, sf::Color::Yellow);
+                game.drawSmallTile(position, cooldownColor(ct.cooldown));
                 break;
             case CreepTumor::State::InActive:
-                game.drawSmallTile(position, sf::Color{202, 31, 123});
+                game.drawSmallTile(position, sf::Color{144, 0, 255});
                 break;
         }
     }
 
     void operator()(const CreepCandidate&) {
         game.drawTile(position, sf::Color::Black);
-        game.drawSmallTile(position, sf::Color::Magenta);
+        game.drawSmallTile(position, sf::Color{192, 0, 192});
     }
 
     void operator()(const CreepRadius&) {
         game.drawTile(position, sf::Color::Black);
-        game.drawSmallTile(position, sf::Color::Magenta);
+        game.drawSmallTile(position, sf::Color{128, 0, 128});
     }
 
 private:
@@ -376,6 +381,8 @@ void Game::drawSmallTile(const sf::Vector2i& p, const sf::Color& color) {
     sf::RectangleShape rect(tileSize * 0.5f);
     rect.setPosition(tileTopLeft + 0.25f * tileSize);
     rect.setFillColor(color);
+    rect.setOutlineThickness(1);
+    rect.setOutlineColor(sf::Color::Black);
     window.draw(rect);
 }
 
@@ -395,7 +402,8 @@ void Game::draw() {
         }
     }
     if (isValidPosition(activeTumorPos)) {
-        drawTile(activeTumorPos, sf::Color{0, 0, 0, 128});
+        drawTile(activeTumorPos, sf::Color{128, 0, 128});
+        drawSmallTile(activeTumorPos, sf::Color::Green);
     }
     for (auto& p : highlights) {
         drawTile(p, sf::Color{255, 255, 66, 128});

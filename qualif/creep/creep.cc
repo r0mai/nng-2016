@@ -492,58 +492,58 @@ struct game
 	}
 	friend std::ostream &operator<< (std::ostream &o, game const &g)
 	{
-		o << "t=(" << g.t_q2
-			<< "," << std::fixed << std::setprecision(2) << g.t_q2/4.0 << ")\n";
-		o << "buildings[" << g.buildings.size() << "]=\n";
-		for(auto p: g.buildings)
-		{
-			building const &b=*p;
-			o << "id=" << b.id << "," << b.name()
-				<< ",p=(" << b.br.x0 << "," << b.br.y0 << ")";
-			b.dump_available_abilities(o);
-			o << "\n";
-		}
-		o << "units[" << g.units.size() << "]=\n";
-		for(auto p: g.units)
-		{
-			unit const &u=*p;
-			o << "id=" << u.id << "," << u.name();
-			if(0<u.max_energy_q8)
-				o << ",energy=(" << u.energy_q8
-					<< "," << std::fixed << std::setprecision(2) << u.energy_q8/256.0 << ")";
-			u.dump_available_abilities(o);
-			o << "\n";
-		}
-		o << "map=\n";
-		o << " ";
-		for(uint x=0; x<g.map_dx; ++x)
-			o << x%10;
-		o << "\n";
-		for(uint y=g.map_dy; y--;)
-		{
-			o << y%10;
-			for(uint x=0; x<g.map_dx; ++x)
-			{
-				if(g.map_wall[y][x])
-					o << print_wall;
-				else if(g.map_building[y][x])
-					o << (*g.map_building[y][x]).map_cell_code();
-				else if(g.map_creep[y][x])
-					o << print_creep;
-				else if(0<g.map_creep_gen[y][x])
-				{
-					if(g.creep_spread_candidate(pos(x,y)))
-						o << print_creep_candidate;
-					else o << print_creep_radius;
-				}
-				else o << print_empty;
-			}
-			o << color_default << y%10 << "\n";
-		}
-		o << " ";
-		for(uint x=0; x<g.map_dx; ++x)
-			o << x%10;
-		o << "\n";
+		// o << "t=(" << g.t_q2
+		// 	<< "," << std::fixed << std::setprecision(2) << g.t_q2/4.0 << ")\n";
+		// o << "buildings[" << g.buildings.size() << "]=\n";
+		// for(auto p: g.buildings)
+		// {
+		// 	building const &b=*p;
+		// 	o << "id=" << b.id << "," << b.name()
+		// 		<< ",p=(" << b.br.x0 << "," << b.br.y0 << ")";
+		// 	b.dump_available_abilities(o);
+		// 	o << "\n";
+		// }
+		// o << "units[" << g.units.size() << "]=\n";
+		// for(auto p: g.units)
+		// {
+		// 	unit const &u=*p;
+		// 	o << "id=" << u.id << "," << u.name();
+		// 	if(0<u.max_energy_q8)
+		// 		o << ",energy=(" << u.energy_q8
+		// 			<< "," << std::fixed << std::setprecision(2) << u.energy_q8/256.0 << ")";
+		// 	u.dump_available_abilities(o);
+		// 	o << "\n";
+		// }
+		// o << "map=\n";
+		// o << " ";
+		// for(uint x=0; x<g.map_dx; ++x)
+		// 	o << x%10;
+		// o << "\n";
+		// for(uint y=g.map_dy; y--;)
+		// {
+		// 	o << y%10;
+		// 	for(uint x=0; x<g.map_dx; ++x)
+		// 	{
+		// 		if(g.map_wall[y][x])
+		// 			o << print_wall;
+		// 		else if(g.map_building[y][x])
+		// 			o << (*g.map_building[y][x]).map_cell_code();
+		// 		else if(g.map_creep[y][x])
+		// 			o << print_creep;
+		// 		else if(0<g.map_creep_gen[y][x])
+		// 		{
+		// 			if(g.creep_spread_candidate(pos(x,y)))
+		// 				o << print_creep_candidate;
+		// 			else o << print_creep_radius;
+		// 		}
+		// 		else o << print_empty;
+		// 	}
+		// 	o << color_default << y%10 << "\n";
+		// }
+		// o << " ";
+		// for(uint x=0; x<g.map_dx; ++x)
+		// 	o << x%10;
+		// o << "\n";
 		o << "creep_cover=" << g.creep_cover << std::endl;
 		return o;
 	}

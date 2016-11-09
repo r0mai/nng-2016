@@ -678,6 +678,8 @@ Model GuiModelFromGame(game& game) {
                         creepTumor.state = CreepTumor::State::InActive;
                     } else if (ct->dt_spawn_creep_tumor_cooldown_q8 > 0) {
                         creepTumor.state = CreepTumor::State::Cooldown;
+                        creepTumor.cooldown =
+                            ct->dt_spawn_creep_tumor_cooldown_q8 / dt_tick_q8;
                     } else {
                         creepTumor.state = CreepTumor::State::Active;
                     }

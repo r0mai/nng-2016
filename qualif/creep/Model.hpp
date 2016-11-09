@@ -19,6 +19,7 @@ struct CreepTumor {
     };
 
     int id = -1;
+    int cooldown = 0;
     State state;
 };
 
