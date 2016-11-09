@@ -402,7 +402,7 @@ void Game::draw() {
         }
     }
     if (isValidPosition(activeTumorPos)) {
-        drawTile(activeTumorPos, sf::Color{128, 0, 128});
+        drawTile(activeTumorPos, sf::Color{255, 128, 255});
         drawSmallTile(activeTumorPos, sf::Color::Green);
     }
     for (auto& p : highlights) {
