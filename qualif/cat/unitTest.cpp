@@ -63,14 +63,20 @@ BOOST_AUTO_TEST_CASE(oneRadioactive) {
 }
 
 BOOST_AUTO_TEST_CASE(twoRadioactive) {
- 	SHOULDBE(check({true, true}), 0, 0);
+	SHOULDBE(check({true, true}), 0, 0);
 	SHOULDBE(check({true, true, false}), 2, 1.68);
 	SHOULDBE(check({false, true, true, false}), 3, 2.59);
 	SHOULDBE(check({true, true, false, false, false}), 5, 4.2);
 	SHOULDBE(check({true, true, false, false, false, false}), 6, 4.55);
-	SHOULDBE(check({true, true, false, false, false, false, false}), 6, 4.83);
+	SHOULDBE(check({true, true, false, false, false, false, false}), 6, 5.02);
 	SHOULDBE(check(
 			{true, true, false, false, false, false, false, false}), 6, 5.3);
+}
+
+BOOST_AUTO_TEST_CASE(threeRadioactive) {
+	SHOULDBE(check({true, true, true}), 0, 0);
+	SHOULDBE(check({true, true, true, false}), 4, 2.5);
+	SHOULDBE(check({true, true, true, false, false}), 5, 3.66);
 }
 
 BOOST_AUTO_TEST_CASE(totalRegression) {
@@ -81,7 +87,7 @@ BOOST_AUTO_TEST_CASE(totalRegression) {
 		}
 	}
 	std::cerr << totalMeasurements << std::endl;
-	BOOST_CHECK_LE(totalMeasurements, 6643);
+	BOOST_CHECK_LE(totalMeasurements, 6516);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

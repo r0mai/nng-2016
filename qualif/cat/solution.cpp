@@ -181,6 +181,11 @@ struct BinarySearch {
 			std::function<bool(const std::vector<size_t>&)> testFunction) {
 		std::vector<size_t> result;
 		while(result.size() < d) {
+			if (balls.size() == d - result.size()) {
+				std::copy(balls.begin(), balls.end(),
+						std::back_inserter(result));
+				break;
+			}
 			std::vector<size_t> radioActive;
 			std::vector<size_t> knownGood;
 			std::tie(radioActive, knownGood) =
