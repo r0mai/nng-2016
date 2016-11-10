@@ -31,6 +31,10 @@ void Game::setUndoCallback(const UndoCallback& callback) {
     undoCallback = callback;
 }
 
+void Game::setRedoCallback(const RedoCallback& callback) {
+    redoCallback = callback;
+}
+
 void Game::handleEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -105,6 +109,11 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
         case sf::Keyboard::U:
             if (undoCallback) {
                 undoCallback();
+            }
+            break;
+        case sf::Keyboard::R:
+            if (redoCallback) {
+                redoCallback();
             }
             break;
         case sf::Keyboard::Tab:

@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+#include <deque>
 #include <fstream>
 #include <unistd.h>
 #include <array>
@@ -665,6 +666,7 @@ int main(int argc, char **argv) {
 
     auto g = std::make_unique<game>(argv[1]);
     std::vector<Command> commands;
+    std::vector<Command> redoCommands;
 
     if (argc == 3) {
         commands = LoadCommands(argv[2]);
@@ -677,6 +679,7 @@ int main(int argc, char **argv) {
 
     gui::Game gui(GuiModelFromGame(*g));
     gui.setCommandCallback([&](const Command& copy) {
+        redoCommands.clear();
         auto command = copy;
         command.t = g->t_q2;
         commands.push_back(command);
@@ -685,14 +688,29 @@ int main(int argc, char **argv) {
     });
     gui.setUndoCallback([&]() {
         while (!commands.empty() && commands.back().command <= 0) {
+            redoCommands.push_back(commands.back());
             commands.pop_back();
         }
         if (!commands.empty()) {
+            redoCommands.push_back(commands.back());
             commands.pop_back();
         }
         g = std::make_unique<game>(argv[1]);
         for (auto& command : commands) {
             executeCommand(*g, command);
+        }
+        gui.setModel(GuiModelFromGame(*g));
+    });
+    gui.setRedoCallback([&]() {
+        while (!redoCommands.empty() && redoCommands.back().command <= 0) {
+            commands.push_back(redoCommands.back());
+            executeCommand(*g, redoCommands.back());
+            redoCommands.pop_back();
+        }
+        if (!redoCommands.empty()) {
+            commands.push_back(redoCommands.back());
+            executeCommand(*g, redoCommands.back());
+            redoCommands.pop_back();
         }
         gui.setModel(GuiModelFromGame(*g));
     });
