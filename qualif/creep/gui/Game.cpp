@@ -51,6 +51,10 @@ void Game::handleEvents() {
             case sf::Event::MouseMoved:
                 handleMouseMovedEvent(event.mouseMove);
                 break;
+            case sf::Event::Resized:
+                window.setView(sf::View(sf::FloatRect(0, 0,
+                    window.getSize().x, window.getSize().y)));
+                break;
             default:
                 break;
         }
