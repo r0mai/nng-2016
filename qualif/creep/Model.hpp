@@ -45,6 +45,9 @@ struct Queen {
 };
 
 struct Model {
+    Model() = default;
+    Model(int tick, int max_tick, const TileMatrix& tiles, const std::vector<Queen>& queens) :
+        tick(tick), max_tick(max_tick), tiles(tiles), queens(queens) {}
     int tick = -1;
     int max_tick = -1;
     TileMatrix tiles;
