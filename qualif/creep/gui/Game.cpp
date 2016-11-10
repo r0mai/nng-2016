@@ -133,6 +133,7 @@ void Game::handleMouseMovedEvent(const sf::Event::MouseMoveEvent& ev) {
     auto p = windowToTile(ev.x, ev.y);
     if (isValidPosition(p)) {
         highlights = cellsAround(p, 10);
+        cursor = p;
     }
 }
 
@@ -420,6 +421,9 @@ void Game::draw() {
     }
     for (auto& p : highlights) {
         drawTile(p, sf::Color{255, 255, 66, 128});
+    }
+    if (isValidPosition(cursor)) {
+        drawTile(cursor, sf::Color{255, 255, 66, 192});
     }
 
     window.setTitle(GetStatusString());

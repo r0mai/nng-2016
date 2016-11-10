@@ -49,6 +49,7 @@ private:
     InputMode inputMode = InputMode::QueenSpawn;
     sf::Vector2i activeTumorPos{-1, -1};
     std::vector<sf::Vector2i> highlights;
+    sf::Vector2i cursor{-1, -1};
 
     Model model;
 
