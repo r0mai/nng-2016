@@ -26,6 +26,7 @@ private:
     void handleMouseMovedEvent(const sf::Event::MouseMoveEvent& ev);
     void clickOn(const sf::Vector2i& p);
     void selectNextTumor(bool forward = true);
+    void toggleBeacon();
 
     void drawTile(const sf::Vector2i& p, const sf::Color& color);
     void drawSmallTile(const sf::Vector2i& p, const sf::Color& color);
@@ -44,6 +45,7 @@ private:
     InputMode inputMode = InputMode::QueenSpawn;
     sf::Vector2i activeTumorPos{-1, -1};
     std::vector<sf::Vector2i> highlights;
+    std::vector<sf::Vector2i> beacons;
     sf::Vector2i cursor{-1, -1};
 
     Model model;

@@ -7,9 +7,9 @@
 
 namespace gui {
 
-Game::Game(const Model& model) :
-    window(sf::VideoMode(1024, 1024), "Title"),
-    model(model)
+Game::Game(const Model& model)
+    : window(sf::VideoMode(1600, 1600), "Title")
+    , model(model)
 {}
 
 void Game::run() {
@@ -123,6 +123,8 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
         case sf::Keyboard::Tab:
             selectNextTumor(!ev.shift);
             break;
+        case sf::Keyboard::X:
+            toggleBeacon();
         default:
             break;
     }
@@ -201,6 +203,16 @@ void Game::clickOn(const sf::Vector2i& p) {
                 }
             }
         }
+    }
+}
+
+void Game::toggleBeacon() {
+    auto pos = cursor;
+    auto it = std::find(beacons.begin(), beacons.end(), pos);
+    if (it == beacons.end()) {
+        beacons.push_back(pos);
+    } else {
+        beacons.erase(it);
     }
 }
 
@@ -354,6 +366,9 @@ void Game::draw() {
     if (model.isValidPosition(activeTumorPos)) {
         drawTile(activeTumorPos, sf::Color{255, 128, 255});
         drawSmallTile(activeTumorPos, sf::Color::Green);
+    }
+    for (auto& p : beacons) {
+        drawTile(p, sf::Color{120, 120, 255, 128});
     }
     for (auto& p : highlights) {
         drawTile(p, sf::Color{255, 255, 66, 128});
