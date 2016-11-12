@@ -181,8 +181,8 @@ struct hatchery: public building
     virtual hatchery* clone() override { return new hatchery(*this); }
 
     virtual ~hatchery() {}
-    virtual char const *name() const { return "hatchery"; }
-    virtual char const *map_cell_code() const { return print_hatchery; }
+    virtual char const *name() const override { return "hatchery"; }
+    virtual char const *map_cell_code() const override { return print_hatchery; }
 };
 
 struct creep_tumor: public building
@@ -197,20 +197,20 @@ struct creep_tumor: public building
     virtual creep_tumor* clone() override { return new creep_tumor(*this); }
 
     virtual ~creep_tumor() {}
-    virtual void tick()
+    virtual void tick() override
     {
         building::tick();
         dt_spawn_creep_tumor_cooldown_q8=
             std::max(0,dt_spawn_creep_tumor_cooldown_q8-dt_tick_q8);
     }
-    virtual char const *name() const { return "creep_tumor"; }
-    virtual char const *map_cell_code() const
+    virtual char const *name() const override { return "creep_tumor"; }
+    virtual char const *map_cell_code() const override
     {
         if(spawn_creep_tumor_active)
             return dt_spawn_creep_tumor_cooldown_q8?print_creep_tumor_cooldown:print_creep_tumor_active;
         else return print_creep_tumor_inactive;
     }
-    virtual void dump_available_abilities(std::ostream &o) const
+    virtual void dump_available_abilities(std::ostream &o) const override
     {
         if(!spawn_creep_tumor_active)
             o << ",inactive";
@@ -222,7 +222,7 @@ struct creep_tumor: public building
                 << color_default;
         else o << "," << color_green << "available" << color_default;
     }
-    virtual creep_tumor& a_creep_tumor_i_suppose() { return *this; }
+    virtual creep_tumor& a_creep_tumor_i_suppose() override { return *this; }
 
     int spawn_creep_tumor_active;
     int dt_spawn_creep_tumor_cooldown_q8;
@@ -254,15 +254,15 @@ struct queen: public unit
     virtual queen* clone() override { return new queen(*this); }
 
     virtual ~queen() {}
-    virtual char const *name() const { return "queen"; }
-    virtual void dump_available_abilities(std::ostream &o) const
+    virtual char const *name() const override { return "queen"; }
+    virtual void dump_available_abilities(std::ostream &o) const override
     {
         o << ",";
         if(energy_q8<queen::spawn_creep_tumor_energy_cost_q8)
             o << color_yellow << "needs_25_energy" << color_default;
         else o << color_green << "available" << color_default;
     }
-    virtual queen& a_queen_i_suppose() { return *this; }
+    virtual queen& a_queen_i_suppose() override { return *this; }
 
     static int const dt_build_time_q8=int(60.0*256);
     static int const spawn_creep_tumor_energy_cost_q8=int(25.0*256);
@@ -372,10 +372,10 @@ struct game
     {
         return !map_wall[p.y][p.x] && !map_building[p.y][p.x]
             && !map_creep[p.y][p.x]
-            && (0<p.x && map_creep[p.y][p.x-1]
-                || p.x+1<map_dx && map_creep[p.y][p.x+1]
-                || 0<p.y && map_creep[p.y-1][p.x]
-                || p.y+1<map_dy && map_creep[p.y+1][p.x]);
+            && ((0<p.x && map_creep[p.y][p.x-1])
+                || (p.x+1<map_dx && map_creep[p.y][p.x+1])
+                || (0<p.y && map_creep[p.y-1][p.x])
+                || (p.y+1<map_dy && map_creep[p.y+1][p.x]));
     }
     bool creep_spread_candidates(std::vector<pos> &candidates,
         std::vector<pos> const &cells) const
