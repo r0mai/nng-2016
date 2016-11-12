@@ -112,44 +112,6 @@ using ItemVec = std::vector<Item>;
 using RangeVec = std::vector<Range>;
 
 
-class BitArray {
-public:
-	BitArray() = default;
-	~BitArray() {
-		if (array_) {
-			delete[] array_;
-		}
-	}
-
-	void Init(int size) {
-		assert(!array_);
-
-		size_ = size;
-		array_ = new uint8_t[size];
-	}
-
-	void Clear() {
-		memset(array_, 0, size_);
-	}
-
-	bool IsSet(int index) const {
-		return (array_[index >> 3] & (1 << (index & 7)));
-	}
-
-	void Set(int index) {
-		assert(index >= 0 && index < size_);
-		array_[index >> 3] |= (1 << (index & 7));
-	}
-
-private:
-	BitArray(const BitArray&) = delete;
-	BitArray& operator=(const BitArray&) = delete;
-
-	int size_ = 0;
-	uint8_t* array_ = nullptr;
-};
-
-
 class Partition {
 public:
 	struct Iterator {
@@ -704,6 +666,7 @@ public:
 private:
 	int rows_ = 0;
 	int cols_ = 0;
+
 	int steps_ = 0;
 	int size_ = 0;
 	int marks_ = 0;
@@ -719,8 +682,6 @@ private:
 };
 
 } // namespace
-
-
 
 
 void CalculateBuildOrder(const Buildings& buildings,
