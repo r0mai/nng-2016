@@ -8,6 +8,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/optional.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
 
 std::vector<size_t> selectFrom(const std::vector<size_t>& from) {
 	static std::mt19937 gen{3};
@@ -144,84 +145,73 @@ findRadioactivity2(const std::vector<size_t>& balls,
 	return {};
 }
 
-bool contains(const std::vector<size_t>& l, const std::vector<size_t>& r) {
-	for (const auto& element : r) {
-		auto it = std::find(l.begin(), l.end(), element);
-		if (it == l.end()) {
-			return false;
-		}
-	}
-	return false;
-}
-
-bool haveCommonElements(const std::vector<size_t>& l,
-		const std::vector<size_t>& r) {
-	for (const auto& element : r) {
-		auto it = std::find(l.begin(), l.end(), element);
-		if (it != l.end()) {
-			return true;
-		}
-	}
-	return false;
-}
-
 class Adversary {
 	size_t d;
-	std::vector<size_t> candidatePositions;
-	std::vector<size_t> knownGood;
-	std::vector<size_t> knownDefective;
-public:
-	Adversary(size_t n, size_t d) : d(d) {
-		for(size_t i = 0; i < n; ++i) {
-			candidatePositions.push_back(i);
+	std::vector<std::vector<bool>> possibilities;
+
+	static bool defective(
+			const std::vector<size_t>& balls,
+			const std::vector<bool>& possibility) {
+		for (const auto& ball: balls) {
+			if (possibility[ball]) {
+				return true;
+			}
 		}
+		return false;
 	}
 
-	size_t binom(size_t n, size_t k) const {
-		if (k == 0 || k == n) { return 1; }
-		BOOST_ASSERT(k < n);
-		return binom(n-1, k-1) + binom(n-1, k);
+	static bool clean(
+			const std::vector<size_t>& balls,
+			const std::vector<bool>& possibility) {
+		for (const auto& ball: balls) {
+			if (possibility[ball]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+public:
+	Adversary(size_t n, size_t d) : d(d) {
+		std::vector<bool> sample;
+		sample.resize(n);
+		for(std::size_t i = 0; i < d; ++i) {
+			sample[i] = true;
+		}
+		std::sort(sample.begin(), sample.end());
+		do {
+			possibilities.push_back(sample);
+		} while (std::next_permutation(sample.begin(), sample.end()));
+		BOOST_ASSERT(!possibilities.empty());
 	}
 
 	bool operator()(const std::vector<size_t>& balls) {
-		if (contains(knownGood, balls)) {
-			return false;
-		}
-		if (haveCommonElements(knownDefective, balls)) {
-			return true;
-		}
-		// Not conclusive, we get to choose
 		bool result = false;
 
-		if (candidatePositions.size() == d) {
-			// Have no options, need to place all remaining radioactives
-			std::copy(balls.begin(), balls.end(),
-					std::back_inserter(knownDefective));
-			candidatePositions.clear();
-			result = true;
-			d = 0;
-		}
+		auto cleanPossibilities = std::count_if(
+				possibilities.begin(), possibilities.end(),
+				std::bind(&Adversary::clean, balls, std::placeholders::_1));
 
-		auto choicesIfFalse =
-			binom(candidatePositions.size() - balls.size(), d);
-		size_t choicesIfTrue = 0;
-		for(size_t defectsInLeft = 1; defectsInLeft < std::min(d, balls.size());
-				++defectsInLeft) {
-			auto defectsInRight = d - defectsInLeft;
-			choicesIfTrue += binom(balls.size(), defectsInLeft);
-			choicesIfTrue += binom(candidatePositions.size() - balls.size(),
-					defectsInRight);
-		}
+		auto defectivePossibilities = std::count_if(
+				possibilities.begin(), possibilities.end(),
+				std::bind(&Adversary::defective, balls, std::placeholders::_1));
 
-		if (choicesIfTrue > choicesIfFalse) {
-			result = true;
-		}
+		result = defectivePossibilities > cleanPossibilities;
 
-		if (!result) {
-			std::copy(balls.begin(), balls.end(),
-					std::back_inserter(knownGood));
-			candidatePositions = removePartition(candidatePositions, balls);
+		if (result) {
+			// We declare balls to be defective, remove possibilities where
+			// it is clean
+			auto beforeSize = possibilities.size();
+			boost::remove_erase_if(possibilities, std::bind(
+					&Adversary::clean, balls, std::placeholders::_1));
+			BOOST_ASSERT(beforeSize - possibilities.size() ==
+					cleanPossibilities);
 		} else {
+			auto beforeSize = possibilities.size();
+			boost::remove_erase_if(possibilities, std::bind(
+					&Adversary::defective, balls, std::placeholders::_1));
+			BOOST_ASSERT(beforeSize - possibilities.size() ==
+					defectivePossibilities);
 		}
 
 		return result;
