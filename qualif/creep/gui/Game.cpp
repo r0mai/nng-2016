@@ -182,32 +182,16 @@ void Game::clickOn(const sf::Vector2i& p) {
     }
     if (creep) {
         if (inputMode == InputMode::TumorSpawn) {
-            if (!model.isValidPosition(activeTumorPos)) {
-                std::cerr << "Invalid active tumor coordinate" << std::endl;
-                return;
-            }
-            auto spawnTumor = boost::get<CreepTumor>(
-                &model.tiles[activeTumorPos.x][activeTumorPos.y]);
-
-            if (!spawnTumor) {
-                std::cerr << "Target is not a tumor" << std::endl;
+            auto tumorSpawnResult = model.canTumowSpawn(activeTumorPos, p);
+            if (tumorSpawnResult != TumorSpawnResult::SUCCESS) {
+                std::cerr << "Can't spawn tumor from tumor: "
+                    << int(tumorSpawnResult) << std::endl;
                 return;
             }
 
-            if (spawnTumor->state != CreepTumor::State::Active) {
-                std::cerr << "CreepTumor not active" << std::endl;
-                return;
-            }
-
-            auto candidateCells = model.cellsAround(activeTumorPos, 10);
-
-            auto it = std::find(begin(candidateCells), end(candidateCells), p);
-            if (it == end(candidateCells)) {
-                std::cerr << "New position too far away" << std::endl;
-                return;
-            }
-
-            sendCommand(Command::TumorSpawn(spawnTumor->id, p.x, p.y));
+            sendCommand(Command::TumorSpawn(
+                boost::get<CreepTumor>(&model.tiles[activeTumorPos.x][activeTumorPos.y])->id,
+                p.x, p.y));
             activeTumorPos = {-1, -1};
         } else if (inputMode == InputMode::QueenSpawn) {
             for (auto& queen : model.queens) {

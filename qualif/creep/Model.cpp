@@ -55,3 +55,30 @@ std::vector<sf::Vector2i> Model::cellsAround(const sf::Vector2i& p, int radius) 
     }
     return cells;
 }
+
+TumorSpawnResult Model::canTumowSpawn(const sf::Vector2i& from, const sf::Vector2i& to) const {
+    if (!isValidPosition(from) || !isValidPosition(to)) {
+        return TumorSpawnResult::INVALID_POSITION;
+    }
+    auto* sourceTumor = boost::get<CreepTumor>(&tiles[from.x][from.y]);
+    auto* destCreep = boost::get<Creep>(&tiles[to.x][to.y]);
+    if (!sourceTumor) {
+        return TumorSpawnResult::SOURCE_NOT_TUMOR;
+    }
+    if (!destCreep) {
+        return TumorSpawnResult::DEST_NOT_CREEP;
+    }
+
+    if (sourceTumor->state != CreepTumor::State::Active) {
+        return TumorSpawnResult::TUMOR_NOT_ACTIVE;
+    }
+
+    auto candidateCells = cellsAround(from, 10);
+
+    auto it = std::find(begin(candidateCells), end(candidateCells), to);
+    if (it == end(candidateCells)) {
+        return TumorSpawnResult::DEST_TOO_FAR_AWAY;
+    }
+
+    return TumorSpawnResult::SUCCESS;
+}

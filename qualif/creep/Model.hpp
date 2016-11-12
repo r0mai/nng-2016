@@ -46,6 +46,15 @@ struct Queen {
     int energy = -1;
 };
 
+enum class TumorSpawnResult {
+    SUCCESS = 0,
+    SOURCE_NOT_TUMOR = 1,
+    DEST_NOT_CREEP = 2,
+    INVALID_POSITION = 3,
+    TUMOR_NOT_ACTIVE = 4,
+    DEST_TOO_FAR_AWAY = 5
+};
+
 struct Model {
     Model() = default;
     Model(int tick, int max_tick, const TileMatrix& tiles, const std::vector<Queen>& queens) :
@@ -62,6 +71,8 @@ struct Model {
     sf::Vector2i hasTumorMove() const;
 
     std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
+
+    TumorSpawnResult canTumowSpawn(const sf::Vector2i& from, const sf::Vector2i& to) const;
 };
 
 struct Command {
