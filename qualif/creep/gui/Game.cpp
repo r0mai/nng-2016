@@ -64,7 +64,7 @@ void Game::handleEvents() {
 
 void Game::handleMouseButtonPressedEvent(const sf::Event::MouseButtonEvent& ev) {
     auto p = windowToTile(ev.x, ev.y);
-    if (isValidPosition(p)) {
+    if (model.isValidPosition(p)) {
         clickOn(p);
     }
 }
@@ -91,14 +91,14 @@ sf::Vector2i Game::windowToTile(int wx, int wy) const {
 void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
     switch (ev.code) {
         case sf::Keyboard::N:
-            if (!hasValidMove()) {
+            if (!model.hasValidMove()) {
                 sendCommand(Command{});
             } else {
                 std::cerr << "You have a valid move (P to force)" << std::endl;
             }
             break;
         case sf::Keyboard::C:
-            while (!hasValidMove()) {
+            while (!model.hasValidMove()) {
                 sendCommand(Command{});
             }
             selectNextTumor();
@@ -131,7 +131,7 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
 void Game::handleMouseMovedEvent(const sf::Event::MouseMoveEvent& ev) {
     highlights.clear();
     auto p = windowToTile(ev.x, ev.y);
-    if (isValidPosition(p)) {
+    if (model.isValidPosition(p)) {
         highlights = cellsAround(p, 10);
         cursor = p;
     }
@@ -182,7 +182,7 @@ void Game::clickOn(const sf::Vector2i& p) {
     }
     if (creep) {
         if (inputMode == InputMode::TumorSpawn) {
-            if (!isValidPosition(activeTumorPos)) {
+            if (!model.isValidPosition(activeTumorPos)) {
                 std::cerr << "Invalid active tumor coordinate" << std::endl;
                 return;
             }
@@ -220,19 +220,12 @@ void Game::clickOn(const sf::Vector2i& p) {
     }
 }
 
-bool Game::isValidPosition(const sf::Vector2i& p) const {
-    auto columns = model.tiles.shape()[0];
-    auto rows = model.tiles.shape()[1];
-
-    return p.x >= 0 && p.y >= 0 && p.x < columns && p.y < rows;
-}
-
 std::vector<sf::Vector2i> Game::cellsAround(const sf::Vector2i& p, int radius) const {
     std::vector<sf::Vector2i> cells;
     for (int dy = -radius+1; dy < radius; ++dy) {
         for(int dx = -radius+1; dx < radius; ++dx) {
             sf::Vector2i cell(p.x + dx, p.y + dy);
-            if (!isValidPosition(cell)) {
+            if (!model.isValidPosition(cell)) {
                 continue;
             }
 
@@ -245,27 +238,6 @@ std::vector<sf::Vector2i> Game::cellsAround(const sf::Vector2i& p, int radius) c
         }
     }
     return cells;
-}
-
-bool Game::hasValidMove() const {
-    for (auto& queen : model.queens) {
-        if (queen.energy >= 6400) {
-            return true;
-        }
-    }
-
-    auto columns = model.tiles.shape()[0];
-    auto rows = model.tiles.shape()[1];
-
-    for (auto y = 0; y < rows; ++y) {
-        for (auto x = 0; x < columns; ++x) {
-            auto* creepTumor = boost::get<CreepTumor>(&model.tiles[x][y]);
-            if (creepTumor && creepTumor->state == CreepTumor::State::Active) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 void Game::sendCommand(const Command& cmd) {
@@ -415,14 +387,14 @@ void Game::draw() {
             boost::apply_visitor(tileDrawer, model.tiles[x][y]);
         }
     }
-    if (isValidPosition(activeTumorPos)) {
+    if (model.isValidPosition(activeTumorPos)) {
         drawTile(activeTumorPos, sf::Color{255, 128, 255});
         drawSmallTile(activeTumorPos, sf::Color::Green);
     }
     for (auto& p : highlights) {
         drawTile(p, sf::Color{255, 255, 66, 128});
     }
-    if (isValidPosition(cursor)) {
+    if (model.isValidPosition(cursor)) {
         drawTile(cursor, sf::Color{255, 255, 66, 192});
     }
 

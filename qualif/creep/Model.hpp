@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 #include <boost/variant.hpp>
 #include <boost/multi_array.hpp>
 
@@ -52,6 +54,13 @@ struct Model {
     int max_tick = -1;
     TileMatrix tiles;
     std::vector<Queen> queens;
+
+    bool isValidPosition(const sf::Vector2i& p) const;
+
+    bool hasValidMove() const;
+    bool hasQueenMove() const;
+    sf::Vector2i hasTumorMove() const;
+
 };
 
 struct Command {

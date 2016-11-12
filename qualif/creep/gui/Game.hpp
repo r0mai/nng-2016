@@ -33,10 +33,7 @@ private:
 
     sf::Vector2i windowToTile(int wx, int wy) const;
 
-    bool isValidPosition(const sf::Vector2i& p) const;
     std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
-
-    bool hasValidMove() const;
 
     void sendCommand(const Command& cmd);
 
