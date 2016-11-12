@@ -622,3 +622,5 @@ struct game
         return other;
     }
 };
+
+void executeCommand(game& g, const Command& command);
