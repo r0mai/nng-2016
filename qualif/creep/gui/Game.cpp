@@ -246,10 +246,12 @@ std::string Game::GetStatusString() const {
         }
     }
     ss << ")";
-
     ss << " ";
 
-    ss << "(" << model.tick << "/" << model.max_tick << ")";
+    ss << "c = (" << model.getCoveredCount() << ", " << model.getEmptyCount() << ")";
+    ss << " ";
+
+    ss << "t = (" << model.tick << "/" << model.max_tick << ")";
 
     return ss.str();
 }

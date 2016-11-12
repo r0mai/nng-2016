@@ -36,6 +36,41 @@ sf::Vector2i Model::hasTumorMove() const {
     return sf::Vector2i{-1, -1};
 }
 
+int Model::getCoveredCount() const {
+    auto columns = tiles.shape()[0];
+    auto rows = tiles.shape()[1];
+
+    int covered = 0;
+    for (auto y = 0; y < rows; ++y) {
+        for (auto x = 0; x < columns; ++x) {
+            auto& t = tiles[x][y];
+            if (boost::get<CreepTumor>(&t) ||
+                boost::get<Creep>(&t) ||
+                boost::get<Hatchery>(&t))
+            {
+                ++covered;
+            }
+        }
+    }
+    return covered;
+}
+
+int Model::getEmptyCount() const {
+    auto columns = tiles.shape()[0];
+    auto rows = tiles.shape()[1];
+
+    int empty = 0;
+    for (auto y = 0; y < rows; ++y) {
+        for (auto x = 0; x < columns; ++x) {
+            auto& t = tiles[x][y];
+            if (boost::get<Empty>(&t)) {
+                ++empty;
+            }
+        }
+    }
+    return empty;
+}
+
 std::vector<sf::Vector2i> Model::cellsAround(const sf::Vector2i& p, int radius) const {
     std::vector<sf::Vector2i> cells;
     for (int dy = -radius+1; dy < radius; ++dy) {

@@ -70,6 +70,9 @@ struct Model {
     bool hasQueenMove() const;
     sf::Vector2i hasTumorMove() const;
 
+    int getCoveredCount() const;
+    int getEmptyCount() const;
+
     std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
 
     TumorSpawnResult canTumowSpawn(const sf::Vector2i& from, const sf::Vector2i& to) const;
