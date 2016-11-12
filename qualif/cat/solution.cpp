@@ -381,6 +381,37 @@ public:
 
 private:
 	std::pair<size_t, size_t> compare(size_t length, size_t d) {
+		if (length < 16) {
+			return compareSmall(length, d);
+		}
+		return compareLarge(length, d);
+	}
+
+	std::pair<size_t, size_t> compareSmall(size_t length, size_t d) {
+		auto adversary = Adversary{length, d};
+		size_t checkCount = 0;
+		auto testFunction = [&checkCount, &adversary](
+				const std::vector<size_t>& balls) mutable {
+			++checkCount;
+			return adversary(balls);
+		};
+		std::vector<size_t> balls;
+		for (size_t i = 0; i < length; ++i) {
+			balls.push_back(i);
+		}
+		auto leftResult = approach.apply(balls, d, testFunction);
+		size_t left = checkCount;
+		checkCount = 0;
+		adversary = Adversary{length, d};
+		auto rightResult = approach.apply(balls, d, testFunction);
+		size_t right = checkCount;
+		if (leftResult == rightResult) {
+			return std::make_pair(left, right);
+		}
+		return std::make_pair(left, 1 << 10);
+	}
+
+	std::pair<size_t, size_t> compareLarge(size_t length, size_t d) {
 		auto testSample = getSample(length, d);
 		size_t checkCount = 0;
 		auto testFunction = [&checkCount, &testSample](
