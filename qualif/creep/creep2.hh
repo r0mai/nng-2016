@@ -48,43 +48,43 @@ int const health_regeneration_q8=0.25*256; // 64
 #else
 #    error "define COLOR_ANSI|COLOR_NONE plz"
 #endif
-char const *color_default=COLOR_DEFAULT;
-char const *color_green=COLOR_GREEN;
-char const *color_yellow=COLOR_YELLOW;
+const char constexpr *color_default=COLOR_DEFAULT;
+const char constexpr *color_green=COLOR_GREEN;
+const char constexpr *color_yellow=COLOR_YELLOW;
 // karakterek/stringek
 // pl terminal 12pt
 #if defined FONT_DOS
-char const *print_wall=COLOR_DEFAULT "Ű"; // Ű˛±°
-char const *print_creep=COLOR_MAGENTA "˛";
-char const *print_creep_candidate=COLOR_YELLOW "±";
-char const *print_creep_radius=COLOR_YELLOW "°";
-char const *print_empty=COLOR_DEFAULT " ";
-char const *print_hatchery=COLOR_LIGHT_MAGENTA "Ű" COLOR_DEFAULT;
-char const *print_creep_tumor_cooldown=COLOR_YELLOW "Ű";
-char const *print_creep_tumor_active=COLOR_GREEN "Ű";
-char const *print_creep_tumor_inactive=COLOR_LIGHT_MAGENTA "Ű" COLOR_DEFAULT;
+const char constexpr *print_wall=COLOR_DEFAULT "Ű"; // Ű˛±°
+const char constexpr *print_creep=COLOR_MAGENTA "˛";
+const char constexpr *print_creep_candidate=COLOR_YELLOW "±";
+const char constexpr *print_creep_radius=COLOR_YELLOW "°";
+const char constexpr *print_empty=COLOR_DEFAULT " ";
+const char constexpr *print_hatchery=COLOR_LIGHT_MAGENTA "Ű" COLOR_DEFAULT;
+const char constexpr *print_creep_tumor_cooldown=COLOR_YELLOW "Ű";
+const char constexpr *print_creep_tumor_active=COLOR_GREEN "Ű";
+const char constexpr *print_creep_tumor_inactive=COLOR_LIGHT_MAGENTA "Ű" COLOR_DEFAULT;
 // csak ascii karakterek
 #elif defined FONT_ASCII
-char const *print_wall=COLOR_DEFAULT "#";
-char const *print_creep=COLOR_MAGENTA "C";
-char const *print_creep_candidate=COLOR_YELLOW "+";
-char const *print_creep_radius=COLOR_YELLOW ".";
-char const *print_empty=COLOR_DEFAULT " ";
-char const *print_hatchery=COLOR_LIGHT_MAGENTA "H" COLOR_DEFAULT;
-char const *print_creep_tumor_cooldown=COLOR_YELLOW "T";
-char const *print_creep_tumor_active=COLOR_GREEN "A";
-char const *print_creep_tumor_inactive=COLOR_LIGHT_MAGENTA "*" COLOR_DEFAULT;
+const char constexpr *print_wall=COLOR_DEFAULT "#";
+const char constexpr *print_creep=COLOR_MAGENTA "C";
+const char constexpr *print_creep_candidate=COLOR_YELLOW "+";
+const char constexpr *print_creep_radius=COLOR_YELLOW ".";
+const char constexpr *print_empty=COLOR_DEFAULT " ";
+const char constexpr *print_hatchery=COLOR_LIGHT_MAGENTA "H" COLOR_DEFAULT;
+const char constexpr *print_creep_tumor_cooldown=COLOR_YELLOW "T";
+const char constexpr *print_creep_tumor_active=COLOR_GREEN "A";
+const char constexpr *print_creep_tumor_inactive=COLOR_LIGHT_MAGENTA "*" COLOR_DEFAULT;
 // unicode font, pl lucida console 10pt
 #elif defined FONT_UNICODE
-char const *print_wall=COLOR_DEFAULT "#";
-char const *print_creep=COLOR_MAGENTA "C";
-char const *print_creep_candidate=COLOR_YELLOW "•"; // "•·█▓▒░"
-char const *print_creep_radius=COLOR_YELLOW  "·";
-char const *print_empty=COLOR_DEFAULT " ";
-char const *print_hatchery=COLOR_LIGHT_MAGENTA "H" COLOR_DEFAULT;
-char const *print_creep_tumor_cooldown=COLOR_YELLOW "T";
-char const *print_creep_tumor_active=COLOR_GREEN "A";
-char const *print_creep_tumor_inactive=COLOR_LIGHT_MAGENTA "*" COLOR_DEFAULT;
+const char constexpr *print_wall=COLOR_DEFAULT "#";
+const char constexpr *print_creep=COLOR_MAGENTA "C";
+const char constexpr *print_creep_candidate=COLOR_YELLOW "•"; // "•·█▓▒░"
+const char constexpr *print_creep_radius=COLOR_YELLOW  "·";
+const char constexpr *print_empty=COLOR_DEFAULT " ";
+const char constexpr *print_hatchery=COLOR_LIGHT_MAGENTA "H" COLOR_DEFAULT;
+const char constexpr *print_creep_tumor_cooldown=COLOR_YELLOW "T";
+const char constexpr *print_creep_tumor_active=COLOR_GREEN "A";
+const char constexpr *print_creep_tumor_inactive=COLOR_LIGHT_MAGENTA "*" COLOR_DEFAULT;
 #else
 #    error "define FONT_DOS|FONT_ASCII|FONT_UNICODE plz"
 #endif
