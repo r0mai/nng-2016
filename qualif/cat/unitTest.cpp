@@ -114,4 +114,37 @@ BOOST_AUTO_TEST_CASE(oneRadioactiveLinear) {
 	}
 }
 
+BOOST_AUTO_TEST_CASE(oneRadioactivePartitioning) {
+	auto adversary = makeAdversary(4, 1);
+	BOOST_CHECK(!adversary({0, 1}));
+	BOOST_CHECK(!adversary({2}));
+	BOOST_CHECK(adversary({3}));
+}
+
+BOOST_AUTO_TEST_CASE(oneRadioactiveReversePartitioning) {
+	auto adversary = makeAdversary(4, 1);
+	BOOST_CHECK(!adversary({2, 3}));
+	BOOST_CHECK(!adversary({1}));
+	BOOST_CHECK(adversary({0}));
+}
+
+BOOST_AUTO_TEST_CASE(twoRadioactiveLinear) {
+	for(size_t i = 2; i <= 10; ++i) {
+		auto adversary = makeAdversary(i, 2);
+		for(size_t j=0; j < i - 2; ++j) {
+			BOOST_CHECK(!adversary({j}));
+		}
+		BOOST_CHECK(adversary({i-2}));
+		BOOST_CHECK(adversary({i-1}));
+	}
+}
+
+BOOST_AUTO_TEST_CASE(twoRadioactivePartitioning) {
+	auto adversary = makeAdversary(4, 2);
+	BOOST_CHECK(adversary({0, 1})); // Otherwise we'd know: 2, 3
+	BOOST_CHECK(!adversary({0})); // Otherwise we'd be done
+	BOOST_CHECK(!adversary({2})); // So it's 3 then
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

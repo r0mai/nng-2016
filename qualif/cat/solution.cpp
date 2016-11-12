@@ -144,23 +144,84 @@ findRadioactivity2(const std::vector<size_t>& balls,
 	return {};
 }
 
+bool contains(const std::vector<size_t>& l, const std::vector<size_t>& r) {
+	for (const auto& element : r) {
+		auto it = std::find(l.begin(), l.end(), element);
+		if (it == l.end()) {
+			return false;
+		}
+	}
+	return false;
+}
+
+bool haveCommonElements(const std::vector<size_t>& l,
+		const std::vector<size_t>& r) {
+	for (const auto& element : r) {
+		auto it = std::find(l.begin(), l.end(), element);
+		if (it != l.end()) {
+			return true;
+		}
+	}
+	return false;
+}
+
 class Adversary {
 	size_t d;
 	std::vector<size_t> candidatePositions;
+	std::vector<size_t> knownGood;
+	std::vector<size_t> knownDefective;
 public:
 	Adversary(size_t n, size_t d) : d(d) {
 		for(size_t i = 0; i < n; ++i) {
 			candidatePositions.push_back(i);
 		}
 	}
+
+	size_t binom(size_t n, size_t k) const {
+		if (k == 0 || k == n) { return 1; }
+		BOOST_ASSERT(k < n);
+		return binom(n-1, k-1) + binom(n-1, k);
+	}
+
 	bool operator()(const std::vector<size_t>& balls) {
-		if (candidatePositions.size() == d) {
+		if (contains(knownGood, balls)) {
+			return false;
+		}
+		if (haveCommonElements(knownDefective, balls)) {
 			return true;
 		}
+		// Not conclusive, we get to choose
 		bool result = false;
 
+		if (candidatePositions.size() == d) {
+			// Have no options, need to place all remaining radioactives
+			std::copy(balls.begin(), balls.end(),
+					std::back_inserter(knownDefective));
+			candidatePositions.clear();
+			result = true;
+			d = 0;
+		}
+
+		auto choicesIfFalse =
+			binom(candidatePositions.size() - balls.size(), d);
+		size_t choicesIfTrue = 0;
+		for(size_t defectsInLeft = 1; defectsInLeft < std::min(d, balls.size());
+				++defectsInLeft) {
+			auto defectsInRight = d - defectsInLeft;
+			choicesIfTrue += binom(balls.size(), defectsInLeft);
+			choicesIfTrue += binom(candidatePositions.size() - balls.size(),
+					defectsInRight);
+		}
+
+		if (choicesIfTrue > choicesIfFalse) {
+			result = true;
+		}
+
 		if (!result) {
+			std::copy(balls.begin(), balls.end(),
+					std::back_inserter(knownGood));
 			candidatePositions = removePartition(candidatePositions, balls);
+		} else {
 		}
 
 		return result;
