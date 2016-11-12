@@ -91,3 +91,27 @@ BOOST_AUTO_TEST_CASE(totalRegression) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(Adversary)
+
+BOOST_AUTO_TEST_CASE(noRadioactive) {
+	for(size_t i = 1; i <= 10; ++i) {
+		auto adversary = makeAdversary(i, 0);
+		for(size_t j = 0; j < i; ++j) {
+			BOOST_CHECK(!adversary({j}));
+		}
+	}
+}
+
+BOOST_AUTO_TEST_CASE(oneRadioactiveLinear) {
+	for(size_t i = 1; i <= 10; ++i) {
+		auto adversary = makeAdversary(i, 1);
+		for(size_t j=0; j < i-1; ++j) {
+			BOOST_CHECK(!adversary({j}));
+		}
+		BOOST_CHECK(adversary({i-1}));
+	}
+}
+
+BOOST_AUTO_TEST_SUITE_END()

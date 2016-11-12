@@ -4,6 +4,7 @@
 #include <stddef.h> // These idiots are using size_t instead of std::size_t.
 
 #include <algorithm>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <tuple>
@@ -13,6 +14,9 @@
 std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest));
+
+std::function<bool(const std::vector<size_t>&)> makeAdversary(
+		size_t n, size_t d);
 
 std::string printSolution(const std::vector<size_t>& solution) {
 	return '{' +std::accumulate(solution.begin(), solution.end(),

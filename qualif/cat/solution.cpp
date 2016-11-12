@@ -144,6 +144,34 @@ findRadioactivity2(const std::vector<size_t>& balls,
 	return {};
 }
 
+class Adversary {
+	size_t d;
+	std::vector<size_t> candidatePositions;
+public:
+	Adversary(size_t n, size_t d) : d(d) {
+		for(size_t i = 0; i < n; ++i) {
+			candidatePositions.push_back(i);
+		}
+	}
+	bool operator()(const std::vector<size_t>& balls) {
+		if (candidatePositions.size() == d) {
+			return true;
+		}
+		bool result = false;
+
+		if (!result) {
+			candidatePositions = removePartition(candidatePositions, balls);
+		}
+
+		return result;
+	}
+};
+
+std::function<bool(const std::vector<size_t>&)> makeAdversary(
+		size_t n, size_t d) {
+	return Adversary{n, d};
+}
+
 struct Linear {
 	bool applicable(size_t, size_t) {
 		return true;
