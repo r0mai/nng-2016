@@ -12,16 +12,48 @@
 
 using StringVec = std::vector<std::string>;
 using IntSet = std::set<int>;
-using IntMap = std::unordered_map<int, int>;
 
 struct Entry {
 	IntSet prefix_of;
 	IntSet suffix_of;
 };
 
+class Color {
+public:
+	void Set(int color) {
+		color_ = color;
+		current_ = nullptr;
+	}
+
+	int Get() const {
+		if (current_) {
+			UpdateCurrent();
+			return current_->color_;
+		}
+		return color_;
+	}
+
+	void Merge(Color& other) {
+		other.current_ = this;
+	}
+
+private:
+	void UpdateCurrent() const {
+		Color* p = current_;
+		while (p->current_) {
+			p = p->current_;
+		}
+		current_ = p;
+	}
+
+	mutable Color* current_ = nullptr;
+	int color_ = -1;
+};
+
+
 struct Word {
+	Color color;
 	int index = -1;
-	int color = -1;
 	int prev = -1;
 	int next = -1;
 	int overlap = 0;
@@ -41,9 +73,6 @@ struct MergeState {
 	StringVec vec;
 	EntryMap emap;
 	WordVec words;
-	IntMap cmap;
-
-	int colors = 0;
 };
 
 
@@ -141,6 +170,7 @@ void Init(MergeState& mm, const std::string& fname) {
 	for (size_t i = 0, ie = mm.vec.size(); i != ie; ++i) {
 		mm.unused.insert(i);
 		mm.words[i].index = i;
+		mm.words[i].color.Set(i);
 	}
 }
 
@@ -150,36 +180,15 @@ bool CanMerge(const MergeState& mm, int p, int q) {
 		return false;
 	}
 
-	auto p_color = mm.words[p].color;
-	auto q_color = mm.words[q].color;
-
-	// one is uncolored
-	if (p_color == -1 || q_color == -1) {
-		return true;
-	}
-
-	// cannot merge with same color
-	return mm.cmap.find(p_color) != mm.cmap.find(q_color);
+	auto& p_color = mm.words[p].color;
+	auto& q_color = mm.words[q].color;
+	return (p_color.Get() != q_color.Get());
 }
 
 void Merge(MergeState& mm, int p, int q, int overlap) {
 	auto& p_color = mm.words[p].color;
 	auto& q_color = mm.words[q].color;
-
-	if (p_color == -1 && q_color == -1) {
-		p_color = q_color = mm.colors++;
-		mm.cmap[p_color] = p_color;
-	} else if (p_color == -1 || q_color == -1) {
-		p_color = q_color = std::max(p_color, q_color);
-	} else {
-		assert(p_color != q_color);
-		// only recolorize in map
-		for (auto& cc : mm.cmap) {
-			if (cc.second == p_color) {
-				cc.second = q_color;
-			}
-		}
-	}
+	p_color.Merge(q_color);
 
 	mm.words[p].next = q;
 	mm.words[q].prev = p;
@@ -313,6 +322,6 @@ int main() {
 	// Init(mm, "words_final.txt");
 	// Solve(mm, "solution.txt");
 
-	Validate("solution_464138.txt");
+	Validate("solution_464108.txt");
 	return 0;
 }
