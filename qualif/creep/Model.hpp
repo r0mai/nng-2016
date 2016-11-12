@@ -75,6 +75,10 @@ struct Model {
 
     std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
 
+    bool isCreepEdgeCell(const sf::Vector2i& p) const;
+    std::vector<sf::Vector2i> getEdgeCells() const;
+    std::vector<sf::Vector2i> getEdgeCellsAround(const sf::Vector2i& p, int radius) const;
+
     TumorSpawnResult canTumowSpawn(const sf::Vector2i& from, const sf::Vector2i& to) const;
 };
 
