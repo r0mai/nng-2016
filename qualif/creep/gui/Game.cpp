@@ -365,12 +365,12 @@ void Game::draw() {
             boost::apply_visitor(tileDrawer, model.tiles[x][y]);
         }
     }
+    for (auto& p : beacons) {
+        drawTile(p, sf::Color{120, 120, 255, 128});
+    }
     if (model.isValidPosition(activeTumorPos)) {
         drawTile(activeTumorPos, sf::Color{255, 128, 255});
         drawSmallTile(activeTumorPos, sf::Color::Green);
-    }
-    for (auto& p : beacons) {
-        drawTile(p, sf::Color{120, 120, 255, 128});
     }
     for (auto& p : highlights) {
         drawTile(p, sf::Color{255, 255, 66, 128});
