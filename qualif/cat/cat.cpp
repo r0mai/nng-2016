@@ -70,7 +70,7 @@ int main() {
 				auto count = std::get<2>(tester.verify());
 				m.addResult(count);
 			}
-			std::cout << m.getAverage() << "\t";
+			std::cout << m.getWorst() << "\t";
 		}
 		std::cout << std::endl;
 	}

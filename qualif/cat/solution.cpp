@@ -372,14 +372,17 @@ public:
 					// We aren't applicable, so don't use us.
 					continue;
 				}
-				size_t betterCount = 0;
 				size_t iterations = 20;
+				size_t leftWorst = 0;
+				size_t rightWorst = 0;
 				for(size_t iteration = 0; iteration < iterations; ++iteration) {
-					if (isOursBetter(length, d)) {
-						++betterCount;
-					}
+					size_t left = 0;
+					size_t right = 0;
+					std::tie(left, right) = compare(length, d);
+					leftWorst = std::max(leftWorst, left);
+					rightWorst = std::max(rightWorst, right);
 				}
-				if (betterCount > iterations / 2) {
+				if (leftWorst < rightWorst) {
 					useFirst.push_back(std::make_pair(length, d));
 				}
 			}
@@ -387,7 +390,7 @@ public:
 	}
 
 private:
-	bool isOursBetter(size_t length, size_t d) {
+	std::pair<size_t, size_t> compare(size_t length, size_t d) {
 		auto testSample = getSample(length, d);
 		size_t checkCount = 0;
 		auto testFunction = [&checkCount, &testSample](
@@ -414,9 +417,9 @@ private:
 			BOOST_ASSERT(0 == std::min(left, right));
 		}
 		if (leftResult == rightResult) {
-			return left < right;
+			return std::make_pair(left, right);
 		}
-		return true;
+		return std::make_pair(left, 1 << 10);
 	}
 
 	std::vector<bool> getSample(size_t length, size_t d) {
