@@ -132,7 +132,7 @@ void Game::handleMouseMovedEvent(const sf::Event::MouseMoveEvent& ev) {
     highlights.clear();
     auto p = windowToTile(ev.x, ev.y);
     if (model.isValidPosition(p)) {
-        highlights = cellsAround(p, 10);
+        highlights = model.cellsAround(p, 10);
         cursor = p;
     }
 }
@@ -199,7 +199,7 @@ void Game::clickOn(const sf::Vector2i& p) {
                 return;
             }
 
-            auto candidateCells = cellsAround(activeTumorPos, 10);
+            auto candidateCells = model.cellsAround(activeTumorPos, 10);
 
             auto it = std::find(begin(candidateCells), end(candidateCells), p);
             if (it == end(candidateCells)) {
@@ -218,26 +218,6 @@ void Game::clickOn(const sf::Vector2i& p) {
             }
         }
     }
-}
-
-std::vector<sf::Vector2i> Game::cellsAround(const sf::Vector2i& p, int radius) const {
-    std::vector<sf::Vector2i> cells;
-    for (int dy = -radius+1; dy < radius; ++dy) {
-        for(int dx = -radius+1; dx < radius; ++dx) {
-            sf::Vector2i cell(p.x + dx, p.y + dy);
-            if (!model.isValidPosition(cell)) {
-                continue;
-            }
-
-            int dx_q1 = 2*dx+(0<dx?1:-1);
-            int dy_q1 = 2*dy+(0<dy?1:-1);
-            int d2_q2 = dx_q1*dx_q1 + dy_q1*dy_q1;
-            if (d2_q2 <= radius*radius*4) {
-                cells.push_back(cell);
-            }
-        }
-    }
-    return cells;
 }
 
 void Game::sendCommand(const Command& cmd) {

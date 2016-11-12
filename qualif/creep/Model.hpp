@@ -61,6 +61,7 @@ struct Model {
     bool hasQueenMove() const;
     sf::Vector2i hasTumorMove() const;
 
+    std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
 };
 
 struct Command {

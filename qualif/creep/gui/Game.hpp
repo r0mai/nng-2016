@@ -33,8 +33,6 @@ private:
 
     sf::Vector2i windowToTile(int wx, int wy) const;
 
-    std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
-
     void sendCommand(const Command& cmd);
 
     std::string GetStatusString() const;
