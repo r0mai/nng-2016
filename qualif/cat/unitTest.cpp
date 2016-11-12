@@ -8,86 +8,42 @@ std::vector<bool> Tester::currentBalls;
 std::size_t Tester::checkCounter;
 
 struct Fixture {
-	Tester tester;
 
-	std::size_t check(std::vector<bool> balls) {
-		tester.setBalls(std::move(balls));
-		auto result = tester.verify();
-		return std::get<2>(result);
+	static std::function<bool(const std::vector<size_t>&)> testImplementation;
+
+	static bool test(const std::vector<size_t>& balls) {
+		return testImplementation(balls);
 	}
 
-	std::vector<bool> getBalls(size_t length, size_t d) {
-		std::vector<bool> result;
-		result.resize(length);
-		for(size_t i=0; i < d; ++i) {
-			result[i] = true;
-		}
-		return result;
+	std::size_t check(size_t n, size_t d) {
+		auto adversary = makeAdversary(n, d);
+		std::size_t checkCount = 0;
+		auto tester =
+				[&checkCount, &adversary](const std::vector<size_t>& balls) {
+			++checkCount;
+			return adversary(balls);
+		};
+		testImplementation = tester;
+
+		auto result = FindRadioactiveBalls(n, d, &Fixture::test);
+		return checkCount;
 	}
 };
 
-#define SHOULDBE(call, worst, usually) \
-	do { \
-		std::size_t measurementCount = 10000; \
-		float measurements = 0; \
-		for(std::size_t i = 0; i < measurementCount; ++i) { \
-			std::size_t cost = 0; \
-			BOOST_CHECK_LE(cost=(call), worst); \
-			measurements += cost; \
-		} \
-		BOOST_CHECK_LE(measurements / measurementCount, (usually)); \
-	} while(0)
-
+std::function<bool(const std::vector<size_t>&)> Fixture::testImplementation;
 
 BOOST_FIXTURE_TEST_SUITE(Radioactive, Fixture)
 
-BOOST_AUTO_TEST_CASE(noRadioactive) {
-	SHOULDBE(check({}), 0, 0);
-	SHOULDBE(check({false}), 0, 0);
-	SHOULDBE(check({false, false}), 0, 0);
-	SHOULDBE(check({false, false, false}), 0, 0);
-}
-
-BOOST_AUTO_TEST_CASE(oneRadioactive) {
-	SHOULDBE(check({true}), 0, 0);
-	SHOULDBE(check({true, false}), 1, 1);
-	SHOULDBE(check({false, true}), 1, 1);
-	SHOULDBE(check({false, false, true}), 2, 1.68);
-	SHOULDBE(check({false, false, true, false}), 2, 2);
-	SHOULDBE(check({false, false, true, false, false}), 3, 2.7);
-	SHOULDBE(check({false, false, true, false, false, false}), 3, 2.8);
-	SHOULDBE(check(
-			{false, false, true, false, false, false, false}), 3, 2.9);
-	SHOULDBE(check(
-			{false, false, true, false, false, false, false, false}), 3, 3);
-}
-
-BOOST_AUTO_TEST_CASE(twoRadioactive) {
-	SHOULDBE(check({true, true}), 0, 0);
-	SHOULDBE(check({true, true, false}), 2, 1.68);
-	SHOULDBE(check({false, true, true, false}), 3, 2.59);
-	SHOULDBE(check({true, true, false, false, false}), 5, 4.2);
-	SHOULDBE(check({true, true, false, false, false, false}), 6, 4.55);
-	SHOULDBE(check({true, true, false, false, false, false, false}), 6, 5.02);
-	SHOULDBE(check(
-			{true, true, false, false, false, false, false, false}), 6, 5.3);
-}
-
-BOOST_AUTO_TEST_CASE(threeRadioactive) {
-	SHOULDBE(check({true, true, true}), 0, 0);
-	SHOULDBE(check({true, true, true, false}), 4, 2.5);
-	SHOULDBE(check({true, true, true, false, false}), 5, 3.66);
-}
 
 BOOST_AUTO_TEST_CASE(totalRegression) {
 	std::size_t totalMeasurements = 0;
-	for(std::size_t length = 0; length <= 64; ++length) {
+	for(std::size_t length = 0; length <= 24; ++length) {
 		for(std::size_t d=0; d <= std::min(7ul, length); ++d) {
-			totalMeasurements += check(getBalls(length, d));
+			totalMeasurements += check(length, d);
 		}
 	}
 	std::cerr << totalMeasurements << std::endl;
-	BOOST_CHECK_LE(totalMeasurements, 6516);
+	BOOST_CHECK_LE(totalMeasurements, 1503);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
