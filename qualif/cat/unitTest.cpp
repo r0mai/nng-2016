@@ -71,10 +71,10 @@ BOOST_AUTO_TEST_CASE(oneRadioactiveLinear) {
 }
 
 BOOST_AUTO_TEST_CASE(oneRadioactivePartitioning) {
-	auto adversary = makeAdversary(4, 1);
+	auto adversary = makeAdversary(5, 1);
 	BOOST_CHECK(!adversary({0, 1}));
+	BOOST_CHECK(adversary({2, 3}));
 	BOOST_CHECK(!adversary({2}));
-	BOOST_CHECK(adversary({3}));
 }
 
 BOOST_AUTO_TEST_CASE(oneRadioactiveReversePartitioning) {

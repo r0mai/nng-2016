@@ -403,12 +403,9 @@ private:
 		size_t left = checkCount;
 		checkCount = 0;
 		adversary = Adversary{length, d};
-		auto rightResult = approach.apply(balls, d, testFunction);
+		auto rightResult = others.apply(balls, d, testFunction);
 		size_t right = checkCount;
-		if (leftResult == rightResult) {
-			return std::make_pair(left, right);
-		}
-		return std::make_pair(left, 1 << 10);
+		return std::make_pair(left, right);
 	}
 
 	std::pair<size_t, size_t> compareLarge(size_t length, size_t d) {
