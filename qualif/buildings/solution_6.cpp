@@ -1,7 +1,7 @@
 #pragma GCC optimize ("O3")
-#pragma GCC optimize ("no-rtti")
 
 // do not include any local headers here
+#include <condition_variable>
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -198,10 +198,17 @@ private:
 
 using PartitionVec = std::vector<Partition>;
 
-
-class Parcel {
+class Worker {
 public:
-	explicit Parcel(const Buildings& bs) {
+	explicit Worker(bool exact = true)
+		: exact_(exact)
+	{}
+
+	~Worker() {
+		FinishThreads();
+	}
+
+	void Init(const Buildings& bs) {
 		size_ = 0;
 		rows_ = bs.size();
 		cols_ = bs.front().size();
@@ -211,6 +218,13 @@ public:
 				InitBlock(row, col, bs[row][col]);
 			}
 		}
+	}
+
+	void Init(const Worker& other) {
+		size_ = 0;
+		rows_ = other.rows_;
+		cols_ = other.cols_;
+		blocks_ = other.blocks_;
 	}
 
 	void InitBlock(int row, int col, int h) {
@@ -252,40 +266,10 @@ public:
 		}
 	}
 
-	int NeighborIndex(int index, Direction dir) {
-		auto mul = ((dir & 1) == 0 ? -1 : 1);
-		auto diff = ((dir & 2) == 0 ? 1 : cols_);
-		return mul * diff + index;
-	}
-
 	Partition FullArea() const {
 		Partition area;
 		area.Insert(0, rows_ * cols_);
 		return area;
-	}
-
-private:
-	friend class Worker;
-
-	int rows_ = 0;
-	int cols_ = 0;
-	int size_ = 0;
-	BlockVec blocks_;
-};
-
-
-class Worker {
-public:
-	explicit Worker(Parcel& parcel, bool exact = true)
-		: parcel_(parcel)
-		, blocks_(parcel.blocks_)
-		, rows_(parcel.rows_)
-		, cols_(parcel.cols_)
-		, exact_(exact)
-	{}
-
-	~Worker() {
-		FinishThreads();
 	}
 
 	void Reset(Partition area) {
@@ -596,7 +580,8 @@ public:
 				FinishThreads();
 			} else {
 				// std::cerr << "* NO THREADS *" << std::endl;
-				Worker w(parcel_, false);
+				Worker w(false);
+				w.Init(*this);
 				for (auto& area : cc.areas) {
 					w.Reset(std::move(area));
 					w.Solve();
@@ -698,16 +683,30 @@ public:
 	}
 
 	void Consume(int id) {
-		Worker w(parcel_, false);
+		std::unique_lock<std::mutex> lock(mutex_);
+		cv_.wait(lock, [this]{
+			return exit_ || !areas_.empty();
+		});
+
+		if (exit_) {
+			return;
+		}
+
+		// unlock so that workers can be initialized in parallel
+		lock.unlock();
+		cv_.notify_all();
+
+		Worker w(false);
+		w.Init(*this);
 
 		while (true) {
-			std::unique_lock<std::mutex> lock(mutex_);
+			lock.lock();
+
 			cv_.wait(lock, [this]{
 				return exit_ || !areas_.empty();
 			});
 
 			// std::cerr << "T " << id << " running" << std::endl;
-
 			if (exit_) {
 				return;
 			}
@@ -719,6 +718,7 @@ public:
 			cv_.notify_all();
 			w.Solve();
 
+			// cerr is borked if its not guarded with mutex_
 			// std::cerr << "  " << id << " H=" << w.history_.size() << std::endl;
 			std::lock_guard<std::mutex> hlock(hmutex_);
 			CopyHistory(w);
@@ -757,8 +757,7 @@ public:
 	}
 
 private:
-	Parcel& parcel_;
-	BlockVec& blocks_;
+	BlockVec blocks_;
 	int rows_ = 0;
 	int cols_ = 0;
 	bool exact_ = false;
@@ -790,11 +789,14 @@ void CalculateBuildOrder(const Buildings& buildings,
 	// std::cerr << sizeof(Partition) << std::endl;
 	// std::cerr << sizeof(Block) << std::endl;
 
-	Parcel parcel(buildings);
-	Worker worker(parcel);
+	// Parcel parcel(buildings);
+	// Worker worker(parcel);
 
+	Worker worker;
+
+	worker.Init(buildings);
 	worker.EnableThreads(4);
-	worker.Reset(parcel.FullArea());
+	worker.Reset(worker.FullArea());
 	worker.Solve();
 
 	solution = worker.GetCommands();
