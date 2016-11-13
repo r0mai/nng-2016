@@ -17,5 +17,5 @@ private:
 
     std::unique_ptr<game> g;
 
-    std::vector<std::minstd_rand> rngs;
+    static std::vector<std::minstd_rand> rngs;
 };

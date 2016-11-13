@@ -9,7 +9,20 @@ using MCResult = std::tuple<sf::Vector2i, int>;
 using MCResults = std::vector<MCResult>;
 using MCResultsFuture = std::future<MCResults>;
 
-MonteCarlo::MonteCarlo(game* g) : g(g->clone()), rngs(4) {}
+std::vector<std::minstd_rand> createRNGs(int count) {
+    std::vector<std::minstd_rand> rngs(count);
+    std::random_device rd;
+    for (auto& rng : rngs) {
+        auto seed = rd();
+        std::cerr << "RNG seed = " << seed << std::endl;
+        rng.seed(seed);
+    }
+    return rngs;
+}
+
+std::vector<std::minstd_rand> MonteCarlo::rngs = createRNGs(THREAD_COUNT);
+
+MonteCarlo::MonteCarlo(game* g) : g(g->clone()) {}
 
 Command MonteCarlo::getAutoMove() {
     auto model = GuiModelFromGame(*g);
