@@ -10,6 +10,7 @@ public:
     using CommandCallback = std::function<void(const Command& cmd)>;
     using UndoCallback = std::function<void()>;
     using RedoCallback = std::function<void()>;
+    using AutoCallback = std::function<void()>;
 
     Game(const Model& model);
 
@@ -18,6 +19,7 @@ public:
     void setCommandCallback(const CommandCallback& callback);
     void setUndoCallback(const UndoCallback& callback);
     void setRedoCallback(const RedoCallback& callback);
+    void setAutoCallback(const AutoCallback& callback);
 
 private:
     void handleEvents();
@@ -53,6 +55,7 @@ private:
     CommandCallback commandCallback;
     UndoCallback undoCallback;
     RedoCallback redoCallback;
+    AutoCallback autoCallback;
 
     sf::RenderWindow window;
 

@@ -1,3 +1,4 @@
+#pragma once
 #include <cassert>
 #include <cmath>
 #include <cstdio>
@@ -270,6 +271,7 @@ struct queen: public unit
 
 struct game
 {
+    game() = default;
     game(char const *map_file_name):
         next_id(0), t_q2(0), t_limit_q2(0), p_base(),
         buildings(), units(),
@@ -589,7 +591,7 @@ struct game
     building* map_building[map_max_dy][map_max_dx];
 
     std::unique_ptr<game> clone() {
-        std::unique_ptr<game> other;
+        std::unique_ptr<game> other = std::make_unique<game>();
         other->next_id = next_id;
         other->t_q2 = t_q2;
         other->t_limit_q2 = t_limit_q2;

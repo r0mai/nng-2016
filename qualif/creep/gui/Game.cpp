@@ -35,6 +35,10 @@ void Game::setRedoCallback(const RedoCallback& callback) {
     redoCallback = callback;
 }
 
+void Game::setAutoCallback(const RedoCallback& callback) {
+    autoCallback = callback;
+}
+
 void Game::handleEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -125,6 +129,12 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
             break;
         case sf::Keyboard::X:
             toggleBeacon();
+            break;
+        case sf::Keyboard::A:
+            if (autoCallback) {
+                autoCallback();
+            }
+            break;
         default:
             break;
     }
@@ -196,11 +206,9 @@ void Game::clickOn(const sf::Vector2i& p) {
                 p.x, p.y));
             activeTumorPos = {-1, -1};
         } else if (inputMode == InputMode::QueenSpawn) {
-            for (auto& queen : model.queens) {
-                if (queen.energy >= 6400) {
-                    sendCommand(Command::QueenSpawn(queen.id, p.x, p.y));
-                    break;
-                }
+            int free_queen = model.getFreeQueenId();
+            if (free_queen != -1) {
+                sendCommand(Command::QueenSpawn(free_queen, p.x, p.y));
             }
         }
     }

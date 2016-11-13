@@ -1,4 +1,5 @@
 #include "creep2.hh"
+#include "MC.hpp"
 
 void executeCommand(game& g, const Command& command) {
     if (command.command <= 0) {
@@ -55,14 +56,17 @@ int main(int argc, char **argv) {
     }
 
     gui::Game gui(GuiModelFromGame(*g));
-    gui.setCommandCallback([&](const Command& copy) {
+
+    auto commandCallback = [&](const Command& copy) {
         redoCommands.clear();
         auto command = copy;
         command.t = g->t_q2;
         commands.push_back(command);
         executeCommand(*g, command);
         gui.setModel(GuiModelFromGame(*g));
-    });
+    };
+
+    gui.setCommandCallback(commandCallback);
     gui.setUndoCallback([&]() {
         while (!commands.empty() && commands.back().command <= 0) {
             redoCommands.push_back(commands.back());
@@ -90,6 +94,11 @@ int main(int argc, char **argv) {
             redoCommands.pop_back();
         }
         gui.setModel(GuiModelFromGame(*g));
+    });
+    gui.setAutoCallback([&]() {
+        MonteCarlo mc(g.get());
+        auto cmd = mc.getAutoMove();
+        commandCallback(cmd);
     });
     gui.run();
 
@@ -162,6 +171,7 @@ Model GuiModelFromGame(game& game) {
         tiles,
         queens
     };
+    model.game = &game;
     return model;
 }
 

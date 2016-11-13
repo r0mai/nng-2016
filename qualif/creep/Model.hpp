@@ -5,6 +5,8 @@
 #include <boost/variant.hpp>
 #include <boost/multi_array.hpp>
 
+struct game;
+
 struct Hatchery {};
 
 struct Wall {};
@@ -63,6 +65,7 @@ struct Model {
     int max_tick = -1;
     TileMatrix tiles;
     std::vector<Queen> queens;
+    game* game = nullptr;
 
     bool isValidPosition(const sf::Vector2i& p) const;
 
@@ -73,11 +76,16 @@ struct Model {
     int getCoveredCount() const;
     int getEmptyCount() const;
 
+    int getFreeQueenId() const;
+
     std::vector<sf::Vector2i> cellsAround(const sf::Vector2i& p, int radius) const;
 
     bool isCreepEdgeCell(const sf::Vector2i& p) const;
     std::vector<sf::Vector2i> getEdgeCells() const;
     std::vector<sf::Vector2i> getEdgeCellsAround(const sf::Vector2i& p, int radius) const;
+
+    sf::Vector2i justACreepCell() const;
+    sf::Vector2i justACreepCellAround(const sf::Vector2i& p, int radius) const;
 
     TumorSpawnResult canTumowSpawn(const sf::Vector2i& from, const sf::Vector2i& to) const;
 };
