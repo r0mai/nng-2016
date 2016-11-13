@@ -1,4 +1,5 @@
 #include "MC.hpp"
+#include "Util.hpp"
 
 MonteCarlo::MonteCarlo(game* g) : g(g->clone()) {}
 
@@ -17,7 +18,8 @@ Command MonteCarlo::getAutoMove() {
         int lowest_score = std::numeric_limits<int>::max();
         for (int i = 0; i < candidates.size(); ++i) {
             auto& candidate = candidates[i];
-            std::cout << "Candidate " << i+1 << "/" << candidates.size() << std::endl;
+            std::cout << "Candidate " << candidate << " " << i+1 << "/" << candidates.size() <<
+                ", best = " << best_candidate << ", score = " << lowest_score << std::endl;
             auto base = g->clone();
             executeCommand(*base, Command::TumorSpawn(tumorId, candidate.x, candidate.y));
             int score = doMCRun(base.get());
