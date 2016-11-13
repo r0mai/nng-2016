@@ -11,7 +11,9 @@
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
-
+#include <memory>
+#include <thread>
+#include <mutex>
 
 using Command = std::pair<size_t, size_t>;
 using Buildings = std::vector<std::vector<int>>;
@@ -32,11 +34,6 @@ enum Direction {
 	kRight = 1,
 	kTop = 2,
 	kBottom = 3
-};
-
-enum Mode {
-	kExact,
-	kGuess
 };
 
 inline Direction Opposite(Direction k) {
@@ -269,6 +266,7 @@ public:
 
 private:
 	friend class Worker;
+
 	int rows_ = 0;
 	int cols_ = 0;
 	int size_ = 0;
@@ -276,23 +274,22 @@ private:
 };
 
 
-class WorkerPool {
-};
-
-
 class Worker {
 public:
-	explicit Worker(Parcel& parcel, WorkerPool* pool = nullptr)
+	explicit Worker(Parcel& parcel, bool exact = true)
 		: parcel_(parcel)
 		, blocks_(parcel.blocks_)
-		, pool_(pool)
 		, rows_(parcel.rows_)
 		, cols_(parcel.cols_)
+		, exact_(exact)
 	{}
 
-	void Reset(const Partition& area) {
-		area_ = area;
-		size_ = area_.Size();
+	~Worker() {
+		FinishThreads();
+	}
+
+	void Reset(Partition area) {
+		area_ = std::move(area);
 
 		stack_.clear();
 		history_.clear();
@@ -305,9 +302,13 @@ public:
 		steps_ = 0;
 		marks_ = 0;
 		checks_ = 0;
+		size_ = 0;
 
 		for (auto index : area_) {
 			auto& block = blocks_[index];
+			if (block.height > 0) {
+				++size_;
+			}
 			if (IsOlder(block)) {
 				Push(block);
 			} else if (IsNewer(block)) {
@@ -582,19 +583,25 @@ public:
 			}
 		}
 
-		auto cc = ColorCheck(!!pool_);
+		auto cc = ColorCheck(exact_);
 
 		if (!cc.valid) {
 			return Rollback();
 		}
 
-		if (pool_) {
-			for (const auto& area : cc.areas) {
-				Worker w(parcel_);
-				w.Reset(area);
-				w.Solve();
-				std::copy(w.history_.begin(), w.history_.end(),
-					std::back_inserter(history_));
+		if (exact_) {
+			if (!threads_.empty()) {
+				// std::cerr << "* THREADS *" << std::endl;
+				Submit(std::move(cc.areas));
+				FinishThreads();
+			} else {
+				// std::cerr << "* NO THREADS *" << std::endl;
+				Worker w(parcel_, false);
+				for (auto& area : cc.areas) {
+					w.Reset(std::move(area));
+					w.Solve();
+					CopyHistory(w);
+				}
 			}
 			return false;
 		}
@@ -621,6 +628,11 @@ public:
 
 	void Solve() {
 		while (EliminateNext()) {}
+	}
+
+	void CopyHistory(const Worker& w) {
+		std::copy(w.history_.begin(), w.history_.end(),
+			std::back_inserter(history_));
 	}
 
 	void Visual() {
@@ -676,25 +688,98 @@ public:
 		return vec;
 	}
 
+	void EnableThreads(int size) {
+		assert(threads_.empty());
+		for (int i = 0; i < size; ++i) {
+			threads_.emplace_back([this, i]{
+				Consume(i);
+			});
+		}
+	}
+
+	void Consume(int id) {
+		Worker w(parcel_, false);
+
+		while (true) {
+			std::unique_lock<std::mutex> lock(mutex_);
+			cv_.wait(lock, [this]{
+				return exit_ || !areas_.empty();
+			});
+
+			// std::cerr << "T " << id << " running" << std::endl;
+
+			if (exit_) {
+				return;
+			}
+
+			// std::cerr << "- " << id << " S=" << areas_.back().Size()<< std::endl;
+			w.Reset(areas_.back());
+			areas_.pop_back();
+			lock.unlock();
+			cv_.notify_all();
+			w.Solve();
+
+			// std::cerr << "  " << id << " H=" << w.history_.size() << std::endl;
+			std::lock_guard<std::mutex> hlock(hmutex_);
+			CopyHistory(w);
+			// std::cerr << "< " << id << std::endl;
+		}
+	}
+
+	void Submit(PartitionVec&& areas) {
+		{
+			std::lock_guard<std::mutex> guard(mutex_);
+			areas_ = areas;
+		}
+		cv_.notify_all();
+	}
+
+	void FinishThreads() {
+		if (threads_.empty()) {
+			return;
+		}
+
+		std::unique_lock<std::mutex> lock(mutex_);
+		// std::cerr << "F A=" << areas_.size() << std::endl;
+
+		cv_.wait(lock, [this]{
+			return areas_.empty();
+		});
+
+		exit_ = true;
+		lock.unlock();
+		cv_.notify_all();
+
+		for (auto& t : threads_) {
+			t.join();
+		}
+		threads_.clear();
+	}
+
 private:
 	Parcel& parcel_;
 	BlockVec& blocks_;
-	WorkerPool* pool_ = nullptr;
 	int rows_ = 0;
 	int cols_ = 0;
+	bool exact_ = false;
 
 	Partition area_;
 	ItemVec stack_;
 	ItemVec history_;
 	BlockPtrVec block_ptrs_;
 
+	bool exit_ = false;
+	std::mutex mutex_;
+	std::mutex hmutex_;
+	std::condition_variable cv_;
+	std::vector<std::thread> threads_;
+	PartitionVec areas_;
+
 	int steps_ = 0;
 	int size_ = 0;
 	int marks_ = 0;
 	int checks_ = 0;
 };
-
-
 
 } // namespace
 
@@ -705,13 +790,12 @@ void CalculateBuildOrder(const Buildings& buildings,
 	// std::cerr << sizeof(Partition) << std::endl;
 	// std::cerr << sizeof(Block) << std::endl;
 
-	WorkerPool wp;
 	Parcel parcel(buildings);
-	Worker worker(parcel, &wp);
+	Worker worker(parcel);
 
+	worker.EnableThreads(4);
 	worker.Reset(parcel.FullArea());
 	worker.Solve();
-	// worker.Visual();
-	// parcel.Solve();
+
 	solution = worker.GetCommands();
 }
