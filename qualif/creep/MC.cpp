@@ -134,7 +134,7 @@ Command MonteCarlo::getAutoMove() {
 
 int MonteCarlo::doMCRun(game* base, int thread_index) {
     int score = 0;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < MC_ITER; ++i) {
         auto mc_game = base->clone();
         while (true) {
             if (mc_game->t_q2 >= 1000 || !mc_game->has_empty()) {
