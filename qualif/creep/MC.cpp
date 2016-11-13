@@ -38,10 +38,10 @@ Command MonteCarlo::getAutoMove() {
 
 int MonteCarlo::doMCRun(game* base) {
     int score = 0.0;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 100; ++i) {
         auto mc_game = base->clone();
         while (true) {
-            if (mc_game->t_q2 >= 650) {
+            if (mc_game->t_q2 >= 1000 || !mc_game->has_empty()) {
                 score += mc_game->t_q2;
                 break;
             }
