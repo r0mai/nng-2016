@@ -15,6 +15,13 @@ Game::Game(const Model& model)
 void Game::run() {
     while (window.isOpen()) {
         handleEvents();
+
+        if (autoMode) {
+            if (model.getEmptyCount() != 0) {
+                autoCallback();
+            }
+        }
+
         draw();
     }
 }
@@ -135,6 +142,11 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
                 autoCallback();
             }
             activeTumorPos = {-1, -1};
+            break;
+        case sf::Keyboard::S:
+            if (autoCallback) {
+                autoMode = !autoMode;
+            }
             break;
         default:
             break;

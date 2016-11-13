@@ -52,6 +52,8 @@ private:
 
     Model model;
 
+    bool autoMode = false;
+
     CommandCallback commandCallback;
     UndoCallback undoCallback;
     RedoCallback redoCallback;
