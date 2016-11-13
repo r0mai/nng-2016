@@ -134,7 +134,7 @@ void Game::handleKeyPressedEvent(const sf::Event::KeyEvent& ev) {
             if (autoCallback) {
                 autoCallback();
             }
-            selectNextTumor();
+            activeTumorPos = {-1, -1};
             break;
         default:
             break;
