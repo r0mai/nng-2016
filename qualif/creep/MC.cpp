@@ -73,22 +73,47 @@ Command MonteCarlo::getAutoMove() {
             auto fb_pos = model.justACreepCell();
             return Command::QueenSpawn(queenId, fb_pos.x, fb_pos.y);
         }
-        sf::Vector2i best_candidate;
-        int lowest_score = std::numeric_limits<int>::max();
-        for (int i = 0; i < candidates.size(); ++i) {
-            auto& candidate = candidates[i];
-            std::cerr << "Q Candidate " << candidate << " " << i+1 << "/"
-                << candidates.size() << ", best = " << best_candidate
-                << ", score = " << lowest_score << std::endl;
-            auto base = g->clone();
-            executeCommand(*base, Command::QueenSpawn(queenId, candidate.x, candidate.y));
-            int score = doMCRun(base.get(), 0);
-            if (score < lowest_score) {
-                lowest_score = score;
-                best_candidate = candidate;
+
+        auto job = [&](int ti) {
+            MCResults result;
+            auto cs = candidates.size();
+            int from = ti * cs / THREAD_COUNT;
+            int to = (ti + 1) * cs / THREAD_COUNT;
+            for (int i = from; i < cs && i < to; ++i) {
+                auto& candidate = candidates[i];
+                auto base = g->clone();
+                executeCommand(*base, Command::QueenSpawn(queenId, candidate.x, candidate.y));
+                int score = doMCRun(base.get(), ti);
+
+                result.push_back({candidate, score});
+
+                std::cerr << "(" << ti << ") " << "Q Candidate " << candidate
+                    << " " << i+1 << "/" << candidates.size()
+                    << " score = " << score << std::endl;
+            }
+            return result;
+        };
+
+        std::vector<MCResultsFuture> resultFutures;
+
+        for (int i = 0; i < THREAD_COUNT; ++i) {
+            resultFutures.push_back(std::async(std::launch::async, job, i));
+        }
+        MCResults results;
+        for (int i = 0; i < THREAD_COUNT; ++i) {
+            MCResults result = resultFutures[i].get();
+            results.insert(results.end(), result.begin(), result.end());
+        }
+
+        MCResult bestResult = {sf::Vector2i{-1, -1}, std::numeric_limits<int>::max()};
+        for (auto& result : results) {
+            if (std::get<1>(result) < std::get<1>(bestResult)) {
+                bestResult = result;
             }
         }
-        return Command::QueenSpawn(queenId, best_candidate.x, best_candidate.y);
+
+        return Command::QueenSpawn(
+            queenId, std::get<0>(bestResult).x, std::get<0>(bestResult).y);
     } else {
         return Command{};
     }
