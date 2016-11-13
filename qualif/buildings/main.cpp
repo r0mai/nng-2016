@@ -95,6 +95,10 @@ int main(int argc, char** argv) {
         std::istream& in = argc == 3 ? in_file : std::cin;
         if (argc == 3) {
             in_file.open(argv[2]);
+            if (!in_file.is_open()) {
+                std::cerr << "error: no such file" << std::endl;
+                return 1;
+            }
         }
         int h, w;
         in >> h >> w;
