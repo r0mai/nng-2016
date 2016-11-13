@@ -424,8 +424,7 @@ struct game
     bool has_empty() const {
         for(int y = map_dy-2; y >= 1; --y) {
             for(int x = map_dx - 2; x >= 1; --x) {
-                if (!map_wall[y][x] && !map_building[y][x] &&
-                    !map_creep[y][x] && map_creep_gen[y][x] <= 0) {
+                if (!map_wall[y][x] && !map_building[y][x] && !map_creep[y][x]) {
                     return true;
                 }
             }
