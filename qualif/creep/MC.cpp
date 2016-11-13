@@ -1,7 +1,15 @@
 #include "MC.hpp"
 #include "Util.hpp"
 
-MonteCarlo::MonteCarlo(game* g) : g(g->clone()) {}
+#include <tuple>
+#include <thread>
+#include <future>
+
+using MCResult = std::tuple<sf::Vector2i, int>;
+using MCResults = std::vector<MCResult>;
+using MCResultsFuture = std::future<MCResults>;
+
+MonteCarlo::MonteCarlo(game* g) : g(g->clone()), rngs(4) {}
 
 Command MonteCarlo::getAutoMove() {
     auto model = GuiModelFromGame(*g);
@@ -15,22 +23,47 @@ Command MonteCarlo::getAutoMove() {
             auto fb_pos = model.justACreepCellAround(tumorPos, 10);
             return Command::TumorSpawn(tumorId, fb_pos.x, fb_pos.y);
         }
-        sf::Vector2i best_candidate;
-        int lowest_score = std::numeric_limits<int>::max();
-        for (int i = 0; i < candidates.size(); ++i) {
-            auto& candidate = candidates[i];
-            std::cerr << "T Candidate " << candidate << " " << i+1 << "/"
-                << candidates.size() << ", best = " << best_candidate
-                << ", score = " << lowest_score << std::endl;
-            auto base = g->clone();
-            executeCommand(*base, Command::TumorSpawn(tumorId, candidate.x, candidate.y));
-            int score = doMCRun(base.get());
-            if (score < lowest_score) {
-                lowest_score = score;
-                best_candidate = candidate;
+
+        auto job = [&](int ti) {
+            MCResults result;
+            auto cs = candidates.size();
+            int from = ti * cs / THREAD_COUNT;
+            int to = (ti + 1) * cs / THREAD_COUNT;
+            for (int i = from; i < cs && i < to; ++i) {
+                auto& candidate = candidates[i];
+                auto base = g->clone();
+                executeCommand(*base, Command::TumorSpawn(tumorId, candidate.x, candidate.y));
+                int score = doMCRun(base.get(), ti);
+
+                result.push_back({candidate, score});
+
+                std::cerr << "(" << ti << ") " << "T Candidate " << candidate
+                    << " " << i+1 << "/" << candidates.size()
+                    << " score = " << score << std::endl;
+            }
+            return result;
+        };
+
+        std::vector<MCResultsFuture> resultFutures;
+
+        for (int i = 0; i < THREAD_COUNT; ++i) {
+            resultFutures.push_back(std::async(std::launch::async, job, i));
+        }
+        MCResults results;
+        for (int i = 0; i < THREAD_COUNT; ++i) {
+            MCResults result = resultFutures[i].get();
+            results.insert(results.end(), result.begin(), result.end());
+        }
+
+        MCResult bestResult = {sf::Vector2i{-1, -1}, std::numeric_limits<int>::max()};
+        for (auto& result : results) {
+            if (std::get<1>(result) < std::get<1>(bestResult)) {
+                bestResult = result;
             }
         }
-        return Command::TumorSpawn(tumorId, best_candidate.x, best_candidate.y);
+
+        return Command::TumorSpawn(
+            tumorId, std::get<0>(bestResult).x, std::get<0>(bestResult).y);
     } else if (model.hasQueenMove()) {
         int queenId = model.getFreeQueenId();
         auto candidates = model.getEdgeCells();
@@ -49,7 +82,7 @@ Command MonteCarlo::getAutoMove() {
                 << ", score = " << lowest_score << std::endl;
             auto base = g->clone();
             executeCommand(*base, Command::QueenSpawn(queenId, candidate.x, candidate.y));
-            int score = doMCRun(base.get());
+            int score = doMCRun(base.get(), 0);
             if (score < lowest_score) {
                 lowest_score = score;
                 best_candidate = candidate;
@@ -61,8 +94,8 @@ Command MonteCarlo::getAutoMove() {
     }
 }
 
-int MonteCarlo::doMCRun(game* base) {
-    int score = 0.0;
+int MonteCarlo::doMCRun(game* base, int thread_index) {
+    int score = 0;
     for (int i = 0; i < 100; ++i) {
         auto mc_game = base->clone();
         while (true) {
@@ -84,7 +117,7 @@ int MonteCarlo::doMCRun(game* base) {
                     target = model.justACreepCellAround(tumorPos, 10);
                 } else {
                     std::uniform_int_distribution<> dis(0, candidates.size() - 1);
-                    target = candidates[dis(rng)];
+                    target = candidates[dis(rngs[thread_index])];
                 }
                 executeCommand(*mc_game,
                     Command::TumorSpawn(
@@ -99,7 +132,7 @@ int MonteCarlo::doMCRun(game* base) {
                     target = model.justACreepCell();
                 } else {
                     std::uniform_int_distribution<> dis(0, candidates.size() - 1);
-                    target = candidates[dis(rng)];
+                    target = candidates[dis(rngs[thread_index])];
                 }
                 executeCommand(*mc_game,
                     Command::QueenSpawn(

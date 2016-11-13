@@ -11,9 +11,11 @@ public:
 
     Command getAutoMove();
 private:
-    int doMCRun(game* base);
+    static const int THREAD_COUNT = 4;
+
+    int doMCRun(game* base, int thread_index);
 
     std::unique_ptr<game> g;
 
-    std::minstd_rand rng;
+    std::vector<std::minstd_rand> rngs;
 };
