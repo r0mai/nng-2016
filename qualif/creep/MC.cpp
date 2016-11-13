@@ -11,15 +11,16 @@ Command MonteCarlo::getAutoMove() {
         int tumorId = boost::get<CreepTumor>(&model.tiles[tumorPos.x][tumorPos.y])->id;
         auto candidates = model.getEdgeCellsAround(tumorPos, 10);
         if (candidates.empty()) {
-            std::cerr << "no candidate for move" << std::endl;
+            std::cerr << "no candidate for tumor move" << std::endl;
             return Command{};
         }
         sf::Vector2i best_candidate;
         int lowest_score = std::numeric_limits<int>::max();
         for (int i = 0; i < candidates.size(); ++i) {
             auto& candidate = candidates[i];
-            std::cout << "Candidate " << candidate << " " << i+1 << "/" << candidates.size() <<
-                ", best = " << best_candidate << ", score = " << lowest_score << std::endl;
+            std::cerr << "T Candidate " << candidate << " " << i+1 << "/"
+                << candidates.size() << ", best = " << best_candidate
+                << ", score = " << lowest_score << std::endl;
             auto base = g->clone();
             executeCommand(*base, Command::TumorSpawn(tumorId, candidate.x, candidate.y));
             int score = doMCRun(base.get());
@@ -30,7 +31,29 @@ Command MonteCarlo::getAutoMove() {
         }
         return Command::TumorSpawn(tumorId, best_candidate.x, best_candidate.y);
     } else if (model.hasQueenMove()) {
-        return Command{};
+        int queenId = model.getFreeQueenId();
+        auto candidates = model.getEdgeCells();
+        sf::Vector2i target;
+        if (candidates.empty()) {
+            std::cerr << "no candidate for tumor move" << std::endl;
+            return Command{};
+        }
+        sf::Vector2i best_candidate;
+        int lowest_score = std::numeric_limits<int>::max();
+        for (int i = 0; i < candidates.size(); ++i) {
+            auto& candidate = candidates[i];
+            std::cerr << "Q Candidate " << candidate << " " << i+1 << "/"
+                << candidates.size() << ", best = " << best_candidate
+                << ", score = " << lowest_score << std::endl;
+            auto base = g->clone();
+            executeCommand(*base, Command::QueenSpawn(queenId, candidate.x, candidate.y));
+            int score = doMCRun(base.get());
+            if (score < lowest_score) {
+                lowest_score = score;
+                best_candidate = candidate;
+            }
+        }
+        return Command::QueenSpawn(queenId, best_candidate.x, best_candidate.y);
     } else {
         return Command{};
     }
