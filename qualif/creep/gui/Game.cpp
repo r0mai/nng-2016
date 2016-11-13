@@ -21,6 +21,9 @@ void Game::run() {
                 autoCallback();
             } else {
                 autoMode = false;
+#ifdef AUTO_MC
+                window.close();
+#endif
             }
         }
 

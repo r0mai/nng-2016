@@ -52,7 +52,11 @@ private:
 
     Model model;
 
+#ifdef AUTO_MC
+    bool autoMode = true;
+#else
     bool autoMode = false;
+#endif
 
     CommandCallback commandCallback;
     UndoCallback undoCallback;
