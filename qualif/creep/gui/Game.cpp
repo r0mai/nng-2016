@@ -19,6 +19,8 @@ void Game::run() {
         if (autoMode) {
             if (model.getEmptyCount() != 0) {
                 autoCallback();
+            } else {
+                autoMode = false;
             }
         }
 

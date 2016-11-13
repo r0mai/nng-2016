@@ -12,7 +12,8 @@ Command MonteCarlo::getAutoMove() {
         auto candidates = model.getEdgeCellsAround(tumorPos, 10);
         if (candidates.empty()) {
             std::cerr << "no candidate for tumor move" << std::endl;
-            return Command{};
+            auto fb_pos = model.justACreepCellAround(tumorPos, 10);
+            return Command::TumorSpawn(tumorId, fb_pos.x, fb_pos.y);
         }
         sf::Vector2i best_candidate;
         int lowest_score = std::numeric_limits<int>::max();
@@ -35,8 +36,9 @@ Command MonteCarlo::getAutoMove() {
         auto candidates = model.getEdgeCells();
         sf::Vector2i target;
         if (candidates.empty()) {
-            std::cerr << "no candidate for tumor move" << std::endl;
-            return Command{};
+            std::cerr << "no candidate for queen move" << std::endl;
+            auto fb_pos = model.justACreepCell();
+            return Command::QueenSpawn(queenId, fb_pos.x, fb_pos.y);
         }
         sf::Vector2i best_candidate;
         int lowest_score = std::numeric_limits<int>::max();

@@ -1,5 +1,16 @@
 #include "Model.hpp"
 
+namespace {
+
+bool isEmptyCell(const Tile& tile) {
+    return
+        boost::get<Empty>(&tile) ||
+        boost::get<CreepCandidate>(&tile) ||
+        boost::get<CreepRadius>(&tile);
+}
+
+} // anonymous namespace
+
 bool Model::hasValidMove() const {
     return hasQueenMove() || isValidPosition(hasTumorMove());
 }
@@ -62,8 +73,7 @@ int Model::getEmptyCount() const {
     int empty = 0;
     for (auto y = 0; y < rows; ++y) {
         for (auto x = 0; x < columns; ++x) {
-            auto& t = tiles[x][y];
-            if (boost::get<Empty>(&t)) {
+            if (isEmptyCell(tiles[x][y])) {
                 ++empty;
             }
         }
@@ -90,17 +100,6 @@ std::vector<sf::Vector2i> Model::cellsAround(const sf::Vector2i& p, int radius) 
     }
     return cells;
 }
-
-namespace {
-
-bool isEmptyCell(const Tile& tile) {
-    return
-        boost::get<Empty>(&tile) ||
-        boost::get<CreepCandidate>(&tile) ||
-        boost::get<CreepRadius>(&tile);
-}
-
-} // anonymous namespace
 
 bool Model::isCreepEdgeCell(const sf::Vector2i& p) const {
     if (!boost::get<Creep>(&tiles[p.x][p.y])) {
