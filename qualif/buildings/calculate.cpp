@@ -1,7 +1,7 @@
 #pragma GCC optimize ("O3")
-#pragma GCC optimize ("no-rtti")
 
 // do not include any local headers here
+#include <condition_variable>
 #include <iostream>
 #include <algorithm>
 #include <vector>
