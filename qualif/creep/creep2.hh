@@ -577,6 +577,27 @@ struct game
         o << "creep_cover=" << g.creep_cover << std::endl;
         return o;
     }
+    bool hasValidMove() {
+        for (auto* unit : units) {
+            auto* q = static_cast<queen*>(unit);
+            if (q->energy_q8 >= 6400) {
+                return true;
+            }
+        }
+        for (auto* building : buildings) {
+            if (building->name() == std::string("creep_tumor")) {
+                auto* ct = static_cast<creep_tumor*>(building);
+                if (ct->spawn_creep_tumor_active &&
+                    ct->dt_spawn_creep_tumor_cooldown_q8 <= 0)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     int next_id;
     int t_q2;
     int t_limit_q2;

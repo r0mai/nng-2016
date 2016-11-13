@@ -15,7 +15,9 @@ Command MonteCarlo::getAutoMove() {
         }
         sf::Vector2i best_candidate;
         int lowest_score = std::numeric_limits<int>::max();
-        for (auto& candidate : candidates) {
+        for (int i = 0; i < candidates.size(); ++i) {
+            auto& candidate = candidates[i];
+            std::cout << "Candidate " << i+1 << "/" << candidates.size() << std::endl;
             auto base = g->clone();
             executeCommand(*base, Command::TumorSpawn(tumorId, candidate.x, candidate.y));
             int score = doMCRun(base.get());
@@ -34,16 +36,19 @@ Command MonteCarlo::getAutoMove() {
 
 int MonteCarlo::doMCRun(game* base) {
     int score = 0.0;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 10; ++i) {
         auto mc_game = base->clone();
         while (true) {
-            auto model = GuiModelFromGame(*mc_game);
-            int empty = model.getEmptyCount();
-            if (empty == 0) {
-                score += model.tick;
+            if (mc_game->t_q2 >= 650) {
+                score += mc_game->t_q2;
                 break;
             }
+            if (!mc_game->hasValidMove()) {
+                executeCommand(*mc_game, Command{});
+                continue;
+            }
 
+            auto model = GuiModelFromGame(*mc_game);
             auto tumorPos = model.hasTumorMove();
             if (model.isValidPosition(tumorPos)) {
                 auto candidates = model.getEdgeCellsAround(tumorPos, 10);
@@ -76,7 +81,7 @@ int MonteCarlo::doMCRun(game* base) {
                     )
                 );
             } else {
-                executeCommand(*mc_game, Command{});
+                assert(false);
             }
         }
     }

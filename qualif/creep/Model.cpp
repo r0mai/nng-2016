@@ -91,14 +91,25 @@ std::vector<sf::Vector2i> Model::cellsAround(const sf::Vector2i& p, int radius) 
     return cells;
 }
 
+namespace {
+
+bool isEmptyCell(const Tile& tile) {
+    return
+        boost::get<Empty>(&tile) ||
+        boost::get<CreepCandidate>(&tile) ||
+        boost::get<CreepRadius>(&tile);
+}
+
+} // anonymous namespace
+
 bool Model::isCreepEdgeCell(const sf::Vector2i& p) const {
     if (!boost::get<Creep>(&tiles[p.x][p.y])) {
         return false;
     }
-    if (boost::get<Empty>(&tiles[p.x+1][p.y]) ||
-        boost::get<Empty>(&tiles[p.x-1][p.y]) ||
-        boost::get<Empty>(&tiles[p.x][p.y+1]) ||
-        boost::get<Empty>(&tiles[p.x][p.y-1]))
+    if (isEmptyCell(tiles[p.x+1][p.y]) ||
+        isEmptyCell(tiles[p.x-1][p.y]) ||
+        isEmptyCell(tiles[p.x][p.y+1]) ||
+        isEmptyCell(tiles[p.x][p.y-1]))
     {
         return true;
     }
