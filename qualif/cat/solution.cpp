@@ -3,6 +3,8 @@
 #include <iostream>
 #include <memory>
 #include <random>
+#include <vector>
+#include <list>
 
 #include <cstddef>
 
@@ -15,7 +17,7 @@
 #	undef LOG
 #endif
 
-#if 0
+#if 1
 template<typename T>
 std::ostream& operator<<(std::ostream& stream, const std::vector<T>& vec) {
 	stream << "{";
@@ -34,17 +36,13 @@ std::ostream& operator<<(std::ostream& stream, const std::vector<T>& vec) {
 
 template<typename T>
 void LOG(const T& head) {
-	if (!g_drill) {
-		std::cout << head << std::endl;
-	}
+	std::cout << head << std::endl;
 }
 
 template<typename T, typename... Args>
 void LOG(const T& head, const Args&... tail) {
-	if (!g_drill) {
-		std::cout << head;
-		LOG(tail...);
-	}
+	std::cout << head;
+	LOG(tail...);
 }
 #else
 #	define LOG(...) do {} while (0)
@@ -353,6 +351,120 @@ struct SpecialCaseFor2 {
 	}
 };
 
+
+struct Chase {
+	using Balls = std::vector<size_t>;
+	using BallsVec = std::vector<Balls>;
+	using BallsList = std::list<Balls>;
+	using TestFunction = std::function<bool(const Balls&)>;
+
+	bool applicable(size_t n, size_t d) {
+		return d < 4;
+	}
+
+	Balls add(const Balls& u, const Balls& v) {
+		Balls result = u;
+		std::copy(v.begin(), v.end(), std::back_inserter(result));
+		return result;
+	}
+
+	bool allActive(bool tested, const Balls& bs, const BallsList& bls, int d) {
+		return (tested && bs.size() == 1) ||
+			(bls.empty() && d == bs.size());
+	}
+
+	Balls apply(const Balls& balls, size_t d, TestFunction testFunction0) {
+		auto testFunction = [&testFunction0](const Balls& balls) -> bool {
+			auto result = testFunction0(balls);
+			// LOG("T ", result, " ", balls);
+			return result;
+		};
+		Balls result;
+
+		if (d == 0) {
+			return result;
+		}
+
+		if (d == balls.size()) {
+			return balls;
+		}
+
+		BallsList bls;
+		bls.push_back(balls);
+
+		// LOG("--");
+		// find D partitions that have radioactive
+		while (!bls.empty() && bls.size() < d) {
+			auto bs = bls.front();
+			bls.pop_front();
+			// LOG("POP ", bs);
+
+			if (bls.empty() && bs.size() == d) {
+				result = add(result, bs);
+				d = 0;
+				break;
+			}
+
+			BOOST_ASSERT(bs.size() > 1);
+			auto hs = halve(bs);
+			if (testFunction(hs[0])) {
+				if (hs[0].size() == 1) {
+					result = add(result, hs[0]);
+					d -= hs[0].size();
+				} else {
+					bls.push_back(hs[0]);
+				}
+
+				if (allActive(false, hs[1], bls, d)) {
+					result = add(result, hs[1]);
+					d -= hs[1].size();
+				} else if (testFunction(hs[1])) {
+					if (allActive(true, hs[1], bls, d)) {
+						result = add(result, hs[1]);
+						d -= hs[1].size();
+					} else {
+						bls.push_back(hs[1]);
+					}
+				}
+			} else {
+				// 'tested' because it the other part is clean
+				if (allActive(true, hs[1], bls, d)) {
+					result = add(result, hs[1]);
+					d -= hs[1].size();
+				} else {
+					bls.push_back(hs[1]);
+				}
+			}
+		}
+
+		// LOG(">");
+		for (auto bs : bls) {
+			while (bs.size() > 1) {
+				auto hs = halve(bs);
+				if (testFunction(hs[0])) {
+					bs = hs[0];
+				} else {
+					bs = hs[1];
+				}
+			}
+
+			BOOST_ASSERT(bs.size() == 1);
+			result.push_back(bs.front());
+		}
+
+		return result;
+	}
+
+	BallsVec halve(const Balls& balls) {
+		BallsVec vec;
+		vec.resize(2);
+		for (size_t i = 0, ie = balls.size(); i < ie; ++i) {
+			vec[1 - (i % 2)].push_back(balls[i]); // h0.size <= h1.size
+		}
+		return vec;
+	}
+
+};
 
 struct Dodge {
 	using Balls = std::vector<size_t>;
@@ -682,6 +794,7 @@ private:
 struct Tables {
 	static int worstBinary[65][8];
 	static int worstDodge[65][8];
+	static int worstChase[65][8];
 };
 
 std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
@@ -700,7 +813,13 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 
 	std::vector<size_t> result;
 
-	if (Tables::worstBinary[N][D] < Tables::worstDodge[N][D]) {
+	auto wb = Tables::worstBinary[N][D];
+	auto wc = Tables::worstChase[N][D];
+	auto wd = Tables::worstDodge[N][D];
+
+	if (wc <= wb && wc <= wd) {
+		result = Chase().apply(balls, D, tester);
+	} else if (wb < wd) {
 		result = BinarySearch().apply(balls, D, tester);
 	} else {
 		result = Dodge().apply(balls, D, tester);
@@ -869,4 +988,72 @@ int Tables::worstDodge[65][8] = {
 	{0, 6, 19, 22, 27, 31, 35, 38},	// 62
 	{0, 6, 19, 22, 27, 31, 35, 38},	// 63
 	{0, 6, 19, 22, 27, 31, 35, 39},	// 64
+};
+
+int Tables::worstChase[65][8] = {
+	{0, 0, 0, 0, 0, 0, 0, 0},	// 0
+	{0, 0, 0, 0, 0, 0, 0, 0},	// 1
+	{0, 1, 0, 0, 0, 0, 0, 0},	// 2
+	{0, 2, 3, 0, 0, 0, 0, 0},	// 3
+	{0, 2, 4, 5, 0, 0, 0, 0},	// 4
+	{0, 3, 5, 7, 7, 0, 0, 0},	// 5
+	{0, 3, 6, 7, 8, 9, 0, 0},	// 6
+	{0, 3, 6, 8, 10, 11, 11, 0},	// 7
+	{0, 3, 6, 9, 11, 13, 13, 13},	// 8
+	{0, 4, 7, 10, 13, 15, 15, 15},	// 9
+	{0, 4, 8, 10, 13, 15, 16, 17},	// 10
+	{0, 4, 8, 11, 13, 16, 17, 18},	// 11
+	{0, 4, 8, 12, 14, 16, 18, 19},	// 12
+	{0, 4, 8, 12, 15, 18, 20, 21},	// 13
+	{0, 4, 8, 12, 15, 18, 21, 22},	// 14
+	{0, 4, 8, 12, 16, 19, 21, 24},	// 15
+	{0, 4, 8, 13, 17, 21, 22, 25},	// 16
+	{0, 5, 9, 13, 18, 21, 24, 27},	// 17
+	{0, 5, 10, 13, 17, 21, 24, 27},	// 18
+	{0, 5, 10, 14, 18, 21, 24, 26},	// 19
+	{0, 5, 10, 15, 18, 21, 24, 27},	// 20
+	{0, 5, 10, 15, 18, 21, 25, 27},	// 21
+	{0, 5, 10, 15, 18, 23, 25, 28},	// 22
+	{0, 5, 10, 15, 19, 23, 26, 28},	// 23
+	{0, 5, 10, 16, 20, 23, 26, 30},	// 24
+	{0, 5, 10, 16, 20, 25, 28, 32},	// 25
+	{0, 5, 10, 16, 20, 24, 27, 30},	// 26
+	{0, 5, 10, 16, 20, 25, 28, 31},	// 27
+	{0, 5, 10, 16, 20, 24, 28, 31},	// 28
+	{0, 5, 10, 16, 20, 24, 29, 33},	// 29
+	{0, 5, 10, 16, 21, 26, 30, 33},	// 30
+	{0, 5, 10, 16, 21, 26, 30, 34},	// 31
+	{0, 5, 10, 17, 22, 27, 30, 34},	// 32
+	{0, 6, 11, 17, 22, 27, 31, 36},	// 33
+	{0, 6, 12, 17, 22, 27, 31, 33},	// 34
+	{0, 6, 12, 17, 22, 28, 31, 35},	// 35
+	{0, 6, 12, 18, 22, 28, 31, 36},	// 36
+	{0, 6, 12, 18, 23, 27, 31, 35},	// 37
+	{0, 6, 12, 18, 23, 28, 31, 36},	// 38
+	{0, 6, 12, 18, 23, 28, 31, 35},	// 39
+	{0, 6, 12, 19, 23, 28, 32, 36},	// 40
+	{0, 6, 12, 19, 23, 29, 32, 35},	// 41
+	{0, 6, 12, 18, 23, 29, 33, 36},	// 42
+	{0, 6, 12, 18, 24, 28, 32, 36},	// 43
+	{0, 6, 12, 18, 24, 29, 33, 36},	// 44
+	{0, 6, 12, 18, 24, 29, 33, 37},	// 45
+	{0, 6, 12, 19, 24, 30, 34, 37},	// 46
+	{0, 6, 12, 19, 24, 30, 36, 38},	// 47
+	{0, 6, 12, 19, 25, 30, 36, 38},	// 48
+	{0, 6, 12, 20, 25, 30, 35, 39},	// 49
+	{0, 6, 12, 19, 25, 31, 34, 41},	// 50
+	{0, 6, 12, 19, 24, 30, 35, 40},	// 51
+	{0, 6, 12, 19, 26, 30, 34, 39},	// 52
+	{0, 6, 12, 19, 25, 30, 34, 39},	// 53
+	{0, 6, 12, 19, 24, 30, 35, 39},	// 54
+	{0, 6, 12, 19, 25, 30, 36, 39},	// 55
+	{0, 6, 12, 20, 25, 30, 37, 41},	// 56
+	{0, 6, 12, 19, 25, 30, 36, 40},	// 57
+	{0, 6, 12, 19, 25, 32, 37, 42},	// 58
+	{0, 6, 12, 19, 26, 31, 36, 41},	// 59
+	{0, 6, 12, 19, 26, 31, 36, 42},	// 60
+	{0, 6, 12, 20, 25, 31, 36, 43},	// 61
+	{0, 6, 12, 20, 26, 32, 37, 44},	// 62
+	{0, 6, 12, 20, 28, 32, 38, 42},	// 63
+	{0, 6, 12, 20, 27, 32, 39, 44},	// 64
 };
