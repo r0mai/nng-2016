@@ -47,7 +47,6 @@ struct Block {
 		color = kClear;
 	}
 
-	int index = -1;
 	uint8_t neighbor_count = 0;
 	uint8_t height = 0;
 	uint8_t last_height = 0;
@@ -232,7 +231,6 @@ public:
 		auto index = row * cols_ + col;
 		auto& block = blocks_[index];
 
-		block.index = index;
 		block.height = (h == 1 ? 5 : h); // rewrite rule
 
 		// debug height
@@ -301,6 +299,10 @@ public:
 		}
 	}
 
+	int Index(const Block& block) const {
+		return &block - &(blocks_[0]);
+	}
+
 	int NeighborIndex(int index, Direction dir) {
 		auto mul = ((dir & 1) == 0 ? -1 : 1);
 		auto diff = ((dir & 2) == 0 ? 1 : cols_);
@@ -310,7 +312,7 @@ public:
 	void Push(Block& block, bool is_newer = false) {
 		if (!block.in_stack) {
 			block.in_stack = true;
-			stack_.push_back({block.index, is_newer});
+			stack_.push_back({Index(block), is_newer});
 		}
 	}
 
@@ -326,7 +328,7 @@ public:
 	}
 
 	bool EliminateBlock(Block& block, bool is_newer) {
-		auto index = block.index;
+		auto index = Index(block);
 		bool invalid = false;
 
 		if ((is_newer && (block.height & 3) != 1) ||
@@ -376,7 +378,7 @@ public:
 	}
 
 	void RestoreBlock(Block& block, bool is_newer) {
-		auto index = block.index;
+		auto index = Index(block);
 		for (int k = 0; k < 4; ++k) {
 			if ((block.neighbor & (1 << k))) {
 				auto dir = Direction(k);
@@ -452,10 +454,10 @@ public:
 			vec.pop_back();
 
 			if (b.height == 5) {
-				result.SetEye(b.index);
+				result.SetEye(Index(b));
 			}
 
-			auto d = div(b.index, cols_);
+			auto d = div(Index(b), cols_);
 			int row = d.quot;
 			int col = d.rem;
 
@@ -466,7 +468,7 @@ public:
 
 			for (int i = 0; i < 4; ++i) {
 				if ((b.neighbor & (1<<i))) {
-					auto& nb = blocks_[NeighborIndex(b.index, Direction(i))];
+					auto& nb = blocks_[NeighborIndex(Index(b), Direction(i))];
 					if (nb.color != kClear) {
 						continue;
 					}
@@ -598,7 +600,7 @@ public:
 
 			// Leave a mark behind in the history,
 			// so backtrack stops here
-			history_.push_back({nb.index, !is_newer, true});
+			history_.push_back({Index(nb), !is_newer, true});
 			++marks_;
 
 			// std::cerr << "Area " << next_area.Size() << std::endl;
@@ -624,7 +626,7 @@ public:
 		std::cout << rows_ << " " << cols_ << std::endl;
 
 		for (const auto& block : blocks_) {
-			auto d = div(block.index, cols_);
+			auto d = div(Index(block), cols_);
 			int row = d.quot;
 			int col = d.rem;
 			if (col > 0) {
