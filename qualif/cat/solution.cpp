@@ -688,6 +688,28 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 		size_t RadioActiveBalls,
 		bool (*TestFunction)(const std::vector<size_t>& BallsToTest)) {
 
+#if 1
+	MemoizingTester tester{TestFunction};
+	std::vector<size_t> balls;
+	for (size_t i = 0; i < NumberOfBalls; ++i) {
+		balls.push_back(i);
+	}
+
+	size_t N = NumberOfBalls;
+	size_t D = RadioActiveBalls;
+
+	std::vector<size_t> result;
+
+	if (Tables::worstBinary[N][D] < Tables::worstDodge[N][D]) {
+		result = BinarySearch().apply(balls, D, tester);
+	} else {
+		result = Dodge().apply(balls, D, tester);
+	}
+
+	std::sort(result.begin(), result.end());
+	return result;
+
+#else
 	static Launchpad<Linear, BinarySearch, AllRadioactiveOptimization,
 			SpecialCaseFor2>
 			launchpad{};
@@ -708,6 +730,7 @@ std::vector<size_t> FindRadioactiveBalls(size_t NumberOfBalls,
 	auto result = launchpad.apply(indices, RadioActiveBalls, tester);
 	std::sort(result.begin(), result.end());
 	return result;
+#endif
 }
 
 // Magic Tables
