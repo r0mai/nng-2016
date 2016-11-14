@@ -319,7 +319,7 @@ struct Dodge {
 	using TestFunction = std::function<bool(const Balls&)>;
 
 	bool applicable(size_t n, size_t d) {
-		return d > 1 && n > d;
+		return true;
 	}
 
 	Balls apply(const Balls& balls, size_t d, TestFunction testFunction0) {
@@ -331,12 +331,30 @@ struct Dodge {
 
 		// LOG("Dodge");
 		size_t n = balls.size();
+
+		if (d == 0) {
+			// no active
+			return {};
+		}
+
+		if (d == n) {
+			// all active
+			return balls;
+		}
+
 		BallsVec vec;
-		for (const auto& bs : split(balls, bestSplit(n, d))) {
-			BOOST_ASSERT(bs.size() > 0);
-			bool v = false;
-			if ((v = testFunction(bs))) {
-				vec.push_back(bs);
+		auto sp = bestSplit(n, d);
+
+		if (d == 1 || sp < 2) {
+			// no split (will do log2 or linear)
+			vec.push_back(balls);
+		} else {
+			for (const auto& bs : split(balls, sp)) {
+				BOOST_ASSERT(bs.size() > 0);
+				bool v = false;
+				if ((v = testFunction(bs))) {
+					vec.push_back(bs);
+				}
 			}
 		}
 
@@ -419,7 +437,10 @@ struct Dodge {
 	}
 
 	size_t bestSplit(size_t n, size_t d) {
-		BOOST_ASSERT(d > 1 && d < n);
+		if (d < 2) {
+			return 0;
+		}
+
 		size_t best_v = n - 1;
 		size_t best_p = 1;
 		static size_t lg[] = {0, 0, 1, 2, 2, 3, 3, 3, 3, 4};
