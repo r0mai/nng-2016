@@ -4,7 +4,7 @@
 #include <memory>
 #include <random>
 
-#include <stddef.h> // These idiots are using size_t instead of std::size_t.
+#include <cstddef>
 
 #include <boost/assert.hpp>
 #include <boost/optional.hpp>
