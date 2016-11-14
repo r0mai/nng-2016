@@ -797,7 +797,7 @@ void CalculateBuildOrder(const Buildings& buildings,
 	Worker worker;
 
 	worker.Init(buildings);
-	worker.EnableThreads(2);
+	worker.EnableThreads(4);
 	worker.Reset(worker.FullArea());
 	worker.Solve();
 
