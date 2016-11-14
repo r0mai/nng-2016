@@ -10,6 +10,47 @@
 #include <boost/optional.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 
+
+#ifdef LOG
+#	undef LOG
+#endif
+
+#if 0
+template<typename T>
+std::ostream& operator<<(std::ostream& stream, const std::vector<T>& vec) {
+	stream << "{";
+	bool first = true;
+	for (const auto& item : vec) {
+		if (first) {
+			first = false;
+		} else {
+			stream << ", ";
+		}
+		stream << item;
+	}
+	stream << "}";
+	return stream;
+}
+
+template<typename T>
+void LOG(const T& head) {
+	if (!g_drill) {
+		std::cout << head << std::endl;
+	}
+}
+
+template<typename T, typename... Args>
+void LOG(const T& head, const Args&... tail) {
+	if (!g_drill) {
+		std::cout << head;
+		LOG(tail...);
+	}
+}
+#else
+#	define LOG(...) do {} while (0)
+#endif
+
+
 std::vector<size_t> selectFrom(const std::vector<size_t>& from) {
 	static std::mt19937 gen{3};
 
