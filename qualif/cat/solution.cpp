@@ -312,6 +312,131 @@ struct SpecialCaseFor2 {
 	}
 };
 
+
+struct Dodge {
+	using Balls = std::vector<size_t>;
+	using BallsVec = std::vector<Balls>;
+	using TestFunction = std::function<bool(const Balls&)>;
+
+	bool applicable(size_t n, size_t d) {
+		return d > 1 && n > d;
+	}
+
+	Balls apply(const Balls& balls, size_t d, TestFunction testFunction0) {
+		auto testFunction = [&testFunction0](const Balls& balls) -> bool {
+			auto result = testFunction0(balls);
+			// LOG("  ", result, " ", balls);
+			return result;
+		};
+
+		// LOG("Dodge");
+		size_t n = balls.size();
+		BallsVec vec;
+		for (const auto& bs : split(balls, bestSplit(n, d))) {
+			BOOST_ASSERT(bs.size() > 0);
+			bool v = false;
+			if ((v = testFunction(bs))) {
+				vec.push_back(bs);
+			}
+		}
+
+		Balls result;
+		// LOG("- Linear");
+
+		// linear until there is a set which has more than 1 radioactive
+		while (vec.size() < d) {
+			auto bs = vec.back();
+			bool found = false;
+			vec.pop_back();
+
+			// dont check first one in this (reverse) loop
+			for (size_t i = bs.size(); i-- > 1 && vec.size() < d;) {
+				auto b = bs[i];
+				if (testFunction({b})) {
+					found = true;
+					result.push_back(b);
+					--d;
+				}
+			}
+
+			if (vec.size() == d) {
+				// no more linear
+				break;
+			}
+
+			auto unchecked = bs.front();
+			if (!found || (d == 1 && vec.empty())) {
+				// dont check last unchecked one if the others were clean, OR
+				// there is only one left
+				result.push_back(unchecked);
+				--d;
+			} else if (testFunction({unchecked})) {
+				result.push_back(unchecked);
+				--d;
+			}
+		}
+
+		if (d > 0) {
+			// LOG("- Log 2");
+			// log through the rest
+			BOOST_ASSERT(d == vec.size());
+			for (auto bs : vec) {
+				while (bs.size() > 1) {
+					auto hs = halve(bs);
+					if (testFunction(hs[0])) {
+						bs = hs[0];
+					} else {
+						bs = hs[1];
+					}
+				}
+
+				BOOST_ASSERT(bs.size() == 1);
+				result.push_back(bs.front());
+			}
+		}
+
+		return result;
+	}
+
+	BallsVec halve(const Balls& balls) {
+		BallsVec vec;
+		vec.resize(2);
+		for (size_t i = 0, ie = balls.size(); i < ie; ++i) {
+			vec[i % 2].push_back(balls[i]);
+		}
+		return vec;
+	}
+
+	BallsVec split(const Balls& balls, size_t m) {
+		// split balls to partitions with maximum 'm' elements
+		size_t n = balls.size();
+		BallsVec vec;
+		vec.resize((n + m - 1) / m);
+		for (size_t i = 0; i < n; ++i) {
+			vec[i / m].push_back(balls[i]);
+		}
+		return vec;
+	}
+
+	size_t bestSplit(size_t n, size_t d) {
+		BOOST_ASSERT(d > 1 && d < n);
+		size_t best_v = n - 1;
+		size_t best_p = 1;
+		static size_t lg[] = {0, 0, 1, 2, 2, 3, 3, 3, 3, 4};
+
+		for (size_t p = 2; p < 6; ++p) {
+			size_t v = (n + p - 1) / p + std::max(d * lg[p], (d - 1) * p - 1);
+			if (v < best_v) {
+				best_v = v;
+				best_p = p;
+			}
+		}
+
+		return best_p;
+	}
+};
+
+
 template<typename... Approaches>
 class Launchpad;
 
