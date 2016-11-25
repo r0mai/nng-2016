@@ -28,6 +28,7 @@ protected:
 	void AttackAttackingQueens();
 	void SpawnWithQueens();
 	void SpawnWithTumors();
+	void AttackHatchery();
 
 	void PreprocessUnitTargets();
 	int ClosestTumorDistance(const POS& pos, int side = 0);
@@ -112,11 +113,21 @@ void MYCLIENT::SpawnWithTumors() {
 	}
 }
 
+void MYCLIENT::AttackHatchery() {
+	for (auto& queen : GetOurQueens()) {
+		mUnitTarget[queen.id].c = CMD_ATTACK;
+		mUnitTarget[queen.id].target_id = mParser.EnemyHatchery.id;
+	}
+}
+
 void MYCLIENT::Process() {
 	PreprocessUnitTargets();
 	AttackAttackingQueens();
 	SpawnWithQueens();
 	SpawnWithTumors();
+	if (GetOurQueens().size() >= 7) {
+		AttackHatchery();
+	}
 }
 
 int MYCLIENT::GetTumorFitness(const POS& p) {
