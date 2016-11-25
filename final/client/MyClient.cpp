@@ -24,6 +24,9 @@ protected:
 	virtual bool NeedDebugLog() { return true; }
 	virtual void Process();
 
+	int last_hatchery_energy_ = 0;
+
+	void PrintStatistics();
 
 	void AttackAttackingQueens();
 	void SpawnWithQueens();
@@ -49,6 +52,12 @@ protected:
 };
 
 MYCLIENT::MYCLIENT() {}
+
+void MYCLIENT::PrintStatistics() {
+	std::cout << "H gained " <<
+		mParser.OwnHatchery.energy - last_hatchery_energy_ << "e" << " (" << mParser.OwnHatchery.energy << "e)" << std::endl;
+	last_hatchery_energy_ = mParser.OwnHatchery.energy;
+}
 
 void MYCLIENT::PreprocessUnitTargets() {
 	std::vector<int> to_clear;
@@ -123,6 +132,8 @@ void MYCLIENT::AttackHatchery() {
 }
 
 void MYCLIENT::Process() {
+	PrintStatistics();
+
 	PreprocessUnitTargets();
 	AttackAttackingQueens();
 	SpawnWithQueens();
@@ -155,7 +166,6 @@ POS MYCLIENT::GetBestCreep() {
 			}
 		}
 	}
-	std::cout << "Best count = " << best_fit << " @ " << best_pos << std::endl;
 	return best_pos;
 }
 

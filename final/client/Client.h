@@ -21,7 +21,8 @@ public:
 	enum eUnitCommand {
 		CMD_MOVE,
 		CMD_ATTACK,
-		CMD_SPAWN
+		CMD_SPAWN,
+		CMD_ATTACK_MOVE
 	};
 	struct CMD
 	{
