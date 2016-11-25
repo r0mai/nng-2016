@@ -234,7 +234,7 @@ int MYCLIENT::GetAttackTarget(const POS& pos, int force) {
 		}
 	}
 
-	if (true) {
+	if (GetEnemyQueens().size() <= GetOurQueens().size()) {
 		auto hatchery = mParser.EnemyHatchery;
 		auto dst = RouteDistance(pos, hatchery.pos);
 		auto threat = GetEnemyThreat(hatchery.pos);
