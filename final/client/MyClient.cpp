@@ -249,7 +249,9 @@ bool MYCLIENT::CanPlaceTumor(const POS& pos) {
 int MYCLIENT::GetEmptyCountAround(const POS& pos) {
 	int count = 0;
 	for (auto& p : GetCellsInRadius(pos)) {
-		if (mParser.GetAt(p) == PARSER::EMPTY) {
+		if (mParser.GetAt(p) == PARSER::EMPTY ||
+			mParser.GetAt(p) == PARSER::CREEP_CANDIDATE_ENEMY)
+		{
 			++count;
 		}
 	}
@@ -263,13 +265,12 @@ int MYCLIENT::Distance(const POS& p1, const POS& p2) {
 }
 
 int MYCLIENT::RouteDistance(const POS& p1, const POS& p2) {
-	int dx = p1.x - p2.x;
-	int dy = p1.y - p2.y;
-	return std::abs(dx) + std::abs(dy);
+	return mDistCache.GetDist(p1, p2);
 }
 
 int MYCLIENT::ClosestTumorDistance(const POS& pos, bool enemy) {
-	int dst = INT_MAX;
+	int dst = Distance(pos, (enemy ? EnemyHatchery : OwnHatchery).pos);
+
 	for (const auto& obj : mParser.CreepTumors) {
 		if (obj.IsEnemy() != enemy || obj.pos == pos) {
 			continue;
