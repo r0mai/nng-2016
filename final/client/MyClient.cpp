@@ -294,7 +294,7 @@ void MYCLIENT::AttackHatchery() {
 
 void MYCLIENT::ReactToHeatMap() {
 	for (auto& queen : GetOurQueens()) {
-		if (GetHeat(queen.pos) < -200) {
+		if (GetHeat(queen.pos) < -40) {
 			auto cells = GetCellsInRadius(queen.pos, 2);
 
 			boost::remove_erase_if(cells, [this](const POS& p) {
