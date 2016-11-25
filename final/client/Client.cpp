@@ -275,50 +275,14 @@ std::string CLIENT::HandleServerResponse(std::vector<std::string> &ServerRespons
 				auto p = Move(*it);
 				cmd_done = p.first;
 				ss << p.second;
-			} else if (it->second.c == CLIENT::CMD_SPAWN)
-			{
+			} else if (it->second.c == CLIENT::CMD_SPAWN) {
 				auto p = Spawn(*it);
 				cmd_done = p.first;
 				ss << p.second;
-			} else if (it->second.c == CLIENT::CMD_ATTACK)
-			{
-				MAP_OBJECT *t = NULL;
-				POS t_pos;
-				std::vector<MAP_OBJECT>::iterator p;
-				for(p=mParser.Units.begin(); p!=mParser.Units.end();p++) { if (p->id==it->second.target_id) { t=&*p; t_pos = p->pos; break; } }
-				if (t==NULL) for(p=mParser.CreepTumors.begin();p!=mParser.CreepTumors.end();p++) { if (p->id==it->second.target_id) { t=&*p; t_pos=p->pos; break; } }
-				if (t==NULL)
-				{
-					if (mParser.EnemyHatchery.id==it->second.target_id)
-					{
-						t=&mParser.EnemyHatchery;
-						t_pos=mParser.EnemyHatchery.pos;
-						// find closest point of hatchery:
-						int i;
-						for (i = 0; i<HATCHERY_SIZE - 1; i++) if (q->pos.y>t_pos.y) t_pos.y++;
-						for (i = 0; i<HATCHERY_SIZE - 1; i++) if (q->pos.x>t_pos.x) t_pos.x++;
-					}
-				}
-				if (t==NULL) cmd_done = true;
-				else
-				{
-					bool do_attack = false;
-					if (q->pos==t_pos) do_attack = true;
-					else
-					{
-						POS next_pos = mDistCache.GetNextTowards(q->pos, t_pos);
-						if (!next_pos.IsValid())
-						{
-							cmd_done=true;
-						}
-						else if (next_pos==t_pos) do_attack = true;
-						else
-						{
-							ss<<"queen_move "<<it->first<<" "<<next_pos.x<<" "<<next_pos.y<<"\n";
-						}
-					}
-					if (do_attack) ss<<"queen_attack "<<it->first<<" "<<it->second.target_id<<"\n";
-				}
+			} else if (it->second.c == CLIENT::CMD_ATTACK) {
+				auto p = Attack(*it);
+				cmd_done = p.first;
+				ss << p.second;
 			}
 			std::map<int, CLIENT::CMD>::iterator it2=it;
 			it2++;
@@ -426,6 +390,56 @@ std::pair<bool, std::string> CLIENT::Spawn(const std::pair<int, CMD>& cmd) {
 		std::stringstream ss;
 		ss<<"queen_spawn "<<cmd.first<<" "<<cmd.second.pos.x<<" "<<cmd.second.pos.y<<"\n";
 		return {true, ss.str()};
+	}
+	return {true, ""};
+}
+
+std::pair<bool, std::string> CLIENT::Attack(const std::pair<int, CMD>& cmd) {
+	MAP_OBJECT *q = mParser.FindUnit(cmd.first);
+	if (!q) {
+		return {true, ""};
+	}
+
+	MAP_OBJECT *t = NULL;
+	POS t_pos;
+	std::vector<MAP_OBJECT>::iterator p;
+	for(p=mParser.Units.begin(); p!=mParser.Units.end();p++) { if (p->id==cmd.second.target_id) { t=&*p; t_pos = p->pos; break; } }
+	if (t==NULL) for(p=mParser.CreepTumors.begin();p!=mParser.CreepTumors.end();p++) { if (p->id==cmd.second.target_id) { t=&*p; t_pos=p->pos; break; } }
+	if (t==NULL)
+	{
+		if (mParser.EnemyHatchery.id==cmd.second.target_id)
+		{
+			t=&mParser.EnemyHatchery;
+			t_pos=mParser.EnemyHatchery.pos;
+			// find closest point of hatchery:
+			int i;
+			for (i = 0; i<HATCHERY_SIZE - 1; i++) if (q->pos.y>t_pos.y) t_pos.y++;
+			for (i = 0; i<HATCHERY_SIZE - 1; i++) if (q->pos.x>t_pos.x) t_pos.x++;
+		}
+	}
+	if (t==NULL) {
+		return {true, ""};
+	} else {
+		bool do_attack = false;
+		if (q->pos==t_pos) do_attack = true;
+		else
+		{
+			POS next_pos = mDistCache.GetNextTowards(q->pos, t_pos);
+			if (!next_pos.IsValid()) {
+				return {true,  ""};
+			} else if (next_pos==t_pos) {
+				do_attack = true;
+			} else {
+				std::stringstream ss;
+				ss<<"queen_move "<<cmd.first<<" "<<next_pos.x<<" "<<next_pos.y<<"\n";
+				return {false, ss.str()};
+			}
+		}
+		if (do_attack) {
+			std::stringstream ss;
+			ss<<"queen_attack "<<cmd.first<<" "<<cmd.second.target_id<<"\n";
+			return {false, ss.str()};
+		}
 	}
 	return {true, ""};
 }
