@@ -129,3 +129,22 @@ MAP_OBJECT* PARSER::FindUnit(int id) {
 	}
 	return nullptr;
 }
+
+MAP_OBJECT* PARSER::FindObject(int id) {
+	for (auto& unit : Units) {
+		if (unit.id == id) {
+			return &unit;
+		}
+	}
+	for (auto& unit : CreepTumors) {
+		if (unit.id == id) {
+			return &unit;
+		}
+	}
+	if (OwnHatchery.id == id) {
+		return &OwnHatchery;
+	}
+	if (EnemyHatchery.id == id) {
+		return &EnemyHatchery;
+	}
+}

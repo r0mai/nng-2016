@@ -454,7 +454,7 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 		return {true, ""};
 	}
 
-	MAP_OBJECT *t = mParser.FindUnit(cmd.second.target_id);
+	MAP_OBJECT *t = mParser.FindObject(cmd.second.target_id);
 	if (!t) {
 		return {true, ""};
 	}
