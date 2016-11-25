@@ -29,7 +29,7 @@ protected:
 	void PrintStatistics();
 
 	void AttackAttackingQueens();
-	void SpawnWithQueens();
+	void SpawnOrAttackWithQueens();
 	void SpawnWithTumors();
 	void AttackHatchery();
 
@@ -46,8 +46,11 @@ protected:
 	bool CanPlaceTumor(const POS& pos);
 	bool HasTentativeTumorAt(const POS& pos);
 	int Distance(const POS& p1, const POS& p2);
+	int RouteDistance(const POS& p1, const POS& p2);
 	std::vector<MAP_OBJECT> GetOurQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
+	std::vector<MAP_OBJECT> GetEnemyTumors();
+
 	bool CanWeDie() const;
 	bool DoWeHaveMoreCreep() const;
 
@@ -89,18 +92,37 @@ void MYCLIENT::AttackAttackingQueens() {
 	}
 }
 
-void MYCLIENT::SpawnWithQueens() {
+void MYCLIENT::SpawnOrAttackWithQueens() {
 	FLEEPATH FleePath;
 	FleePath.CreateCreepDist(&mParser);
 	for (auto& queen : GetOurQueens()) {
-		if (!mUnitTarget.count(queen.id)) {
+		if (mUnitTarget.count(queen.id)) {
+			continue;
+		}
+		if (queen.energy >= 100) {
 			POS creep = GetBestCreep();
 			if (creep.IsValid()) {
 				mUnitTarget[queen.id].c = CMD_SPAWN;
 				mUnitTarget[queen.id].pos = creep;
 			}
-		}
+		} else {
+			int best_fit = INT_MIN;
+			int best_id = -1;
+			for (auto& tumor : GetEnemyTumors()) {
+				auto dst = RouteDistance(queen.pos, tumor.pos);
+				auto fitness = GetEnemyTumorFitness(tumor.pos, tumor.energy);
+				fitness -= dst;
+				if (fitness > best_fit) {
+					best_fit = fitness;
+					best_id = tumor.id;
+				}
+			}
 
+			if (best_id > -1) {
+				mUnitTarget[queen.id].c = CMD_ATTACK;
+				mUnitTarget[queen.id].target_id = best_id;
+			}
+		}
 	}
 }
 
@@ -119,7 +141,7 @@ void MYCLIENT::SpawnWithTumors() {
 					// will select last with the same fitness
 					return GetTumorFitness(l) < GetTumorFitness(r);
 				});
-		if (best != cells.end()) {
+		if (best != cells.rend()) {
 			command_buffer <<  "creep_tumor_spawn" << " " <<
 				tumor.id << " " <<
 				best->x << " " <<
@@ -141,7 +163,7 @@ void MYCLIENT::Process() {
 
 	PreprocessUnitTargets();
 	AttackAttackingQueens();
-	SpawnWithQueens();
+	SpawnOrAttackWithQueens();
 	SpawnWithTumors();
 	if (GetOurQueens().size() >= 7) {
 		AttackHatchery();
@@ -264,6 +286,12 @@ int MYCLIENT::Distance(const POS& p1, const POS& p2) {
 	return int(ceil(sqrt(dx * dx + dy * dy)));
 }
 
+int MYCLIENT::RouteDistance(const POS& p1, const POS& p2) {
+	int dx = p1.x - p2.x;
+	int dy = p1.y - p2.y;
+	return std::abs(dx) + std::abs(dy);
+}
+
 int MYCLIENT::ClosestTumorDistance(const POS& pos, bool enemy) {
 	int dst = INT_MAX;
 	for (const auto& obj : mParser.CreepTumors) {
@@ -296,6 +324,17 @@ std::vector<MAP_OBJECT> MYCLIENT::GetEnemyQueens() {
 	}
 	return queens;
 }
+
+std::vector<MAP_OBJECT> MYCLIENT::GetEnemyTumors() {
+	std::vector<MAP_OBJECT> tumors;
+	for (auto& e : mParser.CreepTumors) {
+		if (e.IsEnemy()) {
+			tumors.push_back(e);
+		}
+	}
+	return tumors;
+}
+
 
 bool MYCLIENT::CanWeDie() const {
 	auto remainingTicks = MAX_TICK - mParser.tick;
