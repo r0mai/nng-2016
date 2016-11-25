@@ -25,6 +25,7 @@ protected:
 	void PreprocessUnitTargets();
 	int ClosestTumorDistance(const POS& pos, int side = 0);
 
+	int GetTumorFitness(const POS& p);
 	POS GetBestCreep();
 	std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
 	int GetEmptyCountAround(const POS& pos);
@@ -72,19 +73,23 @@ void MYCLIENT::Process() {
 	}
 }
 
+int MYCLIENT::GetTumorFitness(const POS& p) {
+	if (!CanPlaceTumor(p)) {
+		return -1;
+	}
+
+	auto empty_count = GetEmptyCountAround(p);
+	auto enemy_creep_count = GetEnemyCreepCountAround(p);
+	return enemy_creep_count + 2 * empty_count + ClosestTumorDistance(p);
+}
+
 POS MYCLIENT::GetBestCreep() {
 	POS best_pos = POS(-1, -1);
 	int best_fit = -1;
 	for (int y = 0; y < mParser.h; ++y) {
 		for (int x = 0; x < mParser.w; ++x) {
 			POS p(x, y);
-			if (!CanPlaceTumor(p)) {
-				continue;
-			}
-
-			auto empty_count = GetEmptyCountAround(p);
-			auto enemy_creep_count = GetEnemyCreepCountAround(p);
-			int fitness = enemy_creep_count + 2 * empty_count + ClosestTumorDistance(p);
+			auto fitness = GetTumorFitness(p);
 			if (fitness > best_fit) {
 				best_fit = fitness;
 				best_pos = p;
