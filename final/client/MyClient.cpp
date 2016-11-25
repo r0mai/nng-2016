@@ -94,7 +94,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		if (mUnitTarget.count(queen.id)) {
 			continue;
 		}
-		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST || !AreWeStrongerBy(0.9)) {
+		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST || !AreWeStrongerBy(1.5)) {
 			POS creep = GetBestCreep();
 			if (creep.IsValid()) {
 				mUnitTarget[queen.id].c = CMD_SPAWN;
