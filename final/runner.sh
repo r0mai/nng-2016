@@ -23,7 +23,7 @@ rebuild() {
 
 restartBees() {
   kill "$PID"
-  watch -n 1 "./build/bees" &
+  watch -n 1 "./build/bees 2>&1" &
   PID=$!
 }
 
