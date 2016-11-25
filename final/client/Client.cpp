@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Client.h"
 #include <sstream>
+#include <algorithm>
 #define SERVER_PORT 4242
 
 CLIENT::CLIENT()
