@@ -51,6 +51,7 @@ protected:
 	std::vector<MAP_OBJECT> GetEnemyQueens();
 	std::vector<MAP_OBJECT> GetIntrudingQueens();
 	std::vector<MAP_OBJECT> GetEnemyTumors();
+	std::vector<MAP_OBJECT> GetOurTumors();
 
 	bool CanWeDie();
 	bool DoWeHaveMoreCreep();
@@ -108,7 +109,8 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		}
 		int empty_around = 0;
 
-		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST) {
+		const auto& ourTumors = GetOurTumors();
+		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST || ourTumors.empty()) {
 			POS creep = GetBestCreepWithQueen(queen.pos);
 			if (creep.IsValid()) {
 				empty_around = GetEmptyCountAround(creep);
@@ -412,6 +414,16 @@ std::vector<MAP_OBJECT> MYCLIENT::GetEnemyTumors() {
 	std::vector<MAP_OBJECT> tumors;
 	for (auto& e : mParser.CreepTumors) {
 		if (e.IsEnemy()) {
+			tumors.push_back(e);
+		}
+	}
+	return tumors;
+}
+
+std::vector<MAP_OBJECT> MYCLIENT::GetOurTumors() {
+	std::vector<MAP_OBJECT> tumors;
+	for (auto& e : mParser.CreepTumors) {
+		if (!e.IsEnemy()) {
 			tumors.push_back(e);
 		}
 	}
