@@ -80,8 +80,8 @@ POS MYCLIENT::GetBestCreep() {
 
 			auto empty_count = GetEmptyCountAround(p);
 			auto enemy_creep_count = GetEnemyCreepCountAround(p);
-			if (enemy_creep_count + empty_count > best_count) {
-				best_count = empty_count;
+			if (enemy_creep_count + 2 * empty_count > best_count) {
+				best_count = enemy_creep_count + 2 * empty_count;
 				best_pos = p;
 			}
 		}
