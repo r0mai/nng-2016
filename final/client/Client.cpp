@@ -375,9 +375,9 @@ int main(int argc, char* argv[])
 	std::cout<<"using default server address: " + server_address <<std::endl;
 	CLIENT *pClient = CreateClient();
 
-        if (argc > 1) {
-            pClient->opponent = argv[1];
-        }
+	if (argc > 1) {
+		pClient->opponent = argv[1];
+	}
 
 	/* for debugging:  */
 	std::ifstream debug_file("test.txt");

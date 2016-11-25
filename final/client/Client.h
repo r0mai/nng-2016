@@ -6,7 +6,7 @@
 class CLIENT
 {
 public:
-        std::string opponent = "test";
+	std::string opponent = "test";
 	struct PLAYER
 	{
 		int id;
