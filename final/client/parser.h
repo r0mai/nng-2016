@@ -1,4 +1,6 @@
 #pragma once
+#include "stdafx.h"
+
 
 static const int HATCHERY_BUILD_QUEEN_COST = 24000;
 static const int HATCHERY_MAX_ENERGY = 80000;
