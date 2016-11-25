@@ -26,6 +26,8 @@ protected:
 
 
 	void AttackAttackingQueens();
+	void SpawnWithQueens();
+	void SpawnWithTumors();
 
 	void PreprocessUnitTargets();
 	int ClosestTumorDistance(const POS& pos, int side = 0);
@@ -73,9 +75,7 @@ void MYCLIENT::AttackAttackingQueens() {
 	}
 }
 
-void MYCLIENT::Process() {
-	PreprocessUnitTargets();
-
+void MYCLIENT::SpawnWithQueens() {
 	FLEEPATH FleePath;
 	FleePath.CreateCreepDist(&mParser);
 	for (auto& queen : mParser.Units) {
@@ -92,7 +92,9 @@ void MYCLIENT::Process() {
 		}
 
 	}
+}
 
+void MYCLIENT::SpawnWithTumors() {
 	const auto& ourTumors = mParser.CreepTumors |
 			boost::adaptors::filtered(
 					[](const MAP_OBJECT& tumor) { return tumor.side == 0; });
@@ -100,7 +102,7 @@ void MYCLIENT::Process() {
 			[](const MAP_OBJECT& tumor) {
 					return tumor.energy >= CREEP_TUMOR_SPAWN_ENERGY; });
 
-	for(const auto& tumor : activeTumors) {
+	for (const auto& tumor : activeTumors) {
 		auto possibilities = GetCellsInRadius(tumor.pos);
 		auto best = std::max_element(possibilities.begin(), possibilities.end(),
 				[this](const POS& l, const POS& r) {
@@ -114,6 +116,13 @@ void MYCLIENT::Process() {
 
 		}
 	}
+}
+
+void MYCLIENT::Process() {
+	PreprocessUnitTargets();
+	AttackAttackingQueens();
+	SpawnWithQueens();
+	SpawnWithTumors();
 }
 
 int MYCLIENT::GetTumorFitness(const POS& p) {
