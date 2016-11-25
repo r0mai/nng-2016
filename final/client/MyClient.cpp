@@ -401,7 +401,7 @@ std::vector<MAP_OBJECT> MYCLIENT::GetIntrudingQueens() {
 
 	std::vector<MAP_OBJECT> intrudingQueens;
 	for (const auto& queen: enemyQueens) {
-		if (OnOurCreep(queen)) {
+		if (OnOurCreep(queen) || RouteDistance(mParser.OwnHatchery.pos, queen.pos) < 25) {
 			intrudingQueens.push_back(queen);
 		}
 	}
