@@ -15,6 +15,8 @@ protected:
 	virtual void Process();
 
         POS GetBestCreep();
+        std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
+        int GetEmptyCountAround(const POS& pos);
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -39,15 +41,50 @@ void MYCLIENT::Process() {
 }
 
 POS MYCLIENT::GetBestCreep() {
+    POS best_pos = POS(-1, -1);
+    int best_count = -1;
     for (int y = 0; y < mParser.h; ++y) {
         for (int x = 0; x < mParser.w; ++x) {
-            auto tile = mParser.GetAt(POS(x, y));
-            if (tile == PARSER::CREEP) {
-                return POS(x, y);
+            POS p(x, y);
+            auto tile = mParser.GetAt(p);
+            if (tile != PARSER::CREEP) {
+                continue;
+            }
+
+            auto empty_count = GetEmptyCountAround(p);
+            if (empty_count > best_count) {
+                best_count = empty_count;
+                best_pos = p;
             }
         }
     }
-    return POS(-1, -1);
+    return best_pos;
+}
+
+std::vector<POS> MYCLIENT::GetCellsInRadius(const POS& pos, int radius) {
+    std::vector<POS> cells;
+    for (int dy=-radius+1; dy<radius; ++dy) {
+	for (int dx=-radius+1; dx<radius; ++dx) {
+	    POS p(pos.x+dx,pos.y+dy);
+            int dx_q1=2*dx+(0<dx?1:-1);
+	    int dy_q1=2*dy+(0<dy?1:-1);
+	    int d2_q2=dx_q1*dx_q1+dy_q1*dy_q1;
+	    if (d2_q2<=radius*radius*4) {
+	        cells.push_back(p);
+            }
+        }
+    }
+    return cells;
+}
+
+int MYCLIENT::GetEmptyCountAround(const POS& pos) {
+    int count = 0;
+    for (auto& p : GetCellsInRadius(pos)) {
+        if (mParser.GetAt(p) == PARSER::EMPTY) {
+            ++count;
+        }
+    }
+    return count;
 }
 
 CLIENT *CreateClient() {
