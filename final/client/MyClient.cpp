@@ -39,6 +39,8 @@ protected:
 	int GetEnemyCreepCountAround(const POS& pos);
 	bool CanPlaceTumor(const POS& pos);
 	int Distance(const POS& p1, const POS& p2);
+	std::vector<MAP_OBJECT> GetOurQueens();
+	std::vector<MAP_OBJECT> GetEnemyQueens();
 
 	std::pair<BuildingType, MAP_OBJECT*> GetBuildingAt(const POS& pos);
 };
@@ -60,17 +62,13 @@ void MYCLIENT::PreprocessUnitTargets() {
 }
 
 void MYCLIENT::AttackAttackingQueens() {
-	for (auto& enemy_queen : mParser.Units) {
-		if (enemy_queen.IsEnemy()) {
-			if (mParser.GetAt(enemy_queen.pos) == PARSER::CREEP) {
-				for (auto& queen : mParser.Units) {
-					if (!queen.IsEnemy()) {
-						mUnitTarget[queen.id].c = CMD_ATTACK;
-						mUnitTarget[queen.id].target_id = enemy_queen.id;
-					}
-				}
-				return;
+	for (auto& enemy_queen : GetEnemyQueens()) {
+		if (mParser.GetAt(enemy_queen.pos) == PARSER::CREEP) {
+			for (auto& queen : GetOurQueens()) {
+				mUnitTarget[queen.id].c = CMD_ATTACK;
+				mUnitTarget[queen.id].target_id = enemy_queen.id;
 			}
+			return;
 		}
 	}
 }
@@ -78,11 +76,7 @@ void MYCLIENT::AttackAttackingQueens() {
 void MYCLIENT::SpawnWithQueens() {
 	FLEEPATH FleePath;
 	FleePath.CreateCreepDist(&mParser);
-	for (auto& queen : mParser.Units) {
-		if (queen.IsEnemy()) {
-			continue;
-		}
-
+	for (auto& queen : GetOurQueens()) {
 		if (!mUnitTarget.count(queen.id)) {
 			POS creep = GetBestCreep();
 			if (creep.IsValid()) {
@@ -223,6 +217,28 @@ int MYCLIENT::ClosestTumorDistance(const POS& pos, int side) {
 		dst = std::min(dst, Distance(obj.pos, pos));
 	}
 	return dst;
+}
+
+std::vector<MAP_OBJECT> MYCLIENT::GetOurQueens() {
+	std::vector<MAP_OBJECT> queens;
+	queens.reserve(8);
+	for (auto& enemy_queen : mParser.Units) {
+		if (!enemy_queen.IsEnemy()) {
+			queens.push_back(enemy_queen);
+		}
+	}
+	return queens;
+}
+
+std::vector<MAP_OBJECT> MYCLIENT::GetEnemyQueens() {
+	std::vector<MAP_OBJECT> queens;
+	queens.reserve(8);
+	for (auto& queen : mParser.Units) {
+		if (queen.IsEnemy()) {
+			queens.push_back(queen);
+		}
+	}
+	return queens;
 }
 
 CLIENT *CreateClient() {
