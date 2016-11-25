@@ -39,6 +39,7 @@ protected:
 	int GetEmptyCountAround(const POS& pos);
 	int GetEnemyCreepCountAround(const POS& pos);
 	bool CanPlaceTumor(const POS& pos);
+	bool HasTentativeTumorAt(const POS& pos);
 	int Distance(const POS& p1, const POS& p2);
 	std::vector<MAP_OBJECT> GetOurQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
@@ -198,9 +199,19 @@ std::pair<BuildingType, MAP_OBJECT*> MYCLIENT::GetBuildingAt(const POS& pos) {
 	return {{}, nullptr};
 }
 
+bool MYCLIENT::HasTentativeTumorAt(const POS& pos) {
+	for (auto& p : mUnitTarget) {
+		if (p.second.c == CMD_SPAWN && p.second.pos == pos) {
+			return true;
+		}
+	}
+	return false;
+}
 
 bool MYCLIENT::CanPlaceTumor(const POS& pos) {
-	return mParser.GetAt(pos) == PARSER::CREEP && GetBuildingAt(pos).second == nullptr;
+	return mParser.GetAt(pos) == PARSER::CREEP &&
+		GetBuildingAt(pos).second == nullptr &&
+		!HasTentativeTumorAt(pos);
 }
 
 int MYCLIENT::GetEmptyCountAround(const POS& pos) {
