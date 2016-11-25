@@ -38,6 +38,7 @@ protected:
 
 	int GetTumorFitness(const POS& p);
 	int GetEnemyTumorFitness(const POS& pos, int energy);
+	int GetEnemyTumorCrowded(const POS& pos);
 
 	POS GetBestCreepWithQueen(const POS& pos);
 	std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
@@ -378,6 +379,22 @@ int MYCLIENT::GetEnemyTumorFitness(const POS& pos, int energy) {
 	}
 
 	return fitness;
+}
+
+int MYCLIENT::GetEnemyTumorCrowded(const POS& pos) {
+	int count = 0;
+	auto cells = GetCellsInRadius(pos, 5);
+	for(const auto& cell: cells) {
+		const auto& units = mParser.GetUnitsAt(cell);
+		auto tumor = std::find_if(units.begin(), units.end(),
+				[](const std::pair<UnitType, MAP_OBJECT*>& unit) {
+					return unit.first == UnitType::kEnemyCreepTumor;
+				});
+		if (tumor != units.end()) {
+			++count;
+		}
+	}
+	return count;
 }
 
 POS MYCLIENT::GetBestCreepWithQueen(const POS& pos) {
