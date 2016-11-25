@@ -5,6 +5,7 @@
 #include <cmath>
 #include <numeric>
 #include <unordered_set>
+#include <chrono>
 
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/range/adaptor/filtered.hpp>
@@ -294,7 +295,7 @@ void MYCLIENT::ReactToHeatMap() {
 
 void MYCLIENT::Process() {
 	fleeing_queens.clear();
-
+	auto start_t = std::chrono::system_clock::now();
 	PrintStatistics();
 
 	PreprocessUnitTargets();
@@ -305,6 +306,12 @@ void MYCLIENT::Process() {
 	if (GetOurNonFleeingQueens().size() >= 6) {
 		AttackHatchery();
 	}
+
+	auto end_t = std::chrono::system_clock::now();
+	auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(
+		end_t - start_t).count();
+
+	std::cout << diff << "ms" << std::endl;
 }
 
 int MYCLIENT::GetTumorFitness(const POS& p) {
