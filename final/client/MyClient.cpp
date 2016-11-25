@@ -10,7 +10,7 @@ public:
 	MYCLIENT();
 protected:
 	virtual std::string GetPassword() { return std::string("47JdZX"); }
-	virtual std::string GetPreferredOpponents() { return std::string("any"); }
+	virtual std::string GetPreferredOpponents() { return opponent; }
 	virtual bool NeedDebugLog() { return true; }
 	virtual void Process();
 

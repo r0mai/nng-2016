@@ -371,15 +371,14 @@ int main(int argc, char* argv[])
 {
 	std::cout.sync_with_stdio(false);
 	std::string server_address;
-	if (argc<2)
-	{
-		server_address = "172.22.22.173";
-		std::cout<<"using default server address: " + server_address <<std::endl;
-	} else
-	{
-		server_address = argv[1];
-	}
+	server_address = "172.22.22.173";
+	std::cout<<"using default server address: " + server_address <<std::endl;
 	CLIENT *pClient = CreateClient();
+
+        if (argc > 1) {
+            pClient->opponent = argv[1];
+        }
+
 	/* for debugging:  */
 	std::ifstream debug_file("test.txt");
 	if (debug_file.is_open())
