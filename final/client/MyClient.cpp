@@ -100,8 +100,8 @@ void MYCLIENT::AttackAttackingQueens() {
 }
 
 void MYCLIENT::SpawnOrAttackWithQueens() {
-	FLEEPATH FleePath;
-	FleePath.CreateCreepDist(&mParser);
+	FLEEPATH flee_path;
+	flee_path.CreateCreepDist(&mParser);
 	for (auto& queen : GetOurQueens()) {
 		if (mUnitTarget.count(queen.id)) {
 			continue;
@@ -123,6 +123,9 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 			if (target != -1) {
 				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 				mUnitTarget[queen.id].target_id = target;
+			} else {
+				mUnitTarget[queen.id].c = CMD_MOVE;
+				mUnitTarget[queen.id].pos = flee_path.GetNextOffCreep(queen.pos);
 			}
 		}
 	}
