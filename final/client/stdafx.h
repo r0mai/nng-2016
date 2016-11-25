@@ -20,6 +20,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <unistd.h>
 #endif
 
 #include <cassert>
@@ -30,4 +31,5 @@
 #include <string>
 #include <ctime>
 #include <map>
-
+#include "GetTickCount.hpp"
+#include <string.h>
