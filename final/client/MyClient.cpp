@@ -184,8 +184,8 @@ int MYCLIENT::GetEnemyThreat(const POS& pos) {
 		auto dst = RouteDistance(queen.pos, pos);
 		auto t = mParser.GetAt(queen.pos);
 		float mul = 1.0;
-		if (t == PARSER::ENEMY_CREEP) { mul = 1.75; }
-		else if (t == PARSER::CREEP) { mul = 0.5; }
+		if (t == PARSER::ENEMY_CREEP) { mul = 1.25; }
+		else if (t == PARSER::CREEP) { mul = 0.8; }
 		if (dst < max_dst) {
 			auto rs = queen.hp / 40 + 1;
 			sum += (max_dst - dst) * rs * mul;
@@ -201,8 +201,8 @@ int MYCLIENT::GetForce(const POS& pos) {
 		auto dst = RouteDistance(queen.pos, pos);
 		auto t = mParser.GetAt(queen.pos);
 		float mul = 1.0;
-		if (t == PARSER::CREEP) { mul = 1.75; }
-		else if (t == PARSER::ENEMY_CREEP) { mul = 0.5; }
+		if (t == PARSER::CREEP) { mul = 1.25; }
+		else if (t == PARSER::ENEMY_CREEP) { mul = 0.8; }
 		if (dst < max_dst) {
 			auto rs = queen.hp / 40 + 1;
 			sum += (max_dst - dst) * rs * mul;
@@ -274,7 +274,7 @@ void MYCLIENT::AttackHatchery() {
 
 void MYCLIENT::ReactToHeatMap() {
 	for (auto& queen : GetOurQueens()) {
-		if (GetHeat(queen.pos) < 0) {
+		if (GetHeat(queen.pos) < -200) {
 			auto cells = GetCellsInRadius(queen.pos, 2);
 
 			boost::remove_erase_if(cells, [this](const POS& p) {
