@@ -100,24 +100,25 @@ std::ostream& operator<<(std::ostream& os, const POS& p) {
     return os;
 }
 
-std::pair<UnitType, MAP_OBJECT*> PARSER::GetUnitAt(const POS& pos) {
+std::vector<std::pair<UnitType, MAP_OBJECT*>> PARSER::GetUnitsAt(const POS& pos) {
+	std::vector<std::pair<UnitType, MAP_OBJECT*>> units;
 	if (pos == EnemyHatchery.pos) {
-		return {UnitType::kEnemyHatchery, &EnemyHatchery};
+		units.push_back({UnitType::kEnemyHatchery, &EnemyHatchery});
 	}
 	if (pos == OwnHatchery.pos) {
-		return {UnitType::kHatchery, &OwnHatchery};
+		units.push_back({UnitType::kHatchery, &OwnHatchery});
 	}
 	for (auto& ct : CreepTumors) {
 		if (pos == ct.pos) {
-			return {!ct.IsEnemy() ? UnitType::kCreepTumor : UnitType::kEnemyCreepTumor, &ct};
+			units.push_back({!ct.IsEnemy() ? UnitType::kCreepTumor : UnitType::kEnemyCreepTumor, &ct});
 		}
 	}
 	for (auto& u : Units) {
 		if (pos == u.pos) {
-			return {!u.IsEnemy() ? UnitType::kQueen: UnitType::kEnemyQueen, &u};
+			units.push_back({!u.IsEnemy() ? UnitType::kQueen: UnitType::kEnemyQueen, &u});
 		}
 	}
-	return {{}, nullptr};
+	return units;
 }
 
 MAP_OBJECT* PARSER::FindUnit(int id) {

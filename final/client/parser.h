@@ -126,6 +126,6 @@ public:
 	eMatchResult match_result;
 	void Parse(const std::vector<std::string> &ServerResponse);
 
-	std::pair<UnitType, MAP_OBJECT*> GetUnitAt(const POS& pos);
+	std::vector<std::pair<UnitType, MAP_OBJECT*>> GetUnitsAt(const POS& pos);
 	MAP_OBJECT* FindUnit(int id);
 };

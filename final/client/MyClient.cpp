@@ -79,7 +79,7 @@ void MYCLIENT::AttackAttackingQueens() {
 	for (auto& enemy_queen : GetEnemyQueens()) {
 		if (mParser.GetAt(enemy_queen.pos) == PARSER::CREEP) {
 			for (auto& queen : GetOurQueens()) {
-				mUnitTarget[queen.id].c = CMD_ATTACK;
+				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 				mUnitTarget[queen.id].target_id = enemy_queen.id;
 			}
 			return;
@@ -113,7 +113,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 				}
 			}
 
-			mUnitTarget[queen.id].c = CMD_ATTACK;
+			mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 			mUnitTarget[queen.id].target_id = best_id;
 		}
 	}
@@ -146,7 +146,7 @@ void MYCLIENT::SpawnWithTumors() {
 
 void MYCLIENT::AttackHatchery() {
 	for (auto& queen : GetOurQueens()) {
-		mUnitTarget[queen.id].c = CMD_ATTACK;
+		mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 		mUnitTarget[queen.id].target_id = mParser.EnemyHatchery.id;
 	}
 }
@@ -243,10 +243,18 @@ bool MYCLIENT::HasTentativeTumorAt(const POS& pos) {
 }
 
 bool MYCLIENT::CanPlaceTumor(const POS& pos) {
-	auto unit = mParser.GetUnitAt(pos);
-	return mParser.GetAt(pos) == PARSER::CREEP &&
-		(unit.second == nullptr || !IsBuilding(unit.first)) &&
-		!HasTentativeTumorAt(pos);
+	if (mParser.GetAt(pos) != PARSER::CREEP) {
+		return false;
+	}
+	if (HasTentativeTumorAt(pos)) {
+		return false;
+	}
+	for (auto& unit : mParser.GetUnitsAt(pos)) {
+		if (IsBuilding(unit.first)) {
+			return false;
+		}
+	}
+	return true;
 }
 
 int MYCLIENT::GetEmptyCountAround(const POS& pos) {
