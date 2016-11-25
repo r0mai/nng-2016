@@ -97,7 +97,10 @@ void MYCLIENT::PrintStatistics() {
 				std::cout << "\33[4m";
 			}
 			auto heat_ = heat(x, y);
-			if (heat_ >= kHeatThreshold) {
+			if (heat_ == 0) {
+				std::cout << "    ";
+				continue;
+			} else if (heat_ >= kHeatThreshold) {
 				std::cout << "\33[31m+";
 			} else {
 				std::cout << "\33[34m-";
