@@ -67,6 +67,7 @@ protected:
 	std::pair<bool, std::string> Move(const std::pair<int, CMD>& cmd);
 	std::pair<bool, std::string> Spawn(const std::pair<int, CMD>& cmd);
 	std::pair<bool, std::string> Attack(const std::pair<int, CMD>& cmd);
+	std::pair<bool, std::string> AttackMove(const std::pair<int, CMD>& cmd);
 };
 
 CLIENT *CreateClient();

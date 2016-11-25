@@ -443,3 +443,49 @@ std::pair<bool, std::string> CLIENT::Attack(const std::pair<int, CMD>& cmd) {
 	}
 	return {true, ""};
 }
+
+std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) {
+	MAP_OBJECT *q = mParser.FindUnit(cmd.first);
+	if (!q) {
+		return {true, ""};
+	}
+
+	MAP_OBJECT *t = mParser.FindUnit(cmd.second.target_id);
+	if (!t) {
+		return {true, ""};
+	}
+
+	if (q->pos.IsNear(t->pos)) {
+		auto new_cmd = cmd;
+		new_cmd.second.c = CLIENT::CMD_ATTACK;
+		return Attack(new_cmd);
+	}
+
+	std::vector<std::pair<UnitType, MAP_OBJECT*>> near_objects;
+	near_objects.push_back(mParser.GetUnitAt(q->pos.ShiftDir(POS::SHIFT_UP)));
+	near_objects.push_back(mParser.GetUnitAt(q->pos.ShiftDir(POS::SHIFT_DOWN)));
+	near_objects.push_back(mParser.GetUnitAt(q->pos.ShiftDir(POS::SHIFT_LEFT)));
+	near_objects.push_back(mParser.GetUnitAt(q->pos.ShiftDir(POS::SHIFT_RIGHT)));
+
+	for (auto& p : near_objects) {
+		if (!p.second) {
+			continue;
+		}
+		switch (p.first) {
+			default:
+				break;
+			case UnitType::kEnemyQueen:
+			case UnitType::kEnemyCreepTumor:
+			case UnitType::kEnemyHatchery:
+				auto new_cmd = cmd;
+				new_cmd.second.c = CLIENT::CMD_ATTACK;
+				new_cmd.second.target_id = p.second->id;
+				return Attack(new_cmd);
+		}
+	}
+
+	auto new_cmd = cmd;
+	new_cmd.second.c = CLIENT::CMD_MOVE;
+	new_cmd.second.pos = t->pos;
+	return Move(cmd);
+}
