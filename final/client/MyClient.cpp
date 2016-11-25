@@ -91,7 +91,7 @@ POS MYCLIENT::GetBestCreep() {
 			}
 		}
 	}
-	std::cout << "Best count = " << best_count << " @ " << best_pos << std::endl;
+	std::cout << "Best count = " << best_fit << " @ " << best_pos << std::endl;
 	return best_pos;
 }
 
