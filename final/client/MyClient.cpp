@@ -272,7 +272,8 @@ int MYCLIENT::RouteDistance(const POS& p1, const POS& p2) {
 }
 
 int MYCLIENT::ClosestTumorDistance(const POS& pos, bool enemy) {
-	int dst = Distance(pos, (enemy ? EnemyHatchery : OwnHatchery).pos);
+	auto hatchery = (enemy ? mParser.EnemyHatchery : mParser.OwnHatchery);
+	int dst = Distance(pos, hatchery.pos);
 
 	for (const auto& obj : mParser.CreepTumors) {
 		if (obj.IsEnemy() != enemy || obj.pos == pos) {
