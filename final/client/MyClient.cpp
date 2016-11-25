@@ -47,6 +47,7 @@ protected:
 	std::vector<MAP_OBJECT> GetOurQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
 	bool CanWeDie() const;
+	bool DoWeHaveMoreCreep() const;
 
 	std::pair<BuildingType, MAP_OBJECT*> GetBuildingAt(const POS& pos);
 };
@@ -283,6 +284,15 @@ bool MYCLIENT::CanWeDie() const {
 	// TODO: Calculate the number of queens they could create and deploy
 	auto damagePossible = remainingTicks * numberOfEnemyUnits * QUEEN_DAMAGE;
 	return damagePossible >= mParser.OwnHatchery.hp;
+}
+
+bool MYCLIENT::DoWeHaveMoreCreep() const {
+	const auto& arena = mParser.Arena;
+	std::size_t ourCreep = std::count(arena.begin(), arena.end(),
+			PARSER::CREEP);
+	std::size_t theirCreep = std::count(arena.begin(), arena.end(),
+			PARSER::ENEMY_CREEP);
+	return ourCreep > theirCreep;
 }
 
 CLIENT *CreateClient() {
