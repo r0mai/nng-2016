@@ -35,7 +35,7 @@ protected:
 	int GetTumorFitness(const POS& p);
 	int GetEnemyTumorFitness(const POS& pos, int energy);
 
-	POS GetBestCreep();
+	POS GetBestCreepWithQueen(const POS& pos);
 	std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
 	int GetEmptyCountAround(const POS& pos);
 	int GetEnemyCreepCountAround(const POS& pos);
@@ -43,6 +43,8 @@ protected:
 	bool HasTentativeTumorAt(const POS& pos);
 	int Distance(const POS& p1, const POS& p2);
 	int RouteDistance(const POS& p1, const POS& p2);
+	int GetAttackTarget(const POS& pos);
+
 	std::vector<MAP_OBJECT> GetOurQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
 	std::vector<MAP_OBJECT> GetEnemyTumors();
@@ -94,13 +96,18 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		if (mUnitTarget.count(queen.id)) {
 			continue;
 		}
-		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST || !AreWeStrongerBy(1.5)) {
-			POS creep = GetBestCreep();
+		int empty_around = 0;
+
+		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST) {
+			POS creep = GetBestCreepWithQueen(queen.pos);
 			if (creep.IsValid()) {
+				empty_around = GetEmptyCountAround(creep);
 				mUnitTarget[queen.id].c = CMD_SPAWN;
 				mUnitTarget[queen.id].pos = creep;
 			}
-		} else {
+		}
+
+		if (!empty_around || AreWeStrongerBy(2.0)) {
 			int best_fit = INT_MIN;
 			int best_id = mParser.EnemyHatchery.id;
 			for (auto& tumor : GetEnemyTumors()) {
@@ -141,6 +148,54 @@ void MYCLIENT::SpawnWithTumors() {
 				best->y << std::endl;
 
 		}
+	}
+}
+
+
+int MYCLIENT::GetEnemyThreat(const POS& pos) {
+	int sum = 0;
+	int max_dist = 10;
+	for (const auto& queen : GetEnemyQueens()) {
+		auto dst = RouteDistance(queen.pos, pos);
+		if (dst < max_dist) { sum += (max_dst - dst) * 40; }
+	}
+	return sum;
+}
+
+int MYCLIENT::GetAttackTarget(const POS& pos) {
+	int best_id = -1;
+	int best_fit = INT_MIN;
+
+	for (const auto& tumor : GetEnemyTumors()) {
+		auto dst = RouteDistance(pos, tumor.pos);
+		auto threat = GetEnemyThreat(tumor.pos);
+		auto fitness = GetEnemyTumorFitness(tumor.pos, tumor.energy);
+
+		fitness -= dst;
+		fitness -= threat;
+
+		if (fitness > best_fit) {
+			best_fit = fitness;
+			best_id = tumor.id;
+		}
+	}
+
+	for (const auto& queen : GetEnemyQueens()) {
+		auto dst = RouteDistance(queen.pos, pos);
+		auto threat = GetEnemyThreat(queen.pos);
+		int fitness = -50; // fitness modifier
+
+		fitness -= dst;
+		fitness -= threat;
+		if (fitness > best_fit) {
+			best_fit = fitness;
+			best_id = tumor.id;
+		}
+	}
+
+	if (best_id != -1) {
+	 	mUnitTarget[queen.id].c = CMD_ATTACK;
+	 	mUnitTarget[queen.id].target_id = best_id;
 	}
 }
 
@@ -185,13 +240,13 @@ int MYCLIENT::GetEnemyTumorFitness(const POS& pos, int energy) {
 	return fitness;
 }
 
-POS MYCLIENT::GetBestCreep() {
+POS MYCLIENT::GetBestCreepWithQueen(const POS& pos) {
 	POS best_pos = POS(-1, -1);
-	int best_fit = -1;
+	int best_fit = INT_MIN;
 	for (int y = 0; y < mParser.h; ++y) {
 		for (int x = 0; x < mParser.w; ++x) {
 			POS p(x, y);
-			auto fitness = GetTumorFitness(p);
+			auto fitness = 10 * GetTumorFitness(p) - RouteDistance(pos, p);
 			if (fitness > best_fit) {
 				best_fit = fitness;
 				best_pos = p;
