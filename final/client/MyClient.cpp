@@ -69,10 +69,21 @@ protected:
 MYCLIENT::MYCLIENT() {}
 
 void MYCLIENT::PrintStatistics() {
-	//std::cout << "H gained " <<
-	//	mParser.OwnHatchery.energy - last_hatchery_energy_ << "e" <<
-	//	" (" << mParser.OwnHatchery.energy << "e)" << std::endl;
-	last_hatchery_energy_ = mParser.OwnHatchery.energy;
+	for (int y = 0; y < mParser.w; ++y) {
+		for (int x = 0; x < mParser.h; ++x) {
+			if (mParser.GetAt(POS{x, y}) == PARSER::WALL) {
+				std::cout << "█";
+				continue;
+			}
+			if (mParser.GetAt(POS{x, y}) == PARSER::EMPTY) {
+				std::cout << " ";
+				continue;
+			}
+			auto units = mParser.GetUnitsAt(POS{x, y});
+			std::cout << " ";
+		}
+		std::cout << std::endl;
+	}
 }
 
 void MYCLIENT::PreprocessUnitTargets() {
