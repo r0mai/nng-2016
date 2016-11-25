@@ -4,6 +4,13 @@
 #include "fleepath.h"
 
 // sample
+//
+enum class BuildingType {
+    kHatchery,
+    kEnemyHatchery,
+    kCreepTumor,
+    kEnemyCreepTumor
+};
 
 class MYCLIENT : public CLIENT {
 public:
@@ -20,6 +27,8 @@ protected:
         std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
         int GetEmptyCountAround(const POS& pos);
         int GetEnemyCreepCountAround(const POS& pos);
+        bool CanPlaceTumor(const POS& pos);
+        std::pair<BuildingType, MAP_OBJECT*> GetBuildingAt(const POS& pos);
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -28,7 +37,7 @@ void MYCLIENT::PreprocessUnitTargets() {
     std::vector<int> to_clear;
     for (auto& p : mUnitTarget) {
         if (p.second.c == CMD_SPAWN) {
-            if (mParser.GetAt(p.second.pos) != PARSER::CREEP) {
+            if (!CanPlaceTumor(p.second.pos)) {
                 to_clear.push_back(p.first);
             }
         }
@@ -65,7 +74,7 @@ POS MYCLIENT::GetBestCreep() {
     for (int y = 0; y < mParser.h; ++y) {
         for (int x = 0; x < mParser.w; ++x) {
             POS p(x, y);
-            if (mParser.GetAt(p) != PARSER::CREEP) {
+            if (!CanPlaceTumor(p)) {
                 continue;
             }
 
@@ -105,6 +114,26 @@ int MYCLIENT::GetEnemyCreepCountAround(const POS& pos) {
         }
     }
     return count;
+}
+
+std::pair<BuildingType, MAP_OBJECT*> MYCLIENT::GetBuildingAt(const POS& pos) {
+    if (pos == mParser.EnemyHatchery.pos) {
+        return {BuildingType::kEnemyHatchery, &mParser.EnemyHatchery};
+    }
+    if (pos == mParser.OwnHatchery.pos) {
+        return {BuildingType::kHatchery, &mParser.OwnHatchery};
+    }
+    for (auto& ct : mParser.CreepTumors) {
+        if (pos == ct.pos) {
+            return {ct.side == 0 ? BuildingType::kCreepTumor : BuildingType::kEnemyCreepTumor, &ct};
+        }
+    }
+    return {{}, nullptr};
+}
+
+
+bool MYCLIENT::CanPlaceTumor(const POS& pos) {
+    return mParser.GetAt(pos) == PARSER::CREEP && GetBuildingAt(pos).second == nullptr;
 }
 
 int MYCLIENT::GetEmptyCountAround(const POS& pos) {
