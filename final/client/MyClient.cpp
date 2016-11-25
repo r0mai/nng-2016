@@ -55,7 +55,8 @@ MYCLIENT::MYCLIENT() {}
 
 void MYCLIENT::PrintStatistics() {
 	std::cout << "H gained " <<
-		mParser.OwnHatchery.energy - last_hatchery_energy_ << "e" << " (" << mParser.OwnHatchery.energy << "e)" << std::endl;
+		mParser.OwnHatchery.energy - last_hatchery_energy_ << "e" <<
+		" (" << mParser.OwnHatchery.energy << "e)" << std::endl;
 	last_hatchery_energy_ = mParser.OwnHatchery.energy;
 }
 
