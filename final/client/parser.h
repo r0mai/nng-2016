@@ -27,6 +27,18 @@ enum class UnitType {
 	kEnemyQueen
 };
 
+inline std::ostream& operator<<(std::ostream& os, UnitType u) {
+	switch (u) {
+		case UnitType::kHatchery: return os << "Hatchery";
+		case UnitType::kEnemyHatchery: return os << "EnemyHatchery";
+		case UnitType::kCreepTumor: return os << "CreepTumor";
+		case UnitType::kEnemyCreepTumor: return os << "EnemyCreepTumor";
+		case UnitType::kQueen: return os << "Queen";
+		case UnitType::kEnemyQueen: return os << "EnemyQueen";
+	}
+	return os;
+}
+
 inline int ThreatScore(UnitType u) {
 	switch (u) {
 		case UnitType::kHatchery: return -2;

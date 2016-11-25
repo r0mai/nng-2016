@@ -462,7 +462,7 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 	if (q->pos.IsNear(t->pos)) {
 		auto new_cmd = cmd;
 		new_cmd.second.c = CLIENT::CMD_ATTACK;
-		std::cout << "Attack real target cause it's near" << new_cmd.second.target_id << std::endl;
+		std::cout << "Attack real target cause it's near" << new_cmd.second.target_id << " " << new_cmd.first << std::endl;
 		return Attack(new_cmd);
 	}
 
@@ -473,16 +473,17 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_RIGHT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
 	u = mParser.GetUnitsAt(q->pos); near_objects.insert(near_objects.end(), u.begin(), u.end());
 
-	near_objects.erase(std::remove_if(near_objects.begin(),
-		near_objects.end(),
-		[](const std::pair<UnitType, MAP_OBJECT*>& p) {
-			return p.first != UnitType::kEnemyQueen &&
-				p.first != UnitType::kEnemyCreepTumor &&
-				p.first != UnitType::kEnemyHatchery;
+	decltype(near_objects) filtered_objects;
+	for (auto& p : near_objects) {
+		if (p.first == UnitType::kEnemyQueen ||
+				p.first == UnitType::kEnemyCreepTumor ||
+				p.first == UnitType::kEnemyHatchery)
+		{
+			filtered_objects.push_back(p);
 		}
-	));
+	}
 
-	std::sort(near_objects.begin(), near_objects.end(),
+	std::sort(filtered_objects.begin(), filtered_objects.end(),
 		[](const std::pair<UnitType, MAP_OBJECT*>& lhs, const std::pair<UnitType, MAP_OBJECT*>& rhs) {
 			auto lts = ThreatScore(lhs.first);
 			auto rts = ThreatScore(rhs.first);
@@ -496,16 +497,16 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 		}
 	);
 
-	for (auto& p : near_objects) {
+	for (auto& p : filtered_objects) {
 		auto new_cmd = cmd;
 		new_cmd.second.c = CLIENT::CMD_ATTACK;
 		new_cmd.second.target_id = p.second->id;
-		std::cout << "Attack a near object " << new_cmd.second.target_id << std::endl;
+		std::cout << "Attack a near object" << new_cmd.second.target_id << " " << p.first << std::endl;
 		return {false, Attack(new_cmd).second};
 	}
 
 	auto new_cmd = cmd;
 	new_cmd.second.c = CLIENT::CMD_ATTACK;
-	std::cout << "Attack real target far away " << new_cmd.second.target_id << std::endl;
+	std::cout << "Attack real target far away" << new_cmd.second.target_id << " " << new_cmd.first << std::endl;
 	return Attack(new_cmd);
 }
