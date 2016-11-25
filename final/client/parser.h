@@ -18,6 +18,22 @@ static const int MAX_QUEENS = 8;
 static const int HATCHERY_SIZE = 3;
 static const int MAX_TICK = 1200;
 
+enum class UnitType {
+	kHatchery,
+	kEnemyHatchery,
+	kCreepTumor,
+	kEnemyCreepTumor,
+	kQueen,
+	kEnemyQueen
+};
+
+inline bool IsBuilding(UnitType t) {
+	return t == UnitType::kHatchery ||
+		t == UnitType::kEnemyHatchery ||
+		t == UnitType::kCreepTumor ||
+		t == UnitType::kEnemyCreepTumor;
+}
+
 struct POS
 {
 	enum eDirection
@@ -109,4 +125,6 @@ public:
 	};
 	eMatchResult match_result;
 	void Parse(const std::vector<std::string> &ServerResponse);
+
+	std::pair<UnitType, MAP_OBJECT*> GetUnitAt(const POS& pos);
 };

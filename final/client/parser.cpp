@@ -99,3 +99,23 @@ std::ostream& operator<<(std::ostream& os, const POS& p) {
     os << "(" << p.x << ", " << p.y << ")";
     return os;
 }
+
+std::pair<UnitType, MAP_OBJECT*> PARSER::GetUnitAt(const POS& pos) {
+	if (pos == EnemyHatchery.pos) {
+		return {UnitType::kEnemyHatchery, &EnemyHatchery};
+	}
+	if (pos == OwnHatchery.pos) {
+		return {UnitType::kHatchery, &OwnHatchery};
+	}
+	for (auto& ct : CreepTumors) {
+		if (pos == ct.pos) {
+			return {!ct.IsEnemy() ? UnitType::kCreepTumor : UnitType::kEnemyCreepTumor, &ct};
+		}
+	}
+	for (auto& u : Units) {
+		if (pos == u.pos) {
+			return {!u.IsEnemy() ? UnitType::kQueen: UnitType::kEnemyQueen, &u};
+		}
+	}
+	return {{}, nullptr};
+}

@@ -8,12 +8,6 @@
 
 // sample
 //
-enum class BuildingType {
-	kHatchery,
-	kEnemyHatchery,
-	kCreepTumor,
-	kEnemyCreepTumor
-};
 
 class MYCLIENT : public CLIENT {
 public:
@@ -53,8 +47,6 @@ protected:
 
 	bool CanWeDie() const;
 	bool DoWeHaveMoreCreep() const;
-
-	std::pair<BuildingType, MAP_OBJECT*> GetBuildingAt(const POS& pos);
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -238,21 +230,6 @@ int MYCLIENT::GetEnemyCreepCountAround(const POS& pos) {
 	return count;
 }
 
-std::pair<BuildingType, MAP_OBJECT*> MYCLIENT::GetBuildingAt(const POS& pos) {
-	if (pos == mParser.EnemyHatchery.pos) {
-		return {BuildingType::kEnemyHatchery, &mParser.EnemyHatchery};
-	}
-	if (pos == mParser.OwnHatchery.pos) {
-		return {BuildingType::kHatchery, &mParser.OwnHatchery};
-	}
-	for (auto& ct : mParser.CreepTumors) {
-		if (pos == ct.pos) {
-			return {ct.side == 0 ? BuildingType::kCreepTumor : BuildingType::kEnemyCreepTumor, &ct};
-		}
-	}
-	return {{}, nullptr};
-}
-
 bool MYCLIENT::HasTentativeTumorAt(const POS& pos) {
 	for (auto& p : mUnitTarget) {
 		if (p.second.c == CMD_SPAWN && p.second.pos == pos) {
@@ -263,8 +240,9 @@ bool MYCLIENT::HasTentativeTumorAt(const POS& pos) {
 }
 
 bool MYCLIENT::CanPlaceTumor(const POS& pos) {
+	auto unit = mParser.GetUnitAt(pos);
 	return mParser.GetAt(pos) == PARSER::CREEP &&
-		GetBuildingAt(pos).second == nullptr &&
+		(unit.second == nullptr || !IsBuilding(unit.first)) &&
 		!HasTentativeTumorAt(pos);
 }
 
