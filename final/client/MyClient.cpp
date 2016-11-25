@@ -4,7 +4,9 @@
 #include "fleepath.h"
 #include <cmath>
 #include <numeric>
+#include <unordered_set>
 
+#include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
@@ -30,6 +32,7 @@ protected:
 	void AttackHatchery();
 
 	void PreprocessUnitTargets();
+	void ReactToHeatMap();
 	int ClosestTumorDistance(const POS& pos, bool enemy = false);
 
 	int GetTumorFitness(const POS& p);
@@ -46,8 +49,10 @@ protected:
 	int GetAttackTarget(const POS& pos, int force);
 	int GetEnemyThreat(const POS& pos);
 	int GetForce(const POS& pos);
+	int GetHeat(const POS& pos);
 
 	std::vector<MAP_OBJECT> GetOurQueens();
+	std::vector<MAP_OBJECT> GetOurNonFleeingQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
 	std::vector<MAP_OBJECT> GetIntrudingQueens();
 	std::vector<MAP_OBJECT> GetEnemyTumors();
@@ -64,6 +69,8 @@ protected:
 	}
 
 	const MAP_OBJECT* GetClosestEnemyNear(const POS& pos);
+
+	std::unordered_set<int> fleeing_queens;
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -103,18 +110,19 @@ void MYCLIENT::PreprocessUnitTargets() {
 void MYCLIENT::AttackAttackingQueens() {
 	auto enemyQueens = GetIntrudingQueens();
 	if (enemyQueens.empty()) { return; }
-	for (auto& queen : GetOurQueens()) {
+	for (auto& queen : GetOurNonFleeingQueens()) {
 		mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 		auto queenToAttack = GetClosestEnemyNear(queen.pos);
-		if (queenToAttack)
+		if (queenToAttack) {
 			mUnitTarget[queen.id].target_id = queenToAttack->id;
+		}
 	}
 }
 
 void MYCLIENT::SpawnOrAttackWithQueens() {
 	FLEEPATH flee_path;
 	flee_path.CreateCreepDist(&mParser);
-	for (auto& queen : GetOurQueens()) {
+	for (auto& queen : GetOurNonFleeingQueens()) {
 		if (mUnitTarget.count(queen.id)) {
 			continue;
 		}
@@ -203,6 +211,10 @@ int MYCLIENT::GetForce(const POS& pos) {
 	return sum;
 }
 
+int MYCLIENT::GetHeat(const POS& pos) {
+	return GetForce(pos) - GetEnemyThreat(pos);
+}
+
 int MYCLIENT::GetAttackTarget(const POS& pos, int force) {
 	int best_id = -1;
 	int best_fit = INT_MIN;
@@ -254,20 +266,43 @@ int MYCLIENT::GetAttackTarget(const POS& pos, int force) {
 }
 
 void MYCLIENT::AttackHatchery() {
-	for (auto& queen : GetOurQueens()) {
+	for (auto& queen : GetOurNonFleeingQueens()) {
 		mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 		mUnitTarget[queen.id].target_id = mParser.EnemyHatchery.id;
 	}
 }
 
+void MYCLIENT::ReactToHeatMap() {
+	for (auto& queen : GetOurQueens()) {
+		if (GetHeat(queen.pos) < 0) {
+			auto cells = GetCellsInRadius(queen.pos, 2);
+
+			boost::remove_erase_if(cells, [this](const POS& p) {
+				return mParser.GetAt(p) == PARSER::WALL;
+			});
+			auto best = std::max_element(cells.begin(), cells.end(),
+				[this](const POS& lhs, const POS& rhs) {
+					return GetHeat(lhs) < GetHeat(rhs);
+				}
+			);
+			mUnitTarget[queen.id].c = CMD_MOVE;
+			mUnitTarget[queen.id].pos = *best;
+			fleeing_queens.insert(queen.id);
+		}
+	}
+}
+
 void MYCLIENT::Process() {
+	fleeing_queens.clear();
+
 	PrintStatistics();
 
 	PreprocessUnitTargets();
+	ReactToHeatMap();
 	AttackAttackingQueens();
 	SpawnOrAttackWithQueens();
 	SpawnWithTumors();
-	if (GetOurQueens().size() >= 7) {
+	if (GetOurNonFleeingQueens().size() >= 6) {
 		AttackHatchery();
 	}
 }
@@ -406,6 +441,17 @@ std::vector<MAP_OBJECT> MYCLIENT::GetOurQueens() {
 	queens.reserve(8);
 	for (auto& enemy_queen : mParser.Units) {
 		if (!enemy_queen.IsEnemy()) {
+			queens.push_back(enemy_queen);
+		}
+	}
+	return queens;
+}
+
+std::vector<MAP_OBJECT> MYCLIENT::GetOurNonFleeingQueens() {
+	std::vector<MAP_OBJECT> queens;
+	queens.reserve(8);
+	for (auto& enemy_queen : mParser.Units) {
+		if (!enemy_queen.IsEnemy() && !fleeing_queens.count(enemy_queen.id)) {
 			queens.push_back(enemy_queen);
 		}
 	}
