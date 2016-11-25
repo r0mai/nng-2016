@@ -43,7 +43,9 @@ protected:
 	bool HasTentativeTumorAt(const POS& pos);
 	int Distance(const POS& p1, const POS& p2);
 	int RouteDistance(const POS& p1, const POS& p2);
-	int GetAttackTarget(const POS& pos);
+	int GetAttackTarget(const POS& pos, int force);
+	int GetEnemyThreat(const POS& pos);
+	int GetForce(const POS& pos);
 
 	std::vector<MAP_OBJECT> GetOurQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
@@ -107,21 +109,13 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 			}
 		}
 
-		if (!empty_around || AreWeStrongerBy(2.0)) {
-			int best_fit = INT_MIN;
-			int best_id = mParser.EnemyHatchery.id;
-			for (auto& tumor : GetEnemyTumors()) {
-				auto dst = RouteDistance(queen.pos, tumor.pos);
-				auto fitness = GetEnemyTumorFitness(tumor.pos, tumor.energy);
-				fitness -= dst;
-				if (fitness > best_fit) {
-					best_fit = fitness;
-					best_id = tumor.id;
-				}
+		if (!empty_around) {
+			auto force = GetForce(queen.pos);
+			auto target = GetAttackTarget(queen.pos, force);
+			if (target) {
+				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
+				mUnitTarget[queen.id].target_id = target;
 			}
-
-			mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
-			mUnitTarget[queen.id].target_id = best_id;
 		}
 	}
 }
@@ -151,18 +145,27 @@ void MYCLIENT::SpawnWithTumors() {
 	}
 }
 
-
 int MYCLIENT::GetEnemyThreat(const POS& pos) {
 	int sum = 0;
-	int max_dist = 10;
+	int max_dst = 10;
 	for (const auto& queen : GetEnemyQueens()) {
 		auto dst = RouteDistance(queen.pos, pos);
-		if (dst < max_dist) { sum += (max_dst - dst) * 40; }
+		if (dst < max_dst) { sum += (max_dst - dst) * 40; }
 	}
 	return sum;
 }
 
-int MYCLIENT::GetAttackTarget(const POS& pos) {
+int MYCLIENT::GetForce(const POS& pos) {
+	int sum = 0;
+	int max_dst = 10;
+	for (const auto& queen : GetOurQueens()) {
+		auto dst = RouteDistance(queen.pos, pos);
+		if (dst < max_dst) { sum += (max_dst - dst) * 40; }
+	}
+	return sum;
+}
+
+int MYCLIENT::GetAttackTarget(const POS& pos, int force) {
 	int best_id = -1;
 	int best_fit = INT_MIN;
 
@@ -189,14 +192,27 @@ int MYCLIENT::GetAttackTarget(const POS& pos) {
 		fitness -= threat;
 		if (fitness > best_fit) {
 			best_fit = fitness;
-			best_id = tumor.id;
+			best_id = queen.id;
 		}
 	}
 
-	if (best_id != -1) {
-	 	mUnitTarget[queen.id].c = CMD_ATTACK;
-	 	mUnitTarget[queen.id].target_id = best_id;
+	if (true) {
+		auto hatchery = mParser.EnemyHatchery;
+		auto dst = RouteDistance(pos, hatchery.pos);
+		auto threat = GetEnemyThreat(hatchery.pos);
+		auto fitness = - dst - threat;
+
+		if (fitness > best_fit) {
+			best_fit = fitness;
+			best_id = hatchery.id;
+		}
 	}
+
+	if (best_fit + force > 0) {
+		return best_id;
+	}
+
+	return -1;
 }
 
 void MYCLIENT::AttackHatchery() {
