@@ -1,4 +1,4 @@
 #pragma once
 
 
-inline int GetTickCount();
+int GetTickCount();
