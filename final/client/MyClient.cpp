@@ -49,7 +49,7 @@ protected:
 
 	bool CanWeDie();
 	bool DoWeHaveMoreCreep();
-	bool AreOurQueensOutGunned();
+	bool AreWeStrongerBy(float ratio = 1.0);
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -94,7 +94,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		if (mUnitTarget.count(queen.id)) {
 			continue;
 		}
-		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST) {
+		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST || !AreWeStrongerBy(0.9)) {
 			POS creep = GetBestCreep();
 			if (creep.IsValid()) {
 				mUnitTarget[queen.id].c = CMD_SPAWN;
@@ -336,7 +336,7 @@ bool MYCLIENT::DoWeHaveMoreCreep() {
 	return ourCreep > theirCreep;
 }
 
-bool MYCLIENT::AreOurQueensOutGunned() {
+bool MYCLIENT::AreWeStrongerBy(float ratio) {
 	auto queenToHealth = [](const MAP_OBJECT& queen) {
 		return queen.hp;
 	};
@@ -347,7 +347,7 @@ bool MYCLIENT::AreOurQueensOutGunned() {
 	auto ourHealth = std::accumulate(ourHealths.begin(), ourHealths.end(), 0);
 	auto theirHealth = std::accumulate(theirHealths.begin(), theirHealths.end(),
 			0);
-	return ourHealth > theirHealth;
+	return ratio * ourHealth > theirHealth;
 }
 
 CLIENT *CreateClient() {
