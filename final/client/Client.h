@@ -14,7 +14,7 @@ public:
 		std::string name;
 	};
 	std::vector<PLAYER> Players;
-	PARSER mParser;	
+	PARSER mParser;
 	std::stringstream command_buffer;
 	DISTCACHE mDistCache;
 	enum eUnitCommand {

@@ -21,7 +21,7 @@ MYCLIENT::MYCLIENT()
 
 void MYCLIENT::Process()
 {
-	
+
 }
 
 

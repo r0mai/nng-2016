@@ -4,7 +4,7 @@
 PARSER::PARSER()
 {
 	tick = 0;
-	versus[0] = versus[1] = 0;	
+	versus[0] = versus[1] = 0;
 	match_result = PARSER::ONGOING;
 	w=h=0;
 }
@@ -25,7 +25,7 @@ void PARSER::Parse(const std::vector<std::string> &ServerResponse)
 	tick = 0;
 	match_result = PARSER::ONGOING;
 	Arena.clear();
-	Units.clear();	
+	Units.clear();
 	CreepTumors.clear();
 	int i;
 	for(i=0;i<(int)ServerResponse.size();i++)

@@ -3,8 +3,8 @@
 
 #include "parser.h"
 
-class FLEEPATH 
-{	
+class FLEEPATH
+{
 	int map_dx, map_dy;
 	std::vector<int> DamageOnEnemyCreep; // -1: wall, -2: tmp empty, -3: tmp enemy creep
 	std::vector<int> DistanceToFriendlyCreep;

@@ -9,7 +9,7 @@ bool FLEEPATH::AdjecentPos(POS &pos, int dir)
 	POS p=pos.ShiftDir(dir);
 	if (p.x<0 || p.x>=map_dx || p.y<0 || p.y>=map_dx || DistanceToFriendlyCreep[p.x+p.y*map_dx]<0)
 	{
-		return false;		
+		return false;
 	}
 	pos=p;
 	return true;
@@ -27,7 +27,7 @@ void FLEEPATH::CreateCreepDist(PARSER *pParser)
 		for (p.x = 0; p.x<map_dx; p.x++)
 		{
 			PARSER::eGroundType g_t = pParser->GetAt(p);
-			DistanceToFriendlyCreep[p.x + p.y*map_dx] = DamageOnEnemyCreep[p.x + p.y*map_dx] = 
+			DistanceToFriendlyCreep[p.x + p.y*map_dx] = DamageOnEnemyCreep[p.x + p.y*map_dx] =
 				g_t== PARSER::WALL ? -1 :
 				g_t==PARSER::CREEP ? 0 :
 				g_t == PARSER::ENEMY_CREEP ? -3 :
