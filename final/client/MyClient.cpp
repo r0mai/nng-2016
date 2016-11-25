@@ -112,7 +112,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		if (!empty_around) {
 			auto force = GetForce(queen.pos);
 			auto target = GetAttackTarget(queen.pos, force);
-			if (target) {
+			if (target != -1) {
 				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 				mUnitTarget[queen.id].target_id = target;
 			}
