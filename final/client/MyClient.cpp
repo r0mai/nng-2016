@@ -163,7 +163,7 @@ int MYCLIENT::GetEnemyThreat(const POS& pos) {
 	int max_dst = 10;
 	for (const auto& queen : GetEnemyQueens()) {
 		auto dst = RouteDistance(queen.pos, pos);
-		auto t = mParser.GetAt(p);
+		auto t = mParser.GetAt(queen.pos);
 		float mul = 1.0;
 		if (t == PARSER::ENEMY_CREEP) { mul = 1.75; }
 		else if (t == PARSER::CREEP) { mul = 0.5; }
@@ -180,7 +180,7 @@ int MYCLIENT::GetForce(const POS& pos) {
 	int max_dst = 10;
 	for (const auto& queen : GetOurQueens()) {
 		auto dst = RouteDistance(queen.pos, pos);
-		auto t = mParser.GetAt(p);
+		auto t = mParser.GetAt(queen.pos);
 		float mul = 1.0;
 		if (t == PARSER::CREEP) { mul = 1.75; }
 		else if (t == PARSER::ENEMY_CREEP) { mul = 0.5; }
