@@ -3,8 +3,10 @@
 #include "parser.h"
 #include "fleepath.h"
 #include <cmath>
+#include <numeric>
 
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 // sample
 //
@@ -45,8 +47,9 @@ protected:
 	std::vector<MAP_OBJECT> GetEnemyQueens();
 	std::vector<MAP_OBJECT> GetEnemyTumors();
 
-	bool CanWeDie() const;
-	bool DoWeHaveMoreCreep() const;
+	bool CanWeDie();
+	bool DoWeHaveMoreCreep();
+	bool AreOurQueensOutGunned();
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -313,7 +316,7 @@ std::vector<MAP_OBJECT> MYCLIENT::GetEnemyTumors() {
 }
 
 
-bool MYCLIENT::CanWeDie() const {
+bool MYCLIENT::CanWeDie() {
 	auto remainingTicks = MAX_TICK - mParser.tick;
 	const auto numberOfEnemyUnits = 8;
 	// They might manufacture more than they currently have, so 8 is an upper
@@ -323,13 +326,27 @@ bool MYCLIENT::CanWeDie() const {
 	return damagePossible >= mParser.OwnHatchery.hp;
 }
 
-bool MYCLIENT::DoWeHaveMoreCreep() const {
+bool MYCLIENT::DoWeHaveMoreCreep() {
 	const auto& arena = mParser.Arena;
 	std::size_t ourCreep = std::count(arena.begin(), arena.end(),
 			PARSER::CREEP);
 	std::size_t theirCreep = std::count(arena.begin(), arena.end(),
 			PARSER::ENEMY_CREEP);
 	return ourCreep > theirCreep;
+}
+
+bool MYCLIENT::AreOurQueensOutGunned() {
+	auto queenToHealth = [](const MAP_OBJECT& queen) {
+		return queen.hp;
+	};
+	const auto& ourHealths = GetOurQueens() | boost::adaptors::transformed(
+			queenToHealth);
+	const auto& theirHealths = GetEnemyQueens() | boost::adaptors::transformed(
+			queenToHealth);
+	auto ourHealth = std::accumulate(ourHealths.begin(), ourHealths.end(), 0);
+	auto theirHealth = std::accumulate(theirHealths.begin(), theirHealths.end(),
+			0);
+	return ourHealth > theirHealth;
 }
 
 CLIENT *CreateClient() {
