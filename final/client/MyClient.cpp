@@ -84,7 +84,7 @@ POS MYCLIENT::GetBestCreep() {
 
 			auto empty_count = GetEmptyCountAround(p);
 			auto enemy_creep_count = GetEnemyCreepCountAround(p);
-			int fitness = enemy_creep_count + 2 * empty_count - ClosestTumorDistance(p);
+			int fitness = enemy_creep_count + 2 * empty_count + ClosestTumorDistance(p);
 			if (fitness > best_fit) {
 				best_fit = fitness;
 				best_pos = p;
