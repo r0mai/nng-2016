@@ -283,6 +283,10 @@ std::string CLIENT::HandleServerResponse(std::vector<std::string> &ServerRespons
 				auto p = Attack(*it);
 				cmd_done = p.first;
 				ss << p.second;
+			} else if (it->second.c == CLIENT::CMD_ATTACK_MOVE) {
+				auto p = AttackMove(*it);
+				cmd_done = p.first;
+				ss << p.second;
 			}
 			std::map<int, CLIENT::CMD>::iterator it2=it;
 			it2++;
