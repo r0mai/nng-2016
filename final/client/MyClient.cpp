@@ -73,6 +73,8 @@ protected:
 	const MAP_OBJECT* GetClosestEnemyNear(const POS& pos);
 
 	std::unordered_set<int> fleeing_queens;
+
+	static constexpr int kHeatThreshold = -40;
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -88,14 +90,14 @@ void MYCLIENT::PrintStatistics() {
 				std::cout << "████";
 				continue;
 			}
-			bool hasAnyQueen = 
+			bool hasAnyQueen =
 					mParser.GetOurQueen(POS{x, y}) ||
 					mParser.GetEnemyQueen(POS{x, y});
 			if (hasAnyQueen) {
 				std::cout << "\33[4m";
 			}
 			auto heat_ = heat(x, y);
-			if (heat_ > 0) {
+			if (heat_ >= kHeatThreshold) {
 				std::cout << "\33[31m+";
 			} else {
 				std::cout << "\33[34m-";
@@ -294,7 +296,7 @@ void MYCLIENT::AttackHatchery() {
 
 void MYCLIENT::ReactToHeatMap() {
 	for (auto& queen : GetOurQueens()) {
-		if (GetHeat(queen.pos) < -40) {
+		if (GetHeat(queen.pos) < kHeatThreshold) {
 			auto cells = GetCellsInRadius(queen.pos, 2);
 
 			boost::remove_erase_if(cells, [this](const POS& p) {
