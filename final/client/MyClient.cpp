@@ -166,7 +166,8 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		if (!empty_around) {
 			auto force = GetForce(queen.pos);
 			auto target = GetAttackTarget(queen.pos, force);
-			if (target != -1) {
+			auto target_object = mParser.FindObject(target);
+			if (target != -1 && (target_object.first == UnitType::kEnemyQueen || GetOurQueens().size() > 1)) {
 				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 				mUnitTarget[queen.id].target_id = target;
 			} else {

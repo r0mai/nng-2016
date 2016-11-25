@@ -148,21 +148,21 @@ MAP_OBJECT* PARSER::FindUnit(int id) {
 	return nullptr;
 }
 
-MAP_OBJECT* PARSER::FindObject(int id) {
+std::pair<UnitType, MAP_OBJECT*> PARSER::FindObject(int id) {
 	for (auto& unit : Units) {
 		if (unit.id == id) {
-			return &unit;
+			return {!unit.IsEnemy() ? UnitType::kQueen: UnitType::kEnemyQueen, &unit};
 		}
 	}
 	for (auto& unit : CreepTumors) {
 		if (unit.id == id) {
-			return &unit;
+			return {!unit.IsEnemy() ? UnitType::kCreepTumor: UnitType::kEnemyCreepTumor, &unit};
 		}
 	}
 	if (OwnHatchery.id == id) {
-		return &OwnHatchery;
+		return {UnitType::kHatchery, &OwnHatchery};
 	}
 	if (EnemyHatchery.id == id) {
-		return &EnemyHatchery;
+		return {UnitType::kEnemyHatchery, &EnemyHatchery};
 	}
 }
