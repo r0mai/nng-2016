@@ -4,6 +4,8 @@
 #include "fleepath.h"
 #include <cmath>
 
+#include <boost/range/adaptor/filtered.hpp>
+
 // sample
 //
 enum class BuildingType {
@@ -70,6 +72,28 @@ void MYCLIENT::Process() {
 			}
 		}
 
+	}
+
+	const auto& ourTumors = mParser.CreepTumors |
+			boost::adaptors::filtered(
+					[](const MAP_OBJECT& tumor) { return tumor.side == 0; });
+	const auto& activeTumors = ourTumors | boost::adaptors::filtered(
+			[](const MAP_OBJECT& tumor) {
+					return tumor.energy >= CREEP_TUMOR_SPAWN_ENERGY; });
+
+	for(const auto& tumor : activeTumors) {
+		auto possibilities = GetCellsInRadius(tumor.pos);
+		auto best = std::max_element(possibilities.begin(), possibilities.end(),
+				[this](const POS& l, const POS& r) {
+					return GetTumorFitness(l) < GetTumorFitness(r);
+				});
+		if (best != possibilities.end()) {
+			command_buffer <<  "creep_tumor_spawn" << " " <<
+				tumor.id << " " <<
+				best->x << " " <<
+				best->y << std::endl;
+
+		}
 	}
 }
 
