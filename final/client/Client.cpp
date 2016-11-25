@@ -462,6 +462,7 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 	if (q->pos.IsNear(t->pos)) {
 		auto new_cmd = cmd;
 		new_cmd.second.c = CLIENT::CMD_ATTACK;
+		std::cout << "Attack real target cause it's near" << new_cmd.second.target_id << std::endl;
 		return Attack(new_cmd);
 	}
 
@@ -499,10 +500,12 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 		auto new_cmd = cmd;
 		new_cmd.second.c = CLIENT::CMD_ATTACK;
 		new_cmd.second.target_id = p.second->id;
+		std::cout << "Attack a near object " << new_cmd.second.target_id << std::endl;
 		return {false, Attack(new_cmd).second};
 	}
 
 	auto new_cmd = cmd;
 	new_cmd.second.c = CLIENT::CMD_ATTACK;
+	std::cout << "Attack real target far away " << new_cmd.second.target_id << std::endl;
 	return Attack(new_cmd);
 }
