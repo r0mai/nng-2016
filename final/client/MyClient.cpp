@@ -14,6 +14,8 @@ protected:
 	virtual bool NeedDebugLog() { return true; }
 	virtual void Process();
 
+        void PreprocessUnitTargets();
+
         POS GetBestCreep();
         std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
         int GetEmptyCountAround(const POS& pos);
@@ -21,7 +23,23 @@ protected:
 
 MYCLIENT::MYCLIENT() {}
 
+void MYCLIENT::PreprocessUnitTargets() {
+    std::vector<int> to_clear;
+    for (auto& p : mUnitTarget) {
+        if (p.second.c == CMD_SPAWN) {
+            if (mParser.GetAt(p.second.pos) != PARSER::CREEP) {
+                to_clear.push_back(p.first);
+            }
+        }
+    }
+    for (auto id : to_clear) {
+        mUnitTarget.erase(id);
+    }
+}
+
 void MYCLIENT::Process() {
+    PreprocessUnitTargets();
+
     FLEEPATH FleePath;
     FleePath.CreateCreepDist(&mParser);
     for (auto& queen : mParser.Units) {
