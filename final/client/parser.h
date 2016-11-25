@@ -27,6 +27,18 @@ enum class UnitType {
 	kEnemyQueen
 };
 
+inline int ThreatScore(UnitType u) {
+	switch (u) {
+		case UnitType::kHatchery: return -2;
+		case UnitType::kEnemyHatchery: return 2;
+		case UnitType::kCreepTumor: return -1;
+		case UnitType::kEnemyCreepTumor: return 1;
+		case UnitType::kQueen: return -3;
+		case UnitType::kEnemyQueen: return 3;
+	}
+	return 0;
+}
+
 inline bool IsBuilding(UnitType t) {
 	return t == UnitType::kHatchery ||
 		t == UnitType::kEnemyHatchery ||

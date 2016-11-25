@@ -472,23 +472,34 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_RIGHT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
 	u = mParser.GetUnitsAt(q->pos); near_objects.insert(near_objects.end(), u.begin(), u.end());
 
-	// std::sort(near_objects.begin(), near_objects.end(),
+	near_objects.erase(std::remove_if(near_objects.begin(),
+		near_objects.end(),
+		[](const std::pair<UnitType, MAP_OBJECT*>& p) {
+			return p.first != UnitType::kEnemyQueen &&
+				p.first != UnitType::kEnemyCreepTumor &&
+				p.first != UnitType::kEnemyHatchery;
+		}
+	));
+
+	std::sort(near_objects.begin(), near_objects.end(),
+		[](const std::pair<UnitType, MAP_OBJECT*>& lhs, const std::pair<UnitType, MAP_OBJECT*>& rhs) {
+			auto lts = ThreatScore(lhs.first);
+			auto rts = ThreatScore(rhs.first);
+			if (lts != rts) {
+				return lts > rts;
+			}
+			if (rhs.first == UnitType::kEnemyQueen && lhs.first == UnitType::kEnemyQueen) {
+				return lhs.second->hp < rhs.second->hp;
+			}
+			return false;
+		}
+	);
 
 	for (auto& p : near_objects) {
-		if (!p.second) {
-			continue;
-		}
-		switch (p.first) {
-			default:
-				break;
-			case UnitType::kEnemyQueen:
-			case UnitType::kEnemyCreepTumor:
-			case UnitType::kEnemyHatchery:
-				auto new_cmd = cmd;
-				new_cmd.second.c = CLIENT::CMD_ATTACK;
-				new_cmd.second.target_id = p.second->id;
-				return {false, Attack(new_cmd).second};
-		}
+		auto new_cmd = cmd;
+		new_cmd.second.c = CLIENT::CMD_ATTACK;
+		new_cmd.second.target_id = p.second->id;
+		return {false, Attack(new_cmd).second};
 	}
 
 	auto new_cmd = cmd;
