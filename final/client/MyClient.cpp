@@ -148,6 +148,14 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 	flee_path.CreateCreepDist(&mParser);
 	for (auto& queen : GetOurNonFleeingQueens()) {
 		if (mUnitTarget.count(queen.id)) {
+			// We have a command ready, but let's check if we can interrupt
+			if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST &&
+					CanPlaceTumor(queen.pos) &&
+					mUnitTarget[queen.id].c != CMD_SPAWN) {
+				// Place tumor on ourselves
+				command_buffer << "queen_spawn " << queen.id << " " << 
+						queen.pos.x << " " << queen.pos.y << std::endl;
+			}
 			continue;
 		}
 		int empty_around = 0;
