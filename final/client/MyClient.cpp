@@ -49,11 +49,20 @@ protected:
 
 	std::vector<MAP_OBJECT> GetOurQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
+	std::vector<MAP_OBJECT> GetIntrudingQueens();
 	std::vector<MAP_OBJECT> GetEnemyTumors();
 
 	bool CanWeDie();
 	bool DoWeHaveMoreCreep();
 	bool AreWeStrongerBy(float ratio = 1.0);
+	static int queenToHealth(const MAP_OBJECT& queen) {
+		return queen.hp;
+	}
+	bool OnOurCreep(const MAP_OBJECT& queen) const {
+		return mParser.GetAt(queen.pos) == PARSER::CREEP;
+	}
+
+	const MAP_OBJECT* GetClosestEnemyNear(const POS& pos);
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -80,14 +89,13 @@ void MYCLIENT::PreprocessUnitTargets() {
 }
 
 void MYCLIENT::AttackAttackingQueens() {
-	for (auto& enemy_queen : GetEnemyQueens()) {
-		if (mParser.GetAt(enemy_queen.pos) == PARSER::CREEP) {
-			for (auto& queen : GetOurQueens()) {
-				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
-				mUnitTarget[queen.id].target_id = enemy_queen.id;
-			}
-			return;
-		}
+	auto enemyQueens = GetIntrudingQueens();
+	if (enemyQueens.empty()) { return; }
+	for (auto& queen : GetOurQueens()) {
+		mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
+		auto queenToAttack = GetClosestEnemyNear(queen.pos);
+		if (queenToAttack)
+			mUnitTarget[queen.id].target_id = queenToAttack->id;
 	}
 }
 
@@ -385,6 +393,18 @@ std::vector<MAP_OBJECT> MYCLIENT::GetEnemyQueens() {
 	return queens;
 }
 
+std::vector<MAP_OBJECT> MYCLIENT::GetIntrudingQueens() {
+	auto enemyQueens = GetEnemyQueens();
+
+	std::vector<MAP_OBJECT> intrudingQueens;
+	for (const auto& queen: enemyQueens) {
+		if (OnOurCreep(queen)) {
+			intrudingQueens.push_back(queen);
+		}
+	}
+	return intrudingQueens;
+}
+
 std::vector<MAP_OBJECT> MYCLIENT::GetEnemyTumors() {
 	std::vector<MAP_OBJECT> tumors;
 	for (auto& e : mParser.CreepTumors) {
@@ -416,9 +436,6 @@ bool MYCLIENT::DoWeHaveMoreCreep() {
 }
 
 bool MYCLIENT::AreWeStrongerBy(float ratio) {
-	auto queenToHealth = [](const MAP_OBJECT& queen) {
-		return queen.hp;
-	};
 	const auto& ourHealths = GetOurQueens() | boost::adaptors::transformed(
 			queenToHealth);
 	const auto& theirHealths = GetEnemyQueens() | boost::adaptors::transformed(
@@ -427,6 +444,18 @@ bool MYCLIENT::AreWeStrongerBy(float ratio) {
 	auto theirHealth = std::accumulate(theirHealths.begin(), theirHealths.end(),
 			0);
 	return ratio * ourHealth > theirHealth;
+}
+
+const MAP_OBJECT* MYCLIENT::GetClosestEnemyNear(const POS& pos) {
+	auto enemyQueens = GetIntrudingQueens();
+	auto it = std::min_element(enemyQueens.begin(), enemyQueens.end(),
+			[this, pos](const MAP_OBJECT& l, const MAP_OBJECT& r) mutable {
+				return RouteDistance(l.pos, pos) < RouteDistance(r.pos, pos);
+			});
+	if (it != enemyQueens.end()) {
+		return &*it;
+	}
+	return nullptr;
 }
 
 CLIENT *CreateClient() {
