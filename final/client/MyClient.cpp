@@ -2,6 +2,7 @@
 #include "Client.h"
 #include "parser.h"
 #include "fleepath.h"
+#include <cmath>
 
 // sample
 //
@@ -22,12 +23,15 @@ protected:
 	virtual void Process();
 
 	void PreprocessUnitTargets();
+	int ClosestTumorDistance(const POS& pos, int side = 0);
 
 	POS GetBestCreep();
 	std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
 	int GetEmptyCountAround(const POS& pos);
 	int GetEnemyCreepCountAround(const POS& pos);
 	bool CanPlaceTumor(const POS& pos);
+	int Distance(const POS& p1, const POS& p2);
+
 	std::pair<BuildingType, MAP_OBJECT*> GetBuildingAt(const POS& pos);
 };
 
@@ -70,7 +74,7 @@ void MYCLIENT::Process() {
 
 POS MYCLIENT::GetBestCreep() {
 	POS best_pos = POS(-1, -1);
-	int best_count = -1;
+	int best_fit = -1;
 	for (int y = 0; y < mParser.h; ++y) {
 		for (int x = 0; x < mParser.w; ++x) {
 			POS p(x, y);
@@ -80,8 +84,9 @@ POS MYCLIENT::GetBestCreep() {
 
 			auto empty_count = GetEmptyCountAround(p);
 			auto enemy_creep_count = GetEnemyCreepCountAround(p);
-			if (enemy_creep_count + 2 * empty_count > best_count) {
-				best_count = enemy_creep_count + 2 * empty_count;
+			int fitness = enemy_creep_count + 2 * empty_count - ClosestTumorDistance(p);
+			if (fitness > best_fit) {
+				best_fit = fitness;
 				best_pos = p;
 			}
 		}
@@ -144,6 +149,23 @@ int MYCLIENT::GetEmptyCountAround(const POS& pos) {
 		}
 	}
 	return count;
+}
+
+int MYCLIENT::Distance(const POS& p1, const POS& p2) {
+	int dx = p1.x - p2.x;
+	int dy = p1.y - p2.y;
+	return int(ceil(sqrt(dx * dx + dy * dy)));
+}
+
+int MYCLIENT::ClosestTumorDistance(const POS& pos, int side) {
+	int dst = INT_MAX;
+	for (const auto& obj : mParser.CreepTumors) {
+		if (obj.side != side) {
+			continue;
+		}
+		dst = std::min(dst, Distance(obj.pos, pos));
+	}
+	return dst;
 }
 
 CLIENT *CreateClient() {
