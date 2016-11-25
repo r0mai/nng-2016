@@ -120,7 +120,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		}
 
 		if (!empty_around) {
-			auto force = GetForce(queen.pos) / 2;
+			auto force = GetForce(queen.pos);
 			auto target = GetAttackTarget(queen.pos, force);
 			if (target != -1) {
 				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
@@ -163,7 +163,14 @@ int MYCLIENT::GetEnemyThreat(const POS& pos) {
 	int max_dst = 10;
 	for (const auto& queen : GetEnemyQueens()) {
 		auto dst = RouteDistance(queen.pos, pos);
-		if (dst < max_dst) { sum += (max_dst - dst) * 40; }
+		auto t = mParser.GetAt(p);
+		float mul = 1.0;
+		if (t == PARSER::ENEMY_CREEP) { mul = 1.75; }
+		else if (t == PARSER::CREEP) { mul = 0.5; }
+		if (dst < max_dst) {
+			auto rs = queen.hp / 40 + 1;
+			sum += (max_dst - dst) * rs * mul;
+		}
 	}
 	return sum;
 }
@@ -173,7 +180,14 @@ int MYCLIENT::GetForce(const POS& pos) {
 	int max_dst = 10;
 	for (const auto& queen : GetOurQueens()) {
 		auto dst = RouteDistance(queen.pos, pos);
-		if (dst < max_dst) { sum += (max_dst - dst) * 40; }
+		auto t = mParser.GetAt(p);
+		float mul = 1.0;
+		if (t == PARSER::CREEP) { mul = 1.75; }
+		else if (t == PARSER::ENEMY_CREEP) { mul = 0.5; }
+		if (dst < max_dst) {
+			auto rs = queen.hp / 40 + 1;
+			sum += (max_dst - dst) * rs * mul;
+		}
 	}
 	return sum;
 }
