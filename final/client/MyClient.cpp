@@ -34,9 +34,11 @@ protected:
 	void AttackHatchery();
 
 	void PreprocessUnitTargets();
-	int ClosestTumorDistance(const POS& pos, int side = 0);
+	int ClosestTumorDistance(const POS& pos, bool enemy = false);
 
 	int GetTumorFitness(const POS& p);
+	int GetEnemyTumorFitness(const POS& pos, int energy);
+
 	POS GetBestCreep();
 	std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
 	int GetEmptyCountAround(const POS& pos);
@@ -111,12 +113,13 @@ void MYCLIENT::SpawnWithTumors() {
 					return tumor.energy >= CREEP_TUMOR_SPAWN_ENERGY; });
 
 	for (const auto& tumor : activeTumors) {
-		auto possibilities = GetCellsInRadius(tumor.pos);
-		auto best = std::max_element(possibilities.begin(), possibilities.end(),
+		auto cells = GetCellsInRadius(tumor.pos);
+		auto best = std::max_element(cells.rbegin(), cells.rend(),
 				[this](const POS& l, const POS& r) {
+					// will select last with the same fitness
 					return GetTumorFitness(l) < GetTumorFitness(r);
 				});
-		if (best != possibilities.end()) {
+		if (best != cells.end()) {
 			command_buffer <<  "creep_tumor_spawn" << " " <<
 				tumor.id << " " <<
 				best->x << " " <<
@@ -155,6 +158,18 @@ int MYCLIENT::GetTumorFitness(const POS& p) {
 	return enemy_creep_count + 2 * empty_count + ClosestTumorDistance(p);
 }
 
+int MYCLIENT::GetEnemyTumorFitness(const POS& pos, int energy) {
+	int our_dst = ClosestTumorDistance(pos, false);
+	int enemy_dst = ClosestTumorDistance(pos, true);
+	int fitness = enemy_dst - our_dst;
+
+	if (energy > 0) {
+		fitness += energy / 4;
+	}
+
+	return fitness;
+}
+
 POS MYCLIENT::GetBestCreep() {
 	POS best_pos = POS(-1, -1);
 	int best_fit = -1;
@@ -184,6 +199,12 @@ std::vector<POS> MYCLIENT::GetCellsInRadius(const POS& pos, int radius) {
 			}
 		}
 	}
+	std::sort(cells.begin(), cells.end(), [](const POS& p, const POS& q){
+		auto sp = p.x + p.y;
+		auto sq = q.x + q.y;
+		return sp < sq || (sp == sq && p.x < q.x);
+	});
+
 	return cells;
 }
 
@@ -243,10 +264,10 @@ int MYCLIENT::Distance(const POS& p1, const POS& p2) {
 	return int(ceil(sqrt(dx * dx + dy * dy)));
 }
 
-int MYCLIENT::ClosestTumorDistance(const POS& pos, int side) {
+int MYCLIENT::ClosestTumorDistance(const POS& pos, bool enemy) {
 	int dst = INT_MAX;
 	for (const auto& obj : mParser.CreepTumors) {
-		if (obj.side != side) {
+		if (obj.IsEnemy() != enemy || obj.pos == pos) {
 			continue;
 		}
 		dst = std::min(dst, Distance(obj.pos, pos));
