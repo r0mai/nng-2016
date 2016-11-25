@@ -492,7 +492,6 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 	}
 
 	auto new_cmd = cmd;
-	new_cmd.second.c = CLIENT::CMD_MOVE;
-	new_cmd.second.pos = t->pos;
-	return {false, Move(cmd).second};
+	new_cmd.second.c = CLIENT::CMD_ATTACK;
+	return Attack(new_cmd);
 }
