@@ -271,21 +271,10 @@ std::string CLIENT::HandleServerResponse(std::vector<std::string> &ServerRespons
 			if (q==NULL)
 			{
 				cmd_done = true;
-			} else if (it->second.c == CLIENT::CMD_MOVE)
-			{
-				if (q->pos==it->second.pos) cmd_done = true;
-				else
-				{
-					POS t = mDistCache.GetNextTowards(q->pos, it->second.pos);
-					if (!t.IsValid())
-					{
-						cmd_done = true;
-					} else
-					{
-						if (t==it->second.pos) cmd_done = true;
-						ss<<"queen_move "<<it->first<<" "<<t.x<<" "<<t.y<<"\n";
-					}
-				}
+			} else if (it->second.c == CLIENT::CMD_MOVE) {
+				auto p = Move(*it);
+				cmd_done = p.first;
+				ss << p.second;
 			} else if (it->second.c == CLIENT::CMD_SPAWN)
 			{
 				bool do_spawn = false;
@@ -406,4 +395,24 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-
+std::pair<bool, std::string> CLIENT::Move(const std::pair<int, CMD>& cmd) {
+	MAP_OBJECT *q = NULL;
+	for (auto p=mParser.Units.begin(); p!=mParser.Units.end(); p++) {
+		if (p->id == cmd.first) { q=&*p; break; }
+	}
+	if (!q) {
+		return {true, ""};
+	}
+	if (q->pos == cmd.second.pos) {
+		return {true, ""};
+	} else {
+		POS t = mDistCache.GetNextTowards(q->pos, cmd.second.pos);
+		if (!t.IsValid()) {
+			return {true, ""};
+		} else {
+			std::stringstream ss;
+			ss << "queen_move " << cmd.first << " " << t.x << " " << t.y << "\n";
+			return {t == cmd.second.pos, ss.str()};
+		}
+	}
+}

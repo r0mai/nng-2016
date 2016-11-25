@@ -62,6 +62,8 @@ protected:
 #else
 	int mConnectionSocket;
 #endif
+	// returns true when it's done
+	std::pair<bool, std::string> Move(const std::pair<int, CMD>& cmd);
 };
 
 CLIENT *CreateClient();
