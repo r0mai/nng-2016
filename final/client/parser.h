@@ -70,6 +70,10 @@ std::ostream& operator<<(std::ostream& os, const POS& p);
 struct MAP_OBJECT {
 	int id, hp, energy, side;
 	POS pos;
+
+        bool IsEnemy() const {
+            return side != 0;
+        }
 };
 
 class PARSER

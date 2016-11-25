@@ -24,6 +24,9 @@ protected:
 	virtual bool NeedDebugLog() { return true; }
 	virtual void Process();
 
+
+	void AttackAttackingQueens();
+
 	void PreprocessUnitTargets();
 	int ClosestTumorDistance(const POS& pos, int side = 0);
 
@@ -54,13 +57,29 @@ void MYCLIENT::PreprocessUnitTargets() {
 	}
 }
 
+void MYCLIENT::AttackAttackingQueens() {
+	for (auto& enemy_queen : mParser.Units) {
+		if (enemy_queen.IsEnemy()) {
+			if (mParser.GetAt(enemy_queen.pos) == PARSER::CREEP) {
+				for (auto& queen : mParser.Units) {
+					if (!queen.IsEnemy()) {
+						mUnitTarget[queen.id].c = CMD_ATTACK;
+						mUnitTarget[queen.id].target_id = enemy_queen.id;
+					}
+				}
+				return;
+			}
+		}
+	}
+}
+
 void MYCLIENT::Process() {
 	PreprocessUnitTargets();
 
 	FLEEPATH FleePath;
 	FleePath.CreateCreepDist(&mParser);
 	for (auto& queen : mParser.Units) {
-		if (queen.side != 0) {
+		if (queen.IsEnemy()) {
 			continue;
 		}
 
