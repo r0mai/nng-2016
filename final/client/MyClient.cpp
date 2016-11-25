@@ -79,16 +79,27 @@ MYCLIENT::MYCLIENT() {}
 void MYCLIENT::PrintStatistics() {
 	for (int y = 0; y < mParser.w; ++y) {
 		for (int x = 0; x < mParser.h; ++x) {
+			auto heat = [this](int x, int y) {
+				auto pos = POS{x, y};
+				return GetHeat(pos);
+			};
 			if (mParser.GetAt(POS{x, y}) == PARSER::WALL) {
-				std::cout << "█";
+				std::cout << "████";
 				continue;
 			}
-			if (mParser.GetAt(POS{x, y}) == PARSER::EMPTY) {
-				std::cout << " ";
-				continue;
+			auto heat_ = heat(x, y);
+			if (heat_ > 0) {
+				std::cout << "\33[31m+";
+			} else {
+				std::cout << "\33[34m-";
 			}
-			auto units = mParser.GetUnitsAt(POS{x, y});
-			std::cout << " ";
+			auto magnitude = std::abs(heat_);
+			auto field = std::to_string(magnitude);
+			while (field.length() < 3) {
+				field.push_back(' ');
+			}
+			std::cout << field;
+			std::cout << "\33[0m";
 		}
 		std::cout << std::endl;
 	}
