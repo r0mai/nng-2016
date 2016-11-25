@@ -470,6 +470,7 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_DOWN)); near_objects.insert(near_objects.end(), u.begin(), u.end());
 	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_LEFT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
 	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_RIGHT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
+	u = mParser.GetUnitsAt(q->pos); near_objects.insert(near_objects.end(), u.begin(), u.end());
 
 	for (auto& p : near_objects) {
 		if (!p.second) {
