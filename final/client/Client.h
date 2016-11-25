@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "parser.h"
 #include "distcache.h"
 
@@ -13,7 +14,7 @@ public:
 		std::string name;
 	};
 	std::vector<PLAYER> Players;
-	PARSER mParser;	
+	PARSER mParser;
 	std::stringstream command_buffer;
 	DISTCACHE mDistCache;
 	enum eUnitCommand {
