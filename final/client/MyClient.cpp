@@ -99,7 +99,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 		if (mUnitTarget.count(queen.id)) {
 			continue;
 		}
-		if (queen.energy >= 100) {
+		if (queen.energy >= QUEEN_BUILD_CREEP_TUMOR_COST) {
 			POS creep = GetBestCreep();
 			if (creep.IsValid()) {
 				mUnitTarget[queen.id].c = CMD_SPAWN;
@@ -107,7 +107,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 			}
 		} else {
 			int best_fit = INT_MIN;
-			int best_id = -1;
+			int best_id = mParser.EnemyHatchery.id;
 			for (auto& tumor : GetEnemyTumors()) {
 				auto dst = RouteDistance(queen.pos, tumor.pos);
 				auto fitness = GetEnemyTumorFitness(tumor.pos, tumor.energy);
@@ -118,10 +118,8 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 				}
 			}
 
-			if (best_id > -1) {
-				mUnitTarget[queen.id].c = CMD_ATTACK;
-				mUnitTarget[queen.id].target_id = best_id;
-			}
+			mUnitTarget[queen.id].c = CMD_ATTACK;
+			mUnitTarget[queen.id].target_id = best_id;
 		}
 	}
 }
