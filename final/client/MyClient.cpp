@@ -64,8 +64,7 @@ POS MYCLIENT::GetBestCreep() {
     for (int y = 0; y < mParser.h; ++y) {
         for (int x = 0; x < mParser.w; ++x) {
             POS p(x, y);
-            auto tile = mParser.GetAt(p);
-            if (tile != PARSER::CREEP) {
+            if (mParser.GetAt(p) != PARSER::CREEP) {
                 continue;
             }
 
@@ -76,6 +75,7 @@ POS MYCLIENT::GetBestCreep() {
             }
         }
     }
+    std::cout << "Best count = " << best_count << " @ " << best_pos << std::endl;
     return best_pos;
 }
 
@@ -98,7 +98,7 @@ std::vector<POS> MYCLIENT::GetCellsInRadius(const POS& pos, int radius) {
 int MYCLIENT::GetEmptyCountAround(const POS& pos) {
     int count = 0;
     for (auto& p : GetCellsInRadius(pos)) {
-        if (mParser.GetAt(p) == PARSER::EMPTY) {
+        if (mParser.GetAt(p) == PARSER::EMPTY || mParser.GetAt(p) == PARSER::ENEMY_CREEP) {
             ++count;
         }
     }

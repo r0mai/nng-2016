@@ -91,3 +91,11 @@ void PARSER::Parse(const std::vector<std::string> &ServerResponse)
 	}
 }
 
+PARSER::eGroundType PARSER::GetAt(const POS &p) const {
+    return p.x<w && p.y<h && p.x >= 0 && p.y >= 0 ?Arena[p.x+p.y*w]:WALL;
+}
+
+std::ostream& operator<<(std::ostream& os, const POS& p) {
+    os << "(" << p.x << ", " << p.y << ")";
+    return os;
+}

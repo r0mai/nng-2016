@@ -65,6 +65,8 @@ struct POS
 	}
 };
 
+std::ostream& operator<<(std::ostream& os, const POS& p);
+
 struct MAP_OBJECT {
 	int id, hp, energy, side;
 	POS pos;
@@ -93,7 +95,7 @@ public:
 	MAP_OBJECT EnemyHatchery;
 	std::vector<MAP_OBJECT> CreepTumors;
 
-	eGroundType GetAt(const POS &p) const { return p.x<w && p.y<h?Arena[p.x+p.y*w]:WALL; }
+	eGroundType GetAt(const POS &p) const;
 	void ParseUnits(const std::vector<std::string> &ServerResponse, int &index, int count, std::vector<MAP_OBJECT> &container);
 	enum eMatchResult {
 		ONGOING,
