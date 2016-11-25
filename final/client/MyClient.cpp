@@ -149,7 +149,7 @@ bool MYCLIENT::CanPlaceTumor(const POS& pos) {
 int MYCLIENT::GetEmptyCountAround(const POS& pos) {
 	int count = 0;
 	for (auto& p : GetCellsInRadius(pos)) {
-		if (mParser.GetAt(p) == PARSER::EMPTY || mParser.GetAt(p) == PARSER::ENEMY_CREEP) {
+		if (mParser.GetAt(p) == PARSER::EMPTY) {
 			++count;
 		}
 	}
