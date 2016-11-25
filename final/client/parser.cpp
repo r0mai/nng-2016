@@ -119,3 +119,12 @@ std::pair<UnitType, MAP_OBJECT*> PARSER::GetUnitAt(const POS& pos) {
 	}
 	return {{}, nullptr};
 }
+
+MAP_OBJECT* PARSER::FindUnit(int id) {
+	for (auto& unit : Units) {
+		if (unit.id == id) {
+			return &unit;
+		}
+	}
+	return nullptr;
+}

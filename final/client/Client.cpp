@@ -277,23 +277,9 @@ std::string CLIENT::HandleServerResponse(std::vector<std::string> &ServerRespons
 				ss << p.second;
 			} else if (it->second.c == CLIENT::CMD_SPAWN)
 			{
-				bool do_spawn = false;
-				if (q->pos==it->second.pos) do_spawn = true;
-				else
-				{
-					POS t = mDistCache.GetNextTowards(q->pos, it->second.pos);
-					if (!t.IsValid()) cmd_done = true;
-					else if (t==it->second.pos) do_spawn = true;
-					else
-					{
-						ss<<"queen_move "<<it->first<<" "<<t.x<<" "<<t.y<<"\n";
-					}
-				}
-				if (do_spawn)
-				{
-					ss<<"queen_spawn "<<it->first<<" "<<it->second.pos.x<<" "<<it->second.pos.y<<"\n";
-					cmd_done = true;
-				}
+				auto p = Spawn(*it);
+				cmd_done = p.first;
+				ss << p.second;
 			} else if (it->second.c == CLIENT::CMD_ATTACK)
 			{
 				MAP_OBJECT *t = NULL;
@@ -396,10 +382,8 @@ int main(int argc, char* argv[])
 }
 
 std::pair<bool, std::string> CLIENT::Move(const std::pair<int, CMD>& cmd) {
-	MAP_OBJECT *q = NULL;
-	for (auto p=mParser.Units.begin(); p!=mParser.Units.end(); p++) {
-		if (p->id == cmd.first) { q=&*p; break; }
-	}
+	MAP_OBJECT *q = mParser.FindUnit(cmd.first);
+
 	if (!q) {
 		return {true, ""};
 	}
@@ -415,4 +399,33 @@ std::pair<bool, std::string> CLIENT::Move(const std::pair<int, CMD>& cmd) {
 			return {t == cmd.second.pos, ss.str()};
 		}
 	}
+}
+
+std::pair<bool, std::string> CLIENT::Spawn(const std::pair<int, CMD>& cmd) {
+	MAP_OBJECT *q = mParser.FindUnit(cmd.first);
+	if (!q) {
+		return {true, ""};
+	}
+
+	bool do_spawn = false;
+	if (q->pos == cmd.second.pos) {
+		do_spawn = true;
+	} else {
+		POS t = mDistCache.GetNextTowards(q->pos, cmd.second.pos);
+		if (!t.IsValid()) {
+			return {true, ""};
+		} else if (t==cmd.second.pos) {
+			do_spawn = true;
+		} else {
+			std::stringstream ss;
+			ss<<"queen_move "<<cmd.first<<" "<<t.x<<" "<<t.y<<"\n";
+			return {false, ss.str()};
+		}
+	}
+	if (do_spawn) {
+		std::stringstream ss;
+		ss<<"queen_spawn "<<cmd.first<<" "<<cmd.second.pos.x<<" "<<cmd.second.pos.y<<"\n";
+		return {true, ss.str()};
+	}
+	return {true, ""};
 }
