@@ -121,6 +121,24 @@ std::vector<std::pair<UnitType, MAP_OBJECT*>> PARSER::GetUnitsAt(const POS& pos)
 	return units;
 }
 
+MAP_OBJECT* PARSER::GetOurQueen(const POS& pos) {
+	for (auto& unit : Units) {
+		if (unit.pos == pos && !unit.IsEnemy()) {
+			return &unit;
+		}
+	}
+	return nullptr;
+}
+
+MAP_OBJECT* PARSER::GetEnemyQueen(const POS& pos) {
+	for (auto& unit : Units) {
+		if (unit.pos == pos && unit.IsEnemy()) {
+			return &unit;
+		}
+	}
+	return nullptr;
+}
+
 MAP_OBJECT* PARSER::FindUnit(int id) {
 	for (auto& unit : Units) {
 		if (unit.id == id) {

@@ -150,6 +150,8 @@ public:
 	eMatchResult match_result;
 	void Parse(const std::vector<std::string> &ServerResponse);
 
+	MAP_OBJECT* GetOurQueen(const POS& pos);
+	MAP_OBJECT* GetEnemyQueen(const POS& pos);
 	std::vector<std::pair<UnitType, MAP_OBJECT*>> GetUnitsAt(const POS& pos);
 	MAP_OBJECT* FindUnit(int id);
 	MAP_OBJECT* FindObject(int id);
