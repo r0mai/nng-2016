@@ -19,6 +19,7 @@ protected:
         POS GetBestCreep();
         std::vector<POS> GetCellsInRadius(const POS& pos, int radius = 10);
         int GetEmptyCountAround(const POS& pos);
+        int GetEnemyCreepCountAround(const POS& pos);
 };
 
 MYCLIENT::MYCLIENT() {}
@@ -69,7 +70,8 @@ POS MYCLIENT::GetBestCreep() {
             }
 
             auto empty_count = GetEmptyCountAround(p);
-            if (empty_count > best_count) {
+            auto enemy_creep_count = GetEnemyCreepCountAround(p);
+            if (enemy_creep_count + empty_count > best_count) {
                 best_count = empty_count;
                 best_pos = p;
             }
@@ -93,6 +95,16 @@ std::vector<POS> MYCLIENT::GetCellsInRadius(const POS& pos, int radius) {
         }
     }
     return cells;
+}
+
+int MYCLIENT::GetEnemyCreepCountAround(const POS& pos) {
+    int count = 0;
+    for (auto& p : GetCellsInRadius(pos)) {
+        if (mParser.GetAt(p) == PARSER::ENEMY_CREEP) {
+            ++count;
+        }
+    }
+    return count;
 }
 
 int MYCLIENT::GetEmptyCountAround(const POS& pos) {
