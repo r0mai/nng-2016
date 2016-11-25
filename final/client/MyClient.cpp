@@ -43,6 +43,7 @@ protected:
 	int Distance(const POS& p1, const POS& p2);
 	std::vector<MAP_OBJECT> GetOurQueens();
 	std::vector<MAP_OBJECT> GetEnemyQueens();
+	bool CanWeDie() const;
 
 	std::pair<BuildingType, MAP_OBJECT*> GetBuildingAt(const POS& pos);
 };
@@ -261,6 +262,16 @@ std::vector<MAP_OBJECT> MYCLIENT::GetEnemyQueens() {
 		}
 	}
 	return queens;
+}
+
+bool MYCLIENT::CanWeDie() const {
+	auto remainingTicks = MAX_TICK - mParser.tick;
+	const auto numberOfEnemyUnits = 8;
+	// They might manufacture more than they currently have, so 8 is an upper
+	// bound.
+	// TODO: Calculate the number of queens they could create and deploy
+	auto damagePossible = remainingTicks * numberOfEnemyUnits * QUEEN_DAMAGE;
+	return damagePossible >= mParser.OwnHatchery.hp;
 }
 
 CLIENT *CreateClient() {
