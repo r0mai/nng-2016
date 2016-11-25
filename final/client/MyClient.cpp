@@ -262,9 +262,9 @@ int MYCLIENT::GetEnemyTumorFitness(const POS& pos, int energy) {
 	int enemy_dst = ClosestTumorDistance(pos, true);
 	int fitness = enemy_dst - our_dst;
 
-	if (energy > 0) {
-		fitness += energy / 4;
-	}
+	//if (energy > 0) {
+	//	fitness += energy / 4;
+	//}
 
 	return fitness;
 }
