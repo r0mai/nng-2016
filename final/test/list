@@ -1,0 +1,36 @@
+﻿; vigyázz, ha player 2-vel lépsz akkor tükrözni kell a pozíciókat
+
+; mozgások a négy fő irányba
+; q3 fel
+; q14 jobbra
+; q4 le
+; q13 balra
+t-m-1-negy-fo-iranyba
+; q3 2 lépésnyire lépne
+; q4 falba lépne
+t-m-2-falba-es-messze-fail
+
+; átlósan támadják a hatcheryt, fail
+t-a-h-1-atlos-fail
+; mellé lépve támadják a 160hps hatcheryt, leverik
+t-a-h-2-jobbra-1-hp-marad
+t-a-h-3-jobbra-leverik
+
+; két 41 hp-s queen áll saját creepen, egymást ütik, ütés után mindkettő gyógyul
+t-a-q-1
+; két 40 hp-s queen áll saját creepen, egymást ütik, leverik egymást 
+t-a-q-2
+; két 1 hp-s queen áll saját creepen, egyik elszaladna, másik üti és leveri,
+; mert előbb jön az attack, aztán a move kiértékelése
+t-a-q-3-egyik-elszaladna-masik-uti-es-leveri
+
+; 1 hp-s queen áll enemy creepen, lelép róla, ezért túléli.
+; sőt, mivel saját creepre lép, ezért gyógyul 2 hp-t, meg kap 1 nrg-t.
+t-m-3-1hp-enemy-creeprol-lelep-tuleli
+; 3 hp-s queen áll enemy creepen, veszít 2 hp-t, nem kap nrg-t, 1 hp-vel túléli
+t-m-4-3hp-enemy-creepen-all-tuleli
+; 2 hp-s queen áll enemy creepen, nem éli túl
+t-m-5-2hp-enemy-creepen-rip
+
+
+
