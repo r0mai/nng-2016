@@ -79,7 +79,7 @@ void MYCLIENT::AttackAttackingQueens() {
 	for (auto& enemy_queen : GetEnemyQueens()) {
 		if (mParser.GetAt(enemy_queen.pos) == PARSER::CREEP) {
 			for (auto& queen : GetOurQueens()) {
-				mUnitTarget[queen.id].c = CMD_ATTACK;
+				mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 				mUnitTarget[queen.id].target_id = enemy_queen.id;
 			}
 			return;
@@ -113,7 +113,7 @@ void MYCLIENT::SpawnOrAttackWithQueens() {
 				}
 			}
 
-			mUnitTarget[queen.id].c = CMD_ATTACK;
+			mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 			mUnitTarget[queen.id].target_id = best_id;
 		}
 	}
@@ -146,7 +146,7 @@ void MYCLIENT::SpawnWithTumors() {
 
 void MYCLIENT::AttackHatchery() {
 	for (auto& queen : GetOurQueens()) {
-		mUnitTarget[queen.id].c = CMD_ATTACK;
+		mUnitTarget[queen.id].c = CMD_ATTACK_MOVE;
 		mUnitTarget[queen.id].target_id = mParser.EnemyHatchery.id;
 	}
 }
