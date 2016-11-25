@@ -87,6 +87,12 @@ void MYCLIENT::PrintStatistics() {
 				std::cout << "████";
 				continue;
 			}
+			bool hasAnyQueen = 
+					mParser.GetOurQueen(POS{x, y}) ||
+					mParser.GetEnemyQueen(POS{x, y});
+			if (hasAnyQueen) {
+				std::cout << "\33[4m";
+			}
 			auto heat_ = heat(x, y);
 			if (heat_ > 0) {
 				std::cout << "\33[31m+";
