@@ -380,6 +380,15 @@ std::pair<bool, std::string> CLIENT::Spawn(const std::pair<int, CMD>& cmd) {
 	if (q->pos == cmd.second.pos) {
 		do_spawn = true;
 	} else {
+		auto filtered_objects = GetNearObjects(q->pos);
+
+		if (!filtered_objects.empty()) {
+			auto new_cmd = cmd;
+			new_cmd.second.c = CLIENT::CMD_ATTACK;
+			new_cmd.second.target_id = filtered_objects.front().second->id;
+			return {false, Attack(new_cmd).second};
+		}
+
 		POS t = mDistCache.GetNextTowards(q->pos, cmd.second.pos);
 		if (!t.IsValid()) {
 			return {true, ""};
@@ -449,18 +458,13 @@ std::pair<bool, std::string> CLIENT::Attack(const std::pair<int, CMD>& cmd) {
 	return {true, ""};
 }
 
-std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) {
-	MAP_OBJECT *q = mParser.FindUnit(cmd.first);
-	if (!q) {
-		return {true, ""};
-	}
-
+std::vector<std::pair<UnitType, MAP_OBJECT*>> CLIENT::GetNearObjects(const POS& pos) {
 	std::vector<std::pair<UnitType, MAP_OBJECT*>> near_objects;
-	auto u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_UP)); near_objects.insert(near_objects.end(), u.begin(), u.end());
-	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_DOWN)); near_objects.insert(near_objects.end(), u.begin(), u.end());
-	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_LEFT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
-	u = mParser.GetUnitsAt(q->pos.ShiftDir(POS::SHIFT_RIGHT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
-	u = mParser.GetUnitsAt(q->pos); near_objects.insert(near_objects.end(), u.begin(), u.end());
+	auto u = mParser.GetUnitsAt(pos.ShiftDir(POS::SHIFT_UP)); near_objects.insert(near_objects.end(), u.begin(), u.end());
+	u = mParser.GetUnitsAt(pos.ShiftDir(POS::SHIFT_DOWN)); near_objects.insert(near_objects.end(), u.begin(), u.end());
+	u = mParser.GetUnitsAt(pos.ShiftDir(POS::SHIFT_LEFT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
+	u = mParser.GetUnitsAt(pos.ShiftDir(POS::SHIFT_RIGHT)); near_objects.insert(near_objects.end(), u.begin(), u.end());
+	u = mParser.GetUnitsAt(pos); near_objects.insert(near_objects.end(), u.begin(), u.end());
 
 	decltype(near_objects) filtered_objects;
 	for (auto& p : near_objects) {
@@ -486,10 +490,21 @@ std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) 
 		}
 	);
 
-	for (auto& p : filtered_objects) {
+	return filtered_objects;
+}
+
+std::pair<bool, std::string> CLIENT::AttackMove(const std::pair<int, CMD>& cmd) {
+	MAP_OBJECT *q = mParser.FindUnit(cmd.first);
+	if (!q) {
+		return {true, ""};
+	}
+
+	auto filtered_objects = GetNearObjects(q->pos);
+
+	if (!filtered_objects.empty()) {
 		auto new_cmd = cmd;
 		new_cmd.second.c = CLIENT::CMD_ATTACK;
-		new_cmd.second.target_id = p.second->id;
+		new_cmd.second.target_id = filtered_objects.front().second->id;
 		return {false, Attack(new_cmd).second};
 	}
 

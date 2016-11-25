@@ -63,6 +63,8 @@ protected:
 	int mConnectionSocket;
 #endif
 
+	std::vector<std::pair<UnitType, MAP_OBJECT*>> GetNearObjects(const POS& pos);
+
 	// returns true when it's done
 	std::pair<bool, std::string> Move(const std::pair<int, CMD>& cmd);
 	std::pair<bool, std::string> Spawn(const std::pair<int, CMD>& cmd);

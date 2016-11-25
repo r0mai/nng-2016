@@ -93,7 +93,7 @@ struct POS
 		return x!=0;
 	}
 	POS ShiftXY(int dx, int dy) { return POS(x+dx, y+dy); }
-	POS ShiftDir(int dir)
+	POS ShiftDir(int dir) const
 	{
 		switch (dir)
 		{
