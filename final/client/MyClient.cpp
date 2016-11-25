@@ -311,19 +311,28 @@ void MYCLIENT::AttackHatchery() {
 void MYCLIENT::ReactToHeatMap() {
 	for (auto& queen : GetOurQueens()) {
 		if (GetHeat(queen.pos) < kHeatThreshold) {
-			auto cells = GetCellsInRadius(queen.pos, 2);
+			if (mParser.GetAt(queen.pos) == PARSER::ENEMY_CREEP) {
+				FLEEPATH flee_path;
+				flee_path.CreateCreepDist(&mParser);
 
-			boost::remove_erase_if(cells, [this](const POS& p) {
-				return mParser.GetAt(p) == PARSER::WALL;
-			});
-			auto best = std::max_element(cells.begin(), cells.end(),
-				[this](const POS& lhs, const POS& rhs) {
-					return GetHeat(lhs) < GetHeat(rhs);
-				}
-			);
-			mUnitTarget[queen.id].c = CMD_MOVE;
-			mUnitTarget[queen.id].pos = *best;
-			fleeing_queens.insert(queen.id);
+				mUnitTarget[queen.id].c = CMD_MOVE;
+				mUnitTarget[queen.id].pos = flee_path.GetNextOffCreep(queen.pos);
+				fleeing_queens.insert(queen.id);
+			} else {
+				auto cells = GetCellsInRadius(queen.pos, 2);
+
+				boost::remove_erase_if(cells, [this](const POS& p) {
+					return mParser.GetAt(p) == PARSER::WALL;
+				});
+				auto best = std::max_element(cells.begin(), cells.end(),
+					[this](const POS& lhs, const POS& rhs) {
+						return GetHeat(lhs) < GetHeat(rhs);
+					}
+				);
+				mUnitTarget[queen.id].c = CMD_MOVE;
+				mUnitTarget[queen.id].pos = *best;
+				fleeing_queens.insert(queen.id);
+			}
 		}
 	}
 }
