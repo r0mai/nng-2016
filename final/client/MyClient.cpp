@@ -93,13 +93,13 @@ POS MYCLIENT::GetBestCreep() {
 std::vector<POS> MYCLIENT::GetCellsInRadius(const POS& pos, int radius) {
 	std::vector<POS> cells;
 	for (int dy=-radius+1; dy<radius; ++dy) {
-	for (int dx=-radius+1; dx<radius; ++dx) {
-		POS p(pos.x+dx,pos.y+dy);
+		for (int dx=-radius+1; dx<radius; ++dx) {
+			POS p(pos.x+dx,pos.y+dy);
 			int dx_q1=2*dx+(0<dx?1:-1);
-		int dy_q1=2*dy+(0<dy?1:-1);
-		int d2_q2=dx_q1*dx_q1+dy_q1*dy_q1;
-		if (d2_q2<=radius*radius*4) {
-			cells.push_back(p);
+			int dy_q1=2*dy+(0<dy?1:-1);
+			int d2_q2=dx_q1*dx_q1+dy_q1*dy_q1;
+			if (d2_q2<=radius*radius*4) {
+				cells.push_back(p);
 			}
 		}
 	}
