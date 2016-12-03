@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)http://www.programozoverseny.hu/game/schrodinger -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="eRNxXfJzwkoKhdJoJOeUbZzJmv4QCAp7FG8iEDxq">
+        <title>Programozóverseny 2016</title>   
+
+        <link rel="apple-touch-icon" sizes="57x57" href="http://www.programozoverseny.hu/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="http://www.programozoverseny.hu/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="http://www.programozoverseny.hu/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="http://www.programozoverseny.hu/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="http://www.programozoverseny.hu/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="http://www.programozoverseny.hu/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="http://www.programozoverseny.hu/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="http://www.programozoverseny.hu/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="http://www.programozoverseny.hu/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="http://www.programozoverseny.hu/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="http://www.programozoverseny.hu/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="http://www.programozoverseny.hu/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="http://www.programozoverseny.hu/favicon/favicon-16x16.png">
+        <link rel="manifest" href="http://www.programozoverseny.hu/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="http://www.programozoverseny.hu/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">      
+        
+        <link rel="stylesheet" href="./cat_files/androidstudio.css">
+
+        <link rel="stylesheet" type="text/css" href="./cat_files/jquery.mCustomScrollbar.css"> 
+        <link rel="stylesheet" type="text/css" href="./cat_files/fonts.css">    
+        <link rel="stylesheet" type="text/css" href="./cat_files/style.css">
+
+        <!-- JQUERY -->  
+        <script src="./cat_files/jquery-1.12.0.min.js"></script>
+        
+        <!-- PJAX -->
+        <script src="./cat_files/jquery.pjax.js"></script>
+
+        <script src="./cat_files/base.js"></script>    
+        <script src="./cat_files/jquery.mCustomScrollbar.js"></script><script src="./cat_files/jquery.mousewheel.min.js"></script>
+        <script src="./cat_files/highlight.pack.js"></script>
+
+        <script src="./cat_files/FileUpload.js"></script>
+    </head>
+    <body>
+        
+        <div id="preloader" style="display: none;">
+            <span></span>
+        </div>   
+        
+        <div class="overlay" style="display: none;"></div>
+
+        <div id="pjax-container">
+            
+<nav id="left-nav" class="menu"><div class="logo">
+    	<img src="./cat_files/logo.svg">
+</div>
+	<ul class="main-menu">
+<li class="">
+            <a href="http://www.programozoverseny.hu/game/creep" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Creep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/worddomino" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Szódominó</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/tiles" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Padlólap</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/flats" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Lakótelep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="current">
+            <a href="http://www.programozoverseny.hu/game/schrodinger" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Schrödinger</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+            
+    </ul>
+<a href="http://www.programozoverseny.hu/logout" class="logout">Kilépés</a>
+</nav><main id="main" class="scroll-content mCustomScrollbar _mCS_5"><div id="mCSB_5" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" style="max-height: none;" tabindex="0"><div id="mCSB_5_container" class="mCSB_container" style="position:relative; top:0; left:0;" dir="ltr"><div class="inner">
+		<article class="message"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                <div class="meta-date">2016. okt. 25. 09:38</div>
+            </header><div>
+                <p>Kedves Guru!</p>
+                <p>Kérlek segíts nekem egyszerű macskának. A gazdám mostanában elég furcsán viselkedik. Először is eszkábált egy dobozt, amibe valami méregfiolát rakott. Aztán az internetről rendelt egy csomó golyót, amelyeknek egy része radioaktív. Akkor kezdtem igazán gyanakodni, amikor a kedvenc plüss egeremet is belekészítette a dobozba. Attól tartok, hogy valami nagy disznóságra készül. Erről sikerült is meggyőződnöm, amikor belepillantottam a jegyzeteibe. A lényeg, hogy ha egy radioaktív golyóval együtt zár be a dobozba, akkor előbb utóbb meghalok, és addig is élőhalott leszek.</p>
+                <p>Sajnos a közhiedelemmel ellentétben nekünk macskáknak is pontosan egy életünk van és én még ragaszkodnék  az enyémhez. Szóval azt találtam ki, hogy amíg néha-néha kimegy a szobából pár percre, kidobálom a radioaktív golyókat és csak a simákat hagyom meg. Már el is csentem az asztaláról egy Geiger-Müller számlálót és elrejtettem a fonal gombolyagom alá. Így amikor kimegy, meg tudom mérni egy kupac golyónak a sugárzását. Ez megmutatja bármekkora kupacból, hogy van-e benne radioaktív, de az sajnos nem derül ki, hogy melyek azok. Azt a rendelési összesítőn mindig látom, hogy hány darab radioaktív golyó van, de ez még mindig kevés, hogy megtaláljam melyek azok. Minden egyes távozáskor egyetlen mérést tudok megcsinálni, és minél tovább húzom a dolgot annál valószínűbb, hogy a dobozban végzem.</p>
+                <p>Annyit tudok még mondani, hogy a legnagyobb rendelt csomagban 64 darab golyó van, és a legtöbb radioaktív golyó, amit egy kupacban láttam az 7 volt.</p>
+                <p>Kérlek segíts rajtam én csak egy egyszerű macska vagyok és nem értek az ilyen bonyolult dolgokhoz, egy realtime ray tracer programot is alig tudok összerakni.</p>
+                <p>Üdv,</p>
+                <p>Schrödinger Macskája</p>
+            </div>
+        </article><article class="message"><figure class="avatar"><img src="./cat_files/avatar_guru.svg" class="mCS_img_loaded"></figure><header><div class="sender">Guru</div>
+                <div class="meta-date">2016. okt. 25. 10:12</div>
+            </header><div>
+                <p>Üdv Macska!</p>
+                <p>Küldök neked egy programot, aminek ha megmondod, hogy hány golyót vizsgálsz és abból hány radioaktív, akkor szépen sorban kiírja neked, hogy milyen kupacokba rendezd a golyókat az egyes mérésekhez. Minden mérésnél neked kell megadnod, hogy az eredmény pozitív (volt radioaktív golyó a kupacban) vagy negatív volt.</p>
+                <p>Az általam küldött programban az alábbi függvény lesz definiálva:</p>
+                <img src="./cat_files/schrodinger_fig_code_1.png" class="code mCS_img_loaded"><p>A golyókat mindig 0-tól fogja számozni. Tehát ha 5 golyó van, akkor ezekre 0-tól 4-ig fog hivatkozni. Ehhez kell majd neked írnod némi körítést, hogy használni tudd, de talán megbirkózol majd vele.</p>
+                <p>Béke veled,</p>
+                <p>Guru</p>
+            </div>
+        </article><article class="message"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                <div class="meta-date">2016. okt. 25. 12:23</div>
+            </header><div>
+                <p>Köszönöm Guru!</p>
+                <p>A program többi része miatt ne aggódj azokat megírom én, csak a függvényed (és a segédfüggvényeid) működjenek hibátlanul. A lényeg, hogy minél kevesebbszer hívja meg a programod a TestFunction-t, mire az összes kupaccal végzek.</p>
+                <p>Üdv,</p>
+                <p>Macska</p>
+            </div>
+        </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-03 22:47:04</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        0 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>0</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>solution.cpp:8:24: fatal error: solution.hpp: No such file or directory #include "solution.hpp"                        ^compilation terminated.Schrodinger.cpp: In function ‘bool internal::TestFunction(const std::vector&lt;long unsigned int&gt;&amp;)’:Schrodinger.cpp:184:43: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]     write(ferr, msg.c_str(), msg.length());
+                                           ^Schrodinger.cpp:188:43: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]     write(fout, msg.c_str(), msg.length());
+                                           ^Schrodinger.cpp:200:42: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]    write(ferr, msg.c_str(), msg.length());
+                                          ^Schrodinger.cpp:204:42: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]    write(fout, msg.c_str(), msg.length());
+                                          ^Schrodinger.cpp: In function ‘int internal::main(int, char**)’:Schrodinger.cpp:241:36: warning: ignoring return value of ‘FILE* freopen(const char*, const char*, FILE*)’, declared with attribute warn_unused_result [-Wunused-result]   freopen("/dev/null", "w", stdout);
+                                    ^Schrodinger.cpp:242:36: warning: ignoring return value of ‘FILE* freopen(const char*, const char*, FILE*)’, declared with attribute warn_unused_result [-Wunused-result]   freopen("/dev/null", "w", stderr);
+                                    ^Schrodinger.cpp:287:43: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]     write(fout, msg.c_str(), msg.length());
+                                           ^Schrodinger.cpp:294:43: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]     write(fout, msg.c_str(), msg.length());
+                                           ^Schrodinger.cpp:296:43: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]     write(ferr, msg.c_str(), msg.length());
+                                           ^Schrodinger.cpp:305:43: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]     write(fout, msg.c_str(), msg.length());
+                                           ^Schrodinger.cpp:307:43: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]     write(ferr, msg.c_str(), msg.length());
+                                           ^Schrodinger.cpp: In lambda function:Schrodinger.cpp:248:42: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]    write(ferr, msg.c_str(), msg.length());
+                                          ^Schrodinger.cpp:252:42: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]    write(fout, msg.c_str(), msg.length());
+                                          ^</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-04 19:28:46</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        110 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>391</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-05 19:24:59</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        114 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>380</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-05 20:47:48</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        127 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>380</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-06 14:33:10</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        136 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>375</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-07 09:16:53</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        136 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>375</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-07 16:01:04</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        92 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>400</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-07 20:32:25</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        92 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>395</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-08 14:30:56</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>400</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-08 20:33:15</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>400</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-09 14:01:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        164 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>345</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-09 20:29:24</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>391</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-10 15:13:55</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>396</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-10 21:15:11</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        152 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>350</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>More questions than the number of balls!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-11 18:13:54</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        96 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>385</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-11 20:20:08</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>391</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-12 13:21:03</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>386</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-12 20:21:14</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        95 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>375</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-13 13:21:38</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>371</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-13 20:24:07</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        90 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>371</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-14 13:23:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        85 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>381</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-15 00:27:27</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        85 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>377</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message"><figure class="avatar"><img src="./cat_files/avatar_macska.svg" class="mCS_img_loaded"></figure><header><div class="sender">Macska</div>
+                            <div class="meta-date">2016-11-16 13:24:44</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: 
+                                        <b>
+                                        
+                                        85 
+                                        
+                                        </b> 
+                                    </div>
+                                    
+
+                                    <div class="result col-1-4">pont: <b>377</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><script>
+            $('article.message').each(function(index, el) {
+                $('.open-close-toggle', el).click(function(event) {
+                    if($(el).hasClass('closed'))
+                        $(el).removeClass('closed');       
+                    else
+                        $(el).addClass('closed');
+                });
+            });
+        </script>
+</div>
+</div><div id="mCSB_5_scrollbar_vertical" class="mCSB_scrollTools mCSB_5_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: block;"><div class="mCSB_draggerContainer"><div id="mCSB_5_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; display: block; height: 100px; max-height: 682px; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></main><script>
+	$(document).ready(function() {
+        $(".scroll-content").mCustomScrollbar({
+            axis:"y", 
+            autoDraggerLength: true,
+            scrollInertia: 0
+        });
+	});
+
+    $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
+
+    FileUpload.init({
+        group:'.upload-group'
+    }); 	   	
+</script><aside id="message-bar" class="message-bar" data-success="" data-error=""><div></div>
+    <span class="ico-before ico-close" onclick="closeMessageBar()"></span>
+</aside></div>
+        <script src="./cat_files/main.js"></script>
+    
+
+</body></html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)http://www.programozoverseny.hu/game/worddomino -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="eRNxXfJzwkoKhdJoJOeUbZzJmv4QCAp7FG8iEDxq">
+        <title>Programozóverseny 2016</title>   
+
+        <link rel="apple-touch-icon" sizes="57x57" href="http://www.programozoverseny.hu/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="http://www.programozoverseny.hu/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="http://www.programozoverseny.hu/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="http://www.programozoverseny.hu/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="http://www.programozoverseny.hu/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="http://www.programozoverseny.hu/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="http://www.programozoverseny.hu/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="http://www.programozoverseny.hu/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="http://www.programozoverseny.hu/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="http://www.programozoverseny.hu/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="http://www.programozoverseny.hu/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="http://www.programozoverseny.hu/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="http://www.programozoverseny.hu/favicon/favicon-16x16.png">
+        <link rel="manifest" href="http://www.programozoverseny.hu/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="http://www.programozoverseny.hu/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">      
+        
+        <link rel="stylesheet" href="./domino_files/androidstudio.css">
+
+        <link rel="stylesheet" type="text/css" href="./domino_files/jquery.mCustomScrollbar.css"> 
+        <link rel="stylesheet" type="text/css" href="./domino_files/fonts.css">    
+        <link rel="stylesheet" type="text/css" href="./domino_files/style.css">
+
+        <!-- JQUERY -->  
+        <script src="./domino_files/jquery-1.12.0.min.js"></script>
+        
+        <!-- PJAX -->
+        <script src="./domino_files/jquery.pjax.js"></script>
+
+        <script src="./domino_files/base.js"></script>    
+        <script src="./domino_files/jquery.mCustomScrollbar.js"></script><script src="./domino_files/jquery.mousewheel.min.js"></script>
+        <script src="./domino_files/highlight.pack.js"></script>
+
+        <script src="./domino_files/FileUpload.js"></script>
+    </head>
+    <body>
+        
+        <div id="preloader" style="display: none;">
+            <span></span>
+        </div>   
+        
+        <div class="overlay" style="display: none;"></div>
+
+        <div id="pjax-container">
+            
+<nav id="left-nav" class="menu"><div class="logo">
+    	<img src="./domino_files/logo.svg">
+</div>
+	<ul class="main-menu">
+<li class="">
+            <a href="http://www.programozoverseny.hu/game/creep" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Creep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="current">
+            <a href="http://www.programozoverseny.hu/game/worddomino" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Szódominó</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/tiles" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Padlólap</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/flats" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Lakótelep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/schrodinger" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Schrödinger</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+            
+    </ul>
+<a href="http://www.programozoverseny.hu/logout" class="logout">Kilépés</a>
+</nav><main id="main" class="scroll-content mCustomScrollbar _mCS_2"><div id="mCSB_2" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" style="max-height: none;" tabindex="0"><div id="mCSB_2_container" class="mCSB_container" style="position:relative; top:0; left:0;" dir="ltr"><div class="inner">
+		<article class="message"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                <div class="meta-date">2016. okt. 25. 09:38</div>
+            </header><div>
+                <p>Kedves Guru!</p>
+                <p>Egy barátommal mostanában egy új játékot találtunk ki. Az a neve, hogy szódominó. Először egy összeszedünk egy csomó szót véletlenszerűen. Még az sem kell, hogy értelmesek legyenek. Aztán mindketten elvonulunk és megpróbáljuk a szavakat úgy egymás után írni, hogy minél nagyobb legyen az átfedés a két szó között. Tehát az egyik szó utolsó betűiből minél több egyezzen meg az őt követő szó első betűivel. Ilyenkor az átfedő részt nem kell kétszer leírni. Mondok egy példát. Legyen a két szó:</p>
+                <p>ALMA</p>
+                <p>MANGA</p>
+                <p>Akkor leírhatom úgy, hogy:</p>
+                <p>MANG<span class="highlight">A</span>LMA</p>
+<p>
+                </p>
+<p>vagy</p>
+                <p>AL<span class="highlight">MA</span>NGA</p>
+                <p>Persze a játékot nem két szóval játsszuk, ezért mire az összes szót felhasználjuk egyetlen hosszú szóláncot kapunk. Például:</p>
+                <p>ALMA+MANGA+GAMMA+MAMA = AL<span class="highlight">MA</span>N<span class="highlight">GA</span>M<span class="highlight">MA</span>MA</p>
+                <p>A játék lényege, hogy az nyer, aki a legrövidebb szóláncot tudja alkotni a megadott szavakból. Előfordulhat, hogy vannak szavak, amik teljesen lefedhetők egy szó elejével, vagy végével, ekkor ezekkel könnyű dolgom van, de ha valamelyik szót egy másik szó közepe fed le, akkor azt sajnos nem lehet összevonni. Például</p>
+                <p>MALOM + LOM = MA<span class="highlight">LOM</span></p>
+                <p>De:</p>
+                <p>ELNYŰTT + NYŰ = ELNYŰTTNYŰ   és NYŰ + ELNYŰTT = NYŰELNYŰTT</p>
+                <p>No, de hogy miért is kerestelek meg. Pénteken kisorsoltuk a szavakat a következő fordulóhoz, amit vasárnap tartunk. Ezért úgy gondoltam, hogy van még időm elmenni az egyik cimborám legénybúcsújára. A buli nagyon jól sikerült, de mikor szombat reggel felkeltem rájöttem, hogy vasárnap van. Kérlek segíts nekem, mert én most nem vagyok abban az állapotban, hogy gondolkodni tudjak.</p>
+                <p>Előre is köszönöm,</p>
+                <p>Ittas Elemér</p>
+            </div>
+                       
+        </article><article class="message"><figure class="avatar"><img src="./domino_files/avatar_guru.svg" class="mCS_img_loaded"></figure><header><div class="sender">Guru</div>
+                <div class="meta-date">2016. okt. 25. 10:21</div>
+            </header><div>
+                <p>Kedves Elemér!</p>
+                <p>Ne aggódj átérzem a fájdalmad. Csak küld el nekem a szavakat egy egyszerű ascii szöveg fájlban, úgy hogy minden sorában pontosan egy szó szerepeljen. És én visszaküldöm neked abban a sorrendben, ahogy szerintem a legrövidebb. Tehát gyakorlatilag a bemeneti fájlt fogod visszakapni tőlem csak más sorrendben lesznek benne a szavak.</p>
+                Béke Veled,
+                <p>Guru</p>
+            </div>
+        </article><article class="message"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                <div class="meta-date">2016. okt. 25. 12:41</div>
+            </header><div>
+                <p>Köszönöm Guru!</p>
+                <p>Az egyszerűség kedvéért a szavak csak az angol abc kisbetűit tartalmazzák ([a-z]) és maximum 64 karakter hosszúak. Küldöm a fájlt!</p>
+                <p>Elemér</p>
+            </div>
+            <div class="attachments">
+                <a href="http://www.programozoverseny.hu/download.php?file=words_final.txt" class="attachment text"><span>words</span></a>                                          
+            </div>  
+        </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-03 22:47:04</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-04 19:28:46</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-05 19:24:59</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-05 20:47:48</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-06 14:33:10</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-07 09:16:53</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-07 16:01:04</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-07 20:32:25</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-08 14:30:56</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-08 20:33:15</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-09 14:01:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-09 20:29:24</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-10 15:13:55</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-10 21:15:11</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-11 18:13:54</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-11 20:20:08</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-12 13:21:03</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464138</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-12 20:21:14</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464108</b> </div>
+                                    <div class="result col-1-4">pont: <b>427</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-13 13:21:38</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464108</b> </div>
+                                    <div class="result col-1-4">pont: <b>427</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-13 20:24:07</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464108</b> </div>
+                                    <div class="result col-1-4">pont: <b>423</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-14 13:23:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464108</b> </div>
+                                    <div class="result col-1-4">pont: <b>423</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-15 00:27:27</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464108</b> </div>
+                                    <div class="result col-1-4">pont: <b>423</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message"><figure class="avatar"><img src="./domino_files/avatar_ittaselemer.svg" class="mCS_img_loaded"></figure><header><div class="sender">Ittas Elemér</div>
+                            <div class="meta-date">2016-11-16 13:24:44</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>464108</b> </div>
+                                    <div class="result col-1-4">pont: <b>423</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><script>
+            $('article.message').each(function(index, el) {
+                $('.open-close-toggle', el).click(function(event) {
+                    if($(el).hasClass('closed'))
+                        $(el).removeClass('closed');       
+                    else
+                        $(el).addClass('closed');
+                });
+            });
+        </script>
+</div>
+</div><div id="mCSB_2_scrollbar_vertical" class="mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: block;"><div class="mCSB_draggerContainer"><div id="mCSB_2_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; display: block; height: 97px; max-height: 682px; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></main><script>
+	$(document).ready(function() {
+        $(".scroll-content").mCustomScrollbar({
+            axis:"y", 
+            autoDraggerLength: true,
+            scrollInertia: 0
+        });
+	});
+
+    FileUpload.init({
+        group:'.upload-group'
+    });	   	
+</script><aside id="message-bar" class="message-bar" data-success="" data-error=""><div></div>
+    <span class="ico-before ico-close" onclick="closeMessageBar()"></span>
+</aside></div>
+        <script src="./domino_files/main.js"></script>
+    
+
+</body></html>

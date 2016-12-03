@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://www.programozoverseny.hu/game/creep -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="eRNxXfJzwkoKhdJoJOeUbZzJmv4QCAp7FG8iEDxq">
+        <title>Programozóverseny 2016</title>   
+
+        <link rel="apple-touch-icon" sizes="57x57" href="http://www.programozoverseny.hu/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="http://www.programozoverseny.hu/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="http://www.programozoverseny.hu/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="http://www.programozoverseny.hu/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="http://www.programozoverseny.hu/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="http://www.programozoverseny.hu/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="http://www.programozoverseny.hu/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="http://www.programozoverseny.hu/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="http://www.programozoverseny.hu/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="http://www.programozoverseny.hu/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="http://www.programozoverseny.hu/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="http://www.programozoverseny.hu/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="http://www.programozoverseny.hu/favicon/favicon-16x16.png">
+        <link rel="manifest" href="http://www.programozoverseny.hu/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="http://www.programozoverseny.hu/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">      
+        
+        <link rel="stylesheet" href="./creep_files/androidstudio.css">
+
+        <link rel="stylesheet" type="text/css" href="./creep_files/jquery.mCustomScrollbar.css"> 
+        <link rel="stylesheet" type="text/css" href="./creep_files/fonts.css">    
+        <link rel="stylesheet" type="text/css" href="./creep_files/style.css">
+
+        <!-- JQUERY -->  
+        <script src="./creep_files/jquery-1.12.0.min.js"></script>
+        
+        <!-- PJAX -->
+        <script src="./creep_files/jquery.pjax.js"></script>
+
+        <script src="./creep_files/base.js"></script>    
+        <script src="./creep_files/jquery.mCustomScrollbar.js"></script><script src="./creep_files/jquery.mousewheel.min.js"></script>
+        <script src="./creep_files/highlight.pack.js"></script>
+
+        <script src="./creep_files/FileUpload.js"></script>
+    </head>
+    <body>
+        
+        <div id="preloader">
+            <span></span>
+        </div>   
+        
+        <div class="overlay"></div>
+
+        <div id="pjax-container">
+            
+<nav id="left-nav" class="menu">
+	<div class="logo">
+    	<img src="./creep_files/logo.svg">
+    </div>
+	<ul class="main-menu">
+    	        <li class="current">
+            <a href="http://www.programozoverseny.hu/game/creep" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Creep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/worddomino" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Szódominó</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/tiles" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Padlólap</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/flats" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Lakótelep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/schrodinger" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Schrödinger</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+            
+    </ul>
+	<a href="http://www.programozoverseny.hu/logout" class="logout">Kilépés</a>
+</nav>
+<main id="main" class="scroll-content mCustomScrollbar _mCS_1"><div id="mCSB_1" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" style="max-height: none;" tabindex="0"><div id="mCSB_1_container" class="mCSB_container" style="position:relative; top:0; left:0;" dir="ltr">
+	<div class="inner">
+		<article class="message has-attachment">
+        	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+            <header>
+                <div class="sender">Mrs. Zerg</div>
+                <div class="meta-date">2016. okt. 25. 09:38</div>
+            </header>
+            <div>
+                <p>Kedves Guru!</p>
+                <p>Egy aggódó anya levelét olvasod. Azért kerestelek meg, mert nem tudom folyamatosan bővülő családomat ellátni megfelelő lakhatással. Tudod a kicsik sokan vannak és nem szeretnek a puszta földön szaladgálni, ezért mindent megteszek, hogy a talajt egyenletesen biomasszával befedjem. Nevezzük ezt a masszát most az egyszerűség kedvéért creepnek. A kicsik nagyon szeretnek ezen rohangálni és sokkal boldogabbak amikor ez van a talpuk alatt, és az ellenséges hullák eltakarítása is sokkal gyorsabban megy.</p>
+                <p>A problémám az, hogy elég nagy területeket kellene beteríteni creeppel a lehető legrövidebb idő alatt, mert gyorsan szaporodik a család. Természetesen nem várhatom el, hogy kiutazz ide a külső naprendszerek egyikére ezért készítettem egy egyszerű szimulációt, amin keresztül meg tudod oldani a problémát.</p>
+                <h3>A pálya</h3>
+                <p>A pálya az egyszerűség  kedvéért mindig téglalap alakú. A méretei:</p>
+                <p>map_dx (szélesség) - pozitív egész szám</p>
+                <p>map_dy (magasság) - pozitív egész szám</p>
+                <p>A pálya bal alsó sarkában lévő cella a (0, 0) pont míg a jobb felső sarkában lévő cella a (map_dx-1, map_dy-1). </p>
+                <p>A pályán három féle dolog lehet:</p>
+                <p>Fal<br>Épület<br>Szabad terület</p>
+                <p>Ezen kívül minden cellának van egy tulajdonsága, hogy van-e már rajta creep. Fal alatt soha nincs creep, az épületek alá mindig rakok. </p>
+                <h3>Épületek, egységek</h3>
+                <p>A szimulációban mindössze egy egységet fogsz látni:</p>
+                <p><strong>Queen a Zerg királynő.</strong> Ez lennék én és a húgaim. A szimulációban 25 energiával indulunk, ami pont elég arra, hogy egy új creep tumort hozzunk létre a pályán. Ezután regenerálódásra van szükségünk. Minden tick alatt 0,125 energiát kapunk vissza. Így 200 tickenként tudunk egy újabb tumort szülni. De maximálisan akkor is csak 200 energiánk lehet. </p>
+                <p>A szimulációban mindössze kétféle épület lehet:</p>
+                <p><strong>Hatchery a keltető:</strong> Itt születnek a kicsikék. Ez egy 3x3 méretű épület, ami creepet generál maga köré R=10 sugárban. Ebből minden pályán lesz egy. </p>
+                <p><strong>Creep Tumor:</strong> Ezek generálják a creepet a kicsiknek. Ez egy 1x1 méretű épület, ami creepet generál maga köré R=10 sugárban. Én is ilyeneket tudok a pályára lerakni, de csak olyan helyre, ahol már van creep. Minden újonnan létrejött creep tumor tud egy újabb creep tumort generálni miután teljesen kifejlődött (60 tick). Az így létrehozott tumor 10 távolságon belül tudja lerakni az új tumort egy már creeppel fedett területre. Így gyakorlatilag minden tumor, amit létrehozok egy láncot indít el.</p>
+                <h3>A creep terjedése</h3>
+                <p>Minden épület, ami creepet generál megjelöli maga körül a R sugárban lévő szabad cellákat, amelyek teljes területe a körön belül esik. Ezekre próbál meg creepet terjeszteni. Azért csak próbál, mert a creep terjedésének a következő egyszerű szabálya van. Akkor terjedhet a creep egy cellára, ha:</p>
+                <ul>
+                    <li>A cella a generátor hatósugarán belül van</li>
+                    <li>A cellán még nincs creep</li>
+                    <li>Van legalább egy szomszédja, amin creep van</li>
+                </ul>
+                <p>Így egy a generátort teljesen körbezáró fal fel tudja tartóztatni a creep terjedését. De ha nyitunk rajta egy kis ajtót (szabad cellát), akkor azon keresztül kijut a creep és ha más akadályba nem ütközik, feltöltheti az R sugarú körzeten belüli szabad cellákat.</p>
+                <p>Tickenként az id-je sorrendjében minden creep generátor a középpontjától R sugáron belüli cellák közül kigyűjti azokat amelyekre terjeszkedhet creep, aztán egy nagyon egyszerű determinisztikus generátor (t2+37) segítségével kiválasztja hogy melyik cellára tesz creep-et.</p>
+                <h3>A szimuláció</h3>
+                <p>Készítettem neked a fenti szabályok szerint működő (konzolos) szimulációs programot. Első paramétere a térkép, std inputján kapja a parancsokat, amelyekkel az épületek és egységek vezérelhetők. A tick hossza 1/4s, a szimuláció t=0-ról indul. Minden pályához tartozik egy tick limit, nincs végtelen sok időnk. A t ticknél először kiprinteli a szimuláció állapotát, majd feldolgozza a t időponthoz tartozó lépéseket sorban, aztán lépteti az állapotot (terjeszti a creepet).</p>
+                <p>A t=0 időpontban a Hatchery már teljesen feltöltötte creep-pel a körülötte elérhető cellákat, a Queen pedig azonnal letehet egy Creep tumort. A szimuláció leáll a pályához tartozó tick limit elérésekor, vagy ha nincs több parancs az inputban és a creep már nem tud tovább terjedni.</p>
+                <p>A szimuláció c++ kódját szabadon felhasználhatod a feladat megoldására és a specifikáció további pontosítására, vagy a kérdéseid tisztázására.</p>
+                <h3>Egy példa</h3>
+                <p>A pálya formátuma</p>
+                <p>Itt láthatsz egy példát egy lehetséges pályára: </p>
+                <pre><code class="cpp hljs">
+<span class="hljs-number">500</span>
+<span class="hljs-number">36</span> <span class="hljs-number">36</span>
+####################################
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#..................................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+#.....#............................#
+####################################
+<span class="hljs-number">2</span> <span class="hljs-number">2</span>
+                </code></pre>
+                <p>Első sorában a tick count limit van. Ennyi lépés után leáll a szimuláció. </p>
+                <p>Következő sorában a pálya mérete jön (map_dx, map_dy).</p>
+                <p>Utána a pálya következik map_dy sorban, soronként map_dx karakterrel, cellánként. Első sora a pálya teteje, a C(x,map_dy-1) cellák.</p>
+                <p>'#' karakter jelöli a falakat, '.' (pont) pedig a szabad területeket.</p>
+                <p>Utána az egyetlen Hatchery bal alsó sarkának pozíciója következik.</p>
+                <p>Ezen a pályán maximum 1142 cella fedhető be creep-pel (a Hatchery-től indulva).</p>
+                <h3>A lépések formátuma</h3>
+                <p>Itt láthatsz egy példát egy lehetséges megoldásra: </p>
+                <pre><code class="cpp hljs">
+<span class="hljs-number">11</span>
+<span class="hljs-number">5</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">5</span> <span class="hljs-number">12</span>
+<span class="hljs-number">73</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">7</span> <span class="hljs-number">21</span>
+<span class="hljs-number">167</span> <span class="hljs-number">2</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span> <span class="hljs-number">29</span>
+<span class="hljs-number">200</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">13</span> <span class="hljs-number">8</span>
+<span class="hljs-number">229</span> <span class="hljs-number">2</span> <span class="hljs-number">5</span> <span class="hljs-number">16</span> <span class="hljs-number">29</span>
+<span class="hljs-number">246</span> <span class="hljs-number">1</span> <span class="hljs-number">8</span> <span class="hljs-number">20</span> <span class="hljs-number">14</span>
+<span class="hljs-number">262</span> <span class="hljs-number">2</span> <span class="hljs-number">6</span> <span class="hljs-number">22</span> <span class="hljs-number">9</span>
+<span class="hljs-number">294</span> <span class="hljs-number">2</span> <span class="hljs-number">7</span> <span class="hljs-number">24</span> <span class="hljs-number">29</span>
+<span class="hljs-number">320</span> <span class="hljs-number">2</span> <span class="hljs-number">9</span> <span class="hljs-number">26</span> <span class="hljs-number">17</span>
+<span class="hljs-number">328</span> <span class="hljs-number">2</span> <span class="hljs-number">10</span> <span class="hljs-number">27</span> <span class="hljs-number">7</span>
+<span class="hljs-number">357</span> <span class="hljs-number">2</span> <span class="hljs-number">11</span> <span class="hljs-number">30</span> <span class="hljs-number">29</span>
+                </code></pre>
+                <p>Első sora mutatja hogy hány parancsot adunk a szimulációnak. Utána a parancsok következnek egy-egy sorban.</p>
+                <p>A parancsok 5 db egész számból állnak: t cmd id x y.</p>
+                <p>Ahol t a tickcount amikor a parancsot végre kell hajtani. A t értékek monoton növekednek az inputban.</p>
+                <p>A cmd értéke lehet 1 vagy 2.</p>
+                <ul>
+                <li><strong>1:</strong> azt jelenti hogy egy Queen tesz Creep tumort,</li>
+                <li><strong>2:</strong> jelenti, hogy egy Creep tumor tesz egy másik Creep tumort.</li>
+                </ul>
+                <p>Az id a cmd-nek megfelelően a Queen vagy Creep tumor id-je (lásd a szimuláció outputját).</p>
+                <p>Az x,y pedig egy szabad, creeppel ellátott cella, ahová a tumort szeretnénk tenni.</p>
+                <h3>Minta szimuláció állapotai és eredménye</h3>
+                <p>Fordítás és futtatás:</p>
+                <pre><code class="cpp hljs">
+g++ -O2 -<span class="hljs-built_in">std</span>=c++<span class="hljs-number">11</span> -DFONT_ASCII -DCOLOR_ANSI creep.cc
+./a.out <span class="hljs-number">0.</span><span class="hljs-built_in">map</span> &lt; <span class="hljs-number">0.</span>in
+                </code></pre>
+                <p>A konzolra rajzolt térképen használt jelek:</p>
+                <ul>
+                    <li>#: fal</li>
+                    <li>' ': (space) creep-pel nem fedett szabad cella</li>
+                    <li>C: creep-pel fedett szabad cella</li>
+                    <li>H: Hatchery</li>
+                    <li>.: szabad cella ami egy creep generátor hatósugarán belül van</li>
+                    <li>T: Creep tumor amit nemrég raktak le és még a 15s-es cooldown periódusát tölti, de már terjeszti a creep-et</li>
+                    <li>A: aktív Creep tumor, ami bármikor letehet egy újabb Creep tumort (és ezzel inaktívvá válhat)</li>
+                    <li>*: inaktív Creep tumor (újabb Creep tumort már nem tehet, de a creep-et továbbra is terjeszti)</li>
+                    <li>+: szabad cella amire a következő tick-ben kerülhet creep.</li>
+                </ul>
+                <p>A fenti minta t=0 időpillanatban így néz ki:</p>
+                <img src="./creep_files/creep_fig1.png" class="align-center mCS_img_loaded">
+                <p>Itt a fal még akadályozza a creep terjedését. </p>
+                <p>t=34-nél</p>
+                <img src="./creep_files/creep_fig2.png" class="align-center mCS_img_loaded">
+                <p>Az (5,12) pozícióra rakott Creep tumor segítségével megkerüli a creep a falat.</p>
+                <p>t=318 -nál</p>
+                <img src="./creep_files/creep_fig3.png" class="align-center mCS_img_loaded">
+                <p>Az id=9 Creep tumort lehet léptetni, p=(20,12), a nagy zöld A betűt kell nézni.</p>
+                <p>A t=400 ticknél (100.0s) leáll a szimuláció, az összes elérhető cellát creep fedi (creep_cover=1142):</p>
+                <img src="./creep_files/creep_fig4.png" class="align-center mCS_img_loaded">
+                <p>Szóval kérlek kedves Guru! Segíts nekem, hogy ezt a pályát:</p>
+                <pre><code class="cpp hljs">
+<span class="hljs-number">2500</span>
+<span class="hljs-number">64</span> <span class="hljs-number">64</span>
+################################################################
+######...#.#################......################....#...######
+###.........#############.............##########............####
+##...........##########.................#######..............###
+#.............########....................####................##
+#..............#######.....................####...............##
+#........###...######.......................##.................#
+#.#.......###...#####........................##................#
+####.......###...###............##............##...............#
+#####.......##...........##....#####...........................#
+#####........##.........####..#######.........................##
+####........####.......#####..###..###........................##
+####.......###.####....####....#....###.....#.................##
+####.............####...##...........###....##...............###
+###...#............##...##...........###.....##.....###.....####
+##..####............##..##...........##......###.....###.#.#####
+##.#######..........##...##.........###......###......##########
+#########............#....##........##......####.......#########
+########......#......##...##.......##......####........#########
+#######......###......#....##.....##......####..........########
+#######.....#####.....##....##...##......####............#######
+######.....###.##......#....###.##......###...............######
+######.....##..###...........####....####.................######
+#####.....###...###...........##....##.....................#####
+#####.....###....###.................................#.....#####
+#####.....##......###...............................##.....#####
+####......#........####............................####.....####
+####.................###.........................######.....####
+####..................####......................#######.....####
+####...................#####.................#####...##.....####
+####.....................#####............######.....##.....####
+####.................########........########........##.....####
+####.....##........########........########.................####
+####.....##.....######............#####.....................####
+####.....##...#####.................#####...................####
+####.....#######......................####..................####
+####.....######.........................###.................####
+####.....####............................####........#......####
+#####.....##...............................###......##.....#####
+#####.....#.................................###....###.....#####
+#####.....................##....##...........###...###.....#####
+######.................####....####...........###..##.....######
+######...............###......##.###....#......##.###.....######
+#######............####......##...##....##.....#####.....#######
+########..........####......##.....##....#......###......#######
+#########........####......##.......##...##......#......########
+#########.......####......##........##....#............#########
+##########......###......###.........##...##..........#######.##
+#####.#.###.....###......##...........##..##............####..##
+####.....###.....##.....###...........##...##............#...###
+###...............##....###...........##...####.............####
+##.................#.....###....#....####....####.###.......####
+##........................###..###..#####.......####........####
+##.........................#######..####.........##........#####
+#...........................#####....##...........##.......#####
+#...............##............##............###...###.......####
+#................##........................#####...###.......#.#
+#.................##.......................######...###........#
+##...............####.....................#######..............#
+##................####....................########.............#
+###..............#######.................##########...........##
+####............##########.............#############.........###
+######...#....################......#################.#...######
+################################################################
+<span class="hljs-number">4</span> <span class="hljs-number">4</span>
+                
+                </code></pre>
+                <p> minél gyorsabban be tudjam teríteni creeppel. Ha másért nem, hát a kicsit miatt tedd meg.</p>
+                <p>Előre is köszönöm,</p>
+                <p>Mrs. Zerg</p>
+                <p>UI: A ti bolygótok tágas és meleg ugye?</p>   
+			</div>
+            <div class="attachments">
+                <a href="http://www.programozoverseny.hu/download.php?file=creep.map" class="attachment text"><span>map</span></a>  
+                <a href="http://www.programozoverseny.hu/download.php?file=creep.cc" class="attachment code"><span>c++</span></a>                                          
+            </div>                  
+        </article>
+		<article class="message">
+        	<figure class="avatar"><img src="./creep_files/avatar_guru.svg" class="mCS_img_loaded"></figure>
+            <header>
+                <div class="sender">Guru</div>
+                <div class="meta-date">2016. okt. 25. 11:32</div>
+            </header>
+            <div>
+                <p>Kedves Mrs. Zerg!</p>
+                <p>Küldöm a megoldást a megadott formátumban. </p>
+                <p>Béke veled,</p>
+                <p>Guru</p>
+                <p>UI: A mi bolygónk rideg, unalmas és nem is esik az útba semmi értelme idefáradni.</p>
+            </div>
+        </article>
+        
+		<article class="message">
+        	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+            <header>
+                <div class="sender">Mrs. Zerg</div>
+                <div class="meta-date">2016. okt. 25. 15:42</div>
+            </header>
+            <div>
+                <p>Kedves Guru!</p>
+                <p>Csak szeretnélek figyelmeztetni, hogy ugyan a levelemből nem derül ki egyértelműen, de a példából és a szimulációból láthatod, hogy a Hatchery-ből minden 240 tick után születik egy húgom, aki sokat tud nekem segíteni a terület lefedésében, kérlek számolj velük is, mert együtt gyorsabban végzünk.</p>
+                <p>Mrs. Zerg</p>
+            </div>
+        </article>          
+
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-03 22:47:04</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>633</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-04 19:28:46</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>619</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-05 19:24:59</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>619</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-05 20:47:48</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>619</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-06 14:33:10</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-07 09:16:53</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-07 16:01:04</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-07 20:32:25</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-08 14:30:56</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-08 20:33:15</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-09 14:01:33</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-09 20:29:24</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-10 15:13:55</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-10 21:15:11</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>608</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-11 18:13:54</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>605</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-11 20:20:08</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>605</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-12 13:21:03</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>604</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-12 20:21:14</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>604</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-13 13:21:38</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>604</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-13 20:24:07</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>604</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-14 13:23:33</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>604</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message closed">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-15 00:27:27</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>604</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+            
+                                                <article class="message">
+                    	<figure class="avatar"><img src="./creep_files/avatar_zerg.svg" class="mCS_img_loaded"></figure>
+                        <header>
+                            <div class="sender">Mrs. Zerg</div>
+                            <div class="meta-date">2016-11-16 13:24:44</div>
+                        </header>
+                        <div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>604</b> </div>
+                                    <div class="result col-1-4">pont: <b>425</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br></p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article>
+                                      
+                
+        <script>
+            $('article.message').each(function(index, el) {
+                $('.open-close-toggle', el).click(function(event) {
+                    if($(el).hasClass('closed'))
+                        $(el).removeClass('closed');       
+                    else
+                        $(el).addClass('closed');
+                });
+            });
+        </script>
+        
+                    
+    </div>
+</div><div id="mCSB_1_scrollbar_vertical" class="mCSB_scrollTools mCSB_1_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: block;"><div class="mCSB_draggerContainer"><div id="mCSB_1_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; display: block; height: 40px; max-height: 682px; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></main>
+    
+<script>
+    $(".scroll-content").mCustomScrollbar({
+        axis:"y", 
+        autoDraggerLength: true,
+        scrollInertia: 0
+    });
+
+    $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
+
+    FileUpload.init({
+        group:'.upload-group'
+    });
+</script> 
+
+<aside id="message-bar" class="message-bar" data-success="" data-error="">
+    <div></div>
+    <span class="ico-before ico-close" onclick="closeMessageBar()"></span>
+</aside>         
+
+
+
+        </div>
+        <script src="./creep_files/main.js"></script>
+    
+
+</body></html>

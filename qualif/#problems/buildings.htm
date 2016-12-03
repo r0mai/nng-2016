@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://www.programozoverseny.hu/game/flats -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="eRNxXfJzwkoKhdJoJOeUbZzJmv4QCAp7FG8iEDxq">
+        <title>Programozóverseny 2016</title>   
+
+        <link rel="apple-touch-icon" sizes="57x57" href="http://www.programozoverseny.hu/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="http://www.programozoverseny.hu/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="http://www.programozoverseny.hu/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="http://www.programozoverseny.hu/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="http://www.programozoverseny.hu/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="http://www.programozoverseny.hu/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="http://www.programozoverseny.hu/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="http://www.programozoverseny.hu/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="http://www.programozoverseny.hu/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="http://www.programozoverseny.hu/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="http://www.programozoverseny.hu/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="http://www.programozoverseny.hu/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="http://www.programozoverseny.hu/favicon/favicon-16x16.png">
+        <link rel="manifest" href="http://www.programozoverseny.hu/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="http://www.programozoverseny.hu/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">      
+        
+        <link rel="stylesheet" href="./buildings_files/androidstudio.css">
+
+        <link rel="stylesheet" type="text/css" href="./buildings_files/jquery.mCustomScrollbar.css"> 
+        <link rel="stylesheet" type="text/css" href="./buildings_files/fonts.css">    
+        <link rel="stylesheet" type="text/css" href="./buildings_files/style.css">
+
+        <!-- JQUERY -->  
+        <script src="./buildings_files/jquery-1.12.0.min.js"></script>
+        
+        <!-- PJAX -->
+        <script src="./buildings_files/jquery.pjax.js"></script>
+
+        <script src="./buildings_files/base.js"></script>    
+        <script src="./buildings_files/jquery.mCustomScrollbar.js"></script><script src="./buildings_files/jquery.mousewheel.min.js"></script>
+        <script src="./buildings_files/highlight.pack.js"></script>
+
+        <script src="./buildings_files/FileUpload.js"></script>
+    </head>
+    <body>
+        
+        <div id="preloader" style="display: none;">
+            <span></span>
+        </div>   
+        
+        <div class="overlay" style="display: none;"></div>
+
+        <div id="pjax-container">
+            
+<nav id="left-nav" class="menu"><div class="logo">
+    	<img src="./buildings_files/logo.svg">
+</div>
+	<ul class="main-menu">
+<li class="">
+            <a href="http://www.programozoverseny.hu/game/creep" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Creep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/worddomino" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Szódominó</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/tiles" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Padlólap</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="current">
+            <a href="http://www.programozoverseny.hu/game/flats" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Lakótelep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/schrodinger" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Schrödinger</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+            
+    </ul>
+<a href="http://www.programozoverseny.hu/logout" class="logout">Kilépés</a>
+</nav><main id="main" class="scroll-content mCustomScrollbar _mCS_4"><div id="mCSB_4" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" style="max-height: none;" tabindex="0"><div id="mCSB_4_container" class="mCSB_container" style="position:relative; top:0; left:0;" dir="ltr"><div class="inner">
+		<article class="message"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                <div class="meta-date">2016. okt. 25. 09:38</div>
+            </header><div>
+                <p>Tisztelt Guru!</p>
+                <p>Én egy lakótelepi panelházakra specializálódott ingatlantőzsde ügynök vagyok. Manapság egyre nagyobb a hajtás ezekre az egyen lakásokra az ingatlanpiacon. Főleg úgy, hogy egyre több és több lakótelepet vezetnek be a piacra. Különösen a külföldiek mennek nagyon jól. Már évek óta dolgozom lakótelepekkel és kiismertem a felépítésüket és a titkaikat.</p>
+                <p>Képzeld el, hogy adott egy nagy üres terület, amire lakótelepet terveznek építeni. Ide felhúzzák az első házat. Minden ház négyzet alaprajzú és egységnyi méretű, és induláskor egy emelet magas. Aztán felhúznak valahova még egyet. Igen ám, de ha a szomszédos parcellán van ház, akkor az azt építő beruházók mindig ráhúznak egy emeletet a már meglévő épületükre. Kivéve akkor, ha már elérték a maximálisan megengedett 4 emelet magasságot. Mert ekkor lemondanak az épületről és a nagy részét széthordják építőanyagnak más építkezésekhez, és csak az eredeti 1 emelet marad meg.</p>
+                <p>Tehát ez így néz ki a gyakorlatban:</p>
+                <img src="./buildings_files/flats_fig1_fig.svg" class="align-center mCS_img_loaded"><p>Tehát, ahogy épülnek a szomszédos házak úgy épülnek az újabb emeletek a már meglévő házakra. És amikor a negyedik szomszéd is megépül elbontják újra egy szintesre.</p>
+                <img src="./buildings_files/flats_fig2_fig.svg" class="align-center mCS_img_loaded"><p>Hogy miért is fontos ez? Azért, mert egy-egy újabb lakótelepi parcella (mindig téglalap alakú) kereskedésének megnyitásakor megkapjuk a teljes telep sematikus rajzát rajta a házakkal és a magasságukkal. Az épületek értékének megbecsüléséhez nagyon fontos a koruk. Azonban ennek a szabálynak az ismeretében már össze tudok állítani egy lehetséges építési sorrendet. Nem baj, ha nem pont az eredeti építési sorrendet sikerül összeraknom, ha az általam tippelt építési sorrend a sematikus ábrán kapott eredményt adja, akkor megfelel a becsléshez. A legfontosabb része úgyis, hogy megkülönböztessem a frissen megépített 1 emeletes házakat a visszabontott 1 emeletes romoktól. </p>
+				<p>Azért fordulnék hozzád, mert ahhoz, hogy legjobb üzleteket megköthessem nagyon gyorsnak kell lennem, és sajnos a kézzel bogarászás már nem a leggyorsabb módja az adatfeldolgozásnak. Ahogy megnyitják a kereskedést egy új lakótelep parcellára 1 másodperc alatt elkapkodják a legjobb ajánlatokat. Ezért arra szeretnélek kérni, hogy írj nekem egy programot, aminek ha beküldöm a lakótelep sematikus ábráját 1 másodpercen belül visszaad egy lehetséges építési sorrendet. Ezt szeretném majd használni a különböző beérkező lakótelepek felmérésére.  A lakótelepekről még annyit, hogy mindig teljesen be vannak építve, és feltűnt, hogy mintha úgy építették volna őket, hogy fogták az összes épület koordinátáját és jól összekeverték volna majd szépen egyesével megépítették ebben a sorrendben. </p>
+				<p>Mivel egy kicsit konyítok a programozáshoz ezért a keretrendszert már összeraktam, neked csak ezt a függvényt kell implementálnod:</p>
+                <img src="./buildings_files/flats_fig_code_1.png" class="code mCS_img_loaded"><p>Ahol a buildings egy sorokat tartalmazó vector. Egy sorban pedig a házak magasságát találod (1-4). A kimenet pedig solution vector, ami koordináta párokat tartalmaz (sor, oszlop) sorrendben. Tehát:</p>
+				<p>solution[0].first az elsőnek épített ház ebben a sorban van (0 - buildings.size()-1)</p>
+				<p>solution[0].second az elsőnek épített ház az oszlopban van (0 - buildings[0].size()-1) t </p>
+				<p>Kérlek segíts, mert ha így megy tovább a hó végén nem fogom tudni megvenni a Bugatti Veyron, amit kinéztem. Pedig pont van pirosban.</p>
+				<p>Előre is köszönöm!</p>
+				<p>Spekuláns Sándor</p>                                        
+            </div>
+        </article><article class="message"><figure class="avatar"><img src="./buildings_files/avatar_guru.svg" class="mCS_img_loaded"></figure><header><div class="sender">Guru</div>
+                <div class="meta-date">2016. okt. 25. 10:21</div>
+            </header><div>
+                <p>Kedves Sándor!</p>
+                <p>Ne aggódj! Meglesz az autó. Küldöm a programot. Csak ezt az egy függvényt és a segédfüggvényeket/osztályokat, amiket használ fogja tartalmazni a fájl. Majd illeszd be a helyére és mehet a kereskedés.</p>
+                <p>Béke veled,</p>
+                <p>Guru</p>
+            </div>
+        </article><article class="message"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Guru</div>
+                <div class="meta-date">2016. okt. 25. 16:21</div>
+            </header><div>
+                <p>Köszönöm Guru!</p>
+                <p>Tényleg nagyon hálás vagyok. Az 1 másodperces limit nem fog változni, de tudd, hogy egyre nagyobb parcellákat nyitnak meg mostanában kereskedésre. Ezért fontos lenne, hogy a megadott időn belül minél nagyobb területet is ki tudjon értékelni. A legnagyobb amit láttam, hogy jönni fog 3300x3300 méretű volt.
+</p>
+                <p>Üdv,</p>
+                <p>Spekuláns Sándor</p>            
+            </div>
+        </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-06 14:33:10</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>220900</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-07 09:16:53</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>220900</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-07 16:01:04</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>220900</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-07 20:32:25</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>220900</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-08 14:30:56</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-08 20:33:15</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-09 14:01:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-09 20:29:24</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>435</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-10 15:13:55</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-10 21:15:11</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-11 18:13:54</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-11 20:20:08</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-12 13:21:03</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-12 20:21:14</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-13 13:21:38</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b></b> </div>
+                                    <div class="result col-1-4">pont: <b>0</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>In file included from /usr/include/c++/6/memory:79:0,                 from solution.cpp:14:/usr/include/c++/6/functional: In static member function ‘static bool std::_Function_base::_Base_manager&lt;_Functor&gt;::_M_manager(std::_Any_data&amp;, const std::_Any_data&amp;, std::_Manager_operation)’:/usr/include/c++/6/functional:1607:63: error: cannot use typeid with -fno-rtti        __dest._M_access&lt;const type_info*&gt;() = &amp;typeid(_Functor);                                                               ^/usr/include/c++/6/functional: In static member function ‘static bool std::_Function_base::_Ref_manager&lt;_Functor&gt;::_M_manager(std::_Any_data&amp;, const std::_Any_data&amp;, std::_Manager_operation)’:/usr/include/c++/6/functional:1673:63: error: cannot use typeid with -fno-rtti        __dest._M_access&lt;const type_info*&gt;() = &amp;typeid(_Functor);                                                               ^/usr/include/c++/6/functional: In static member function ‘static bool std::_Function_handler&lt;void(_ArgTypes ...), _Member _Class::*&gt;::_M_manager(std::_Any_data&amp;, const std::_Any_data&amp;, std::_Manager_operation)’:/usr/include/c++/6/functional:1810:61: error: cannot use typeid with -fno-rtti      __dest._M_access&lt;const type_info*&gt;() = &amp;typeid(_Functor);                                                             ^/usr/include/c++/6/functional: In member function ‘const std::type_info&amp; std::function&lt;_Res(_ArgTypes ...)&gt;::target_type() const’:/usr/include/c++/6/functional:2152:20: error: cannot use typeid with -fno-rtti  return typeid(void);                    ^/usr/include/c++/6/functional: In member function ‘_Functor* std::function&lt;_Res(_ArgTypes ...)&gt;::target()’:/usr/include/c++/6/functional:2161:21: error: cannot use typeid with -fno-rtti  if (typeid(_Functor) == target_type() &amp;&amp; _M_manager)                     ^/usr/include/c++/6/functional: In member function ‘const _Functor* std::function&lt;_Res(_ArgTypes ...)&gt;::target() const’:/usr/include/c++/6/functional:2180:21: error: cannot use typeid with -fno-rtti  if (typeid(_Functor) == target_type() &amp;&amp; _M_manager)                     ^In file included from /usr/include/c++/6/bits/shared_ptr.h:52:0,                 from /usr/include/c++/6/memory:82,                 from solution.cpp:14:/usr/include/c++/6/bits/shared_ptr_base.h: In member function ‘virtual void* std::_Sp_counted_deleter&lt;_Ptr, _Deleter, _Alloc, _Lp&gt;::_M_get_deleter(const std::type_info&amp;)’:/usr/include/c++/6/bits/shared_ptr_base.h:480:39: error: cannot use typeid with -fno-rtti         return __ti == typeid(_Deleter)                                       ^/usr/include/c++/6/bits/shared_ptr_base.h: In member function ‘virtual void* std::_Sp_counted_ptr_inplace&lt;_Tp, _Alloc, _Lp&gt;::_M_get_deleter(const std::type_info&amp;)’:/usr/include/c++/6/bits/shared_ptr_base.h:546:40: error: cannot use typeid with -fno-rtti  if (__ti == typeid(_Sp_make_shared_tag))                                        ^/usr/include/c++/6/bits/shared_ptr_base.h: In constructor ‘std::__shared_ptr&lt;_Tp, _Lp&gt;::__shared_ptr(std::_Sp_make_shared_tag, const _Alloc&amp;, _Args&amp;&amp; ...)’:/usr/include/c++/6/bits/shared_ptr_base.h:1104:50: error: cannot use typeid with -fno-rtti    void* __p = _M_refcount._M_get_deleter(typeid(__tag));                                                  ^~~~~In file included from /usr/include/c++/6/memory:82:0,                 from solution.cpp:14:/usr/include/c++/6/bits/shared_ptr.h: In function ‘_Del* std::get_deleter(const std::__shared_ptr&lt;_Tp2, _Lp&gt;&amp;)’:/usr/include/c++/6/bits/shared_ptr.h:79:63: error: cannot use typeid with -fno-rtti       return static_cast&lt;_Del*&gt;(__p._M_get_deleter(typeid(_Del)));                                                               ^solution.cpp: At global scope:solution.cpp:774:7: error: ‘condition_variable’ in namespace ‘std’ does not name a type  std::condition_variable cv_;       ^~~~~~~~~~~~~~~~~~solution.cpp: In member function ‘void {anonymous}::Worker::Consume(int)’:solution.cpp:705:4: error: ‘cv_’ was not declared in this scope    cv_.wait(lock, [this]{    ^~~solution.cpp: In member function ‘void {anonymous}::Worker::Submit({anonymous}::PartitionVec&amp;&amp;)’:solution.cpp:734:3: error: ‘cv_’ was not declared in this scope   cv_.notify_all();   ^~~solution.cpp: In member function ‘void {anonymous}::Worker::FinishThreads()’:solution.cpp:745:3: error: ‘cv_’ was not declared in this scope   cv_.wait(lock, [this]{   ^~~</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-13 20:24:07</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-14 13:23:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message closed"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-15 00:27:27</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><article class="message"><figure class="avatar"><img src="./buildings_files/avatar_spekulans.svg" class="mCS_img_loaded"></figure><header><div class="sender">Spekuláns Sándor</div>
+                            <div class="meta-date">2016-11-16 13:24:44</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                    <div class="result col-1-4">eredmény: <b>4840000</b> </div>
+                                    <div class="result col-1-4">pont: <b>430</b> </div>
+                                </div>                            
+                                <p class="result"><b>hiba:</b><br>Solve Timeout!</p>                                        
+                            </div>                        
+                        </div>
+                        <div class="open-close-toggle"></div>
+                    </article><script>
+            $('article.message').each(function(index, el) {
+                $('.open-close-toggle', el).click(function(event) {
+                    if($(el).hasClass('closed'))
+                        $(el).removeClass('closed');       
+                    else
+                        $(el).addClass('closed');
+                });
+            });
+        </script>
+</div>
+</div><div id="mCSB_4_scrollbar_vertical" class="mCSB_scrollTools mCSB_4_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: block;"><div class="mCSB_draggerContainer"><div id="mCSB_4_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; display: block; height: 92px; max-height: 682px; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></main><script>
+	$(document).ready(function() {
+        $(".scroll-content").mCustomScrollbar({
+            axis:"y", 
+            autoDraggerLength: true,
+            scrollInertia: 0
+        });
+
+        $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+        });
+	});
+
+    FileUpload.init({
+        group:'.upload-group'
+    });	   	
+</script><aside id="message-bar" class="message-bar" data-success="" data-error=""><div></div>
+    <span class="ico-before ico-close" onclick="closeMessageBar()"></span>
+</aside></div>
+        <script src="./buildings_files/main.js"></script>
+    
+
+</body></html>

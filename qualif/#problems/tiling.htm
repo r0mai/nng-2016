@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://www.programozoverseny.hu/game/tiles -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="eRNxXfJzwkoKhdJoJOeUbZzJmv4QCAp7FG8iEDxq">
+        <title>Programozóverseny 2016</title>   
+
+        <link rel="apple-touch-icon" sizes="57x57" href="http://www.programozoverseny.hu/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="http://www.programozoverseny.hu/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="http://www.programozoverseny.hu/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="http://www.programozoverseny.hu/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="http://www.programozoverseny.hu/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="http://www.programozoverseny.hu/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="http://www.programozoverseny.hu/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="http://www.programozoverseny.hu/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="http://www.programozoverseny.hu/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="http://www.programozoverseny.hu/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="http://www.programozoverseny.hu/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="http://www.programozoverseny.hu/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="http://www.programozoverseny.hu/favicon/favicon-16x16.png">
+        <link rel="manifest" href="http://www.programozoverseny.hu/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="http://www.programozoverseny.hu/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">      
+        
+        <link rel="stylesheet" href="./tiling_files/androidstudio.css">
+
+        <link rel="stylesheet" type="text/css" href="./tiling_files/jquery.mCustomScrollbar.css"> 
+        <link rel="stylesheet" type="text/css" href="./tiling_files/fonts.css">    
+        <link rel="stylesheet" type="text/css" href="./tiling_files/style.css">
+
+        <!-- JQUERY -->  
+        <script src="./tiling_files/jquery-1.12.0.min.js"></script>
+        
+        <!-- PJAX -->
+        <script src="./tiling_files/jquery.pjax.js"></script>
+
+        <script src="./tiling_files/base.js"></script>    
+        <script src="./tiling_files/jquery.mCustomScrollbar.js"></script><script src="./tiling_files/jquery.mousewheel.min.js"></script>
+        <script src="./tiling_files/highlight.pack.js"></script>
+
+        <script src="./tiling_files/FileUpload.js"></script>
+    </head>
+    <body>
+        
+        <div id="preloader" style="display: none;">
+            <span></span>
+        </div>   
+        
+        <div class="overlay" style="display: none;"></div>
+
+        <div id="pjax-container">
+            
+<nav id="left-nav" class="menu"><div class="logo">
+    	<img src="./tiling_files/logo.svg">
+</div>
+	<ul class="main-menu">
+<li class="">
+            <a href="http://www.programozoverseny.hu/game/creep" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Creep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/worddomino" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Szódominó</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="current">
+            <a href="http://www.programozoverseny.hu/game/tiles" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Padlólap</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/flats" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Lakótelep</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+                <li class="">
+            <a href="http://www.programozoverseny.hu/game/schrodinger" data-pjax="">
+                <div class="valign-center">
+                    <div class="title">Schrödinger</div>
+                    <div class="meta-points"></div>
+                </div> 
+            </a>
+        </li>
+            
+    </ul>
+<a href="http://www.programozoverseny.hu/logout" class="logout">Kilépés</a>
+</nav><main id="main" class="scroll-content mCustomScrollbar _mCS_3"><div id="mCSB_3" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" style="max-height: none;" tabindex="0"><div id="mCSB_3_container" class="mCSB_container" style="position:relative; top:0; left:0;" dir="ltr"><div class="inner">
+		<article class="message"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                <div class="meta-date">2016. okt. 25. 09:38</div>
+            </header><div>
+                <p>Kedves Guru!</p>
+                <p>Egy nagyon komoly problémával fordulnék hozzád. Jómagam egyszerű burkoló szakember vagyok és a specialitásom a padlólapok lerakása. Nagyon büszke vagyok arra, hogy precízen végzem a munkám, bár a klienseim állandó variálás ezt néha megnehezíti. Két éve is visszahívott az egyikük, hogy cserélgessem meg az utólag lerakott csempéket. 
+                Azért kereslek, mert napok óta egy borzalmas visszatérő rémálom üldöz. Egy nagyon hosszú (már-már végtelen) derékszögű háromszög alapú szobában vagyok, és az a feladatom, hogy leburkoljam. A szobáról azt kell tudni, hogy a két "befogó" fal aránya pontosan √2. Az álom már csak a rengeteg csempe vágás miatt is elég rémes lenne, de mint mondtam precíz ember vagyok és nem szeretem a pazarlást ezért mindig pontosan ki szoktam előre számolni, hogy hány távtartóra lesz szükségem.
+                Ha esetleg soha nem láttál még ilyet, akkor mutatok egy képet:</p>
+                <img src="./tiling_files/csempek_fig1_tiles.jpg" class="align-center mCS_img_loaded"><p>Igen, minden padlólap rácspontjába kerül egy. És közvetlen a falak mellé is szoktam tenni, ha a sarka pont úgy jön ki, igaz ilyenkor levágom a felesleges szárakat. Álmomban mindig pontosan tudom, hogy a szoba legrövidebb oldalára pontosan hány padlólap fér ki. Ez valahogy mindig egész szám. Ám hiába tudom, hogy négyzet alakúak a padlólapok a szoba háromszög alakja miatt nem tudom kiszámolni, hogy pontosan hány távtartóra is lesz szükségem. Ezért már napok óta szörnyen alszom. Az első napokban, amikor kisebb szobákról álmodtam ébredés után lerajzoltam és megszámoltam így. De ettől elkezdtem egyre nagyobb szobákat álmodni, és ekkora rácsos papírt nem találtam.</p>
+                <img src="./tiling_files/csempek_fig2_fig.svg" class="align-center mCS_img_loaded"><p>Kérlek segíts rajtam! Te olyan okos vagy, biztos tudsz valami programot írni, ami mindig kiszámolja, hogy hány távtartóra lesz szükségem.</p>
+                <p>Előre is köszönöm,</p>
+                <p>Burkoló Alajos</p>
+
+            </div>
+        </article><article class="message"><figure class="avatar"><img src="./tiling_files/avatar_guru.svg" class="mCS_img_loaded"></figure><header><div class="sender">Guru</div>
+                <div class="meta-date">2016. okt. 25. 10:12</div>
+            </header><div>
+                <p>Kedves Alajos!</p>
+                <p>No para! Csak kérlek küld el nekem, hogy pontosan hány padlólap fér el a szoba rövidebbik oldalán, és én küldöm neked a választ.</p>
+                <p>Béke Veled,</p>
+                <p>Guru</p>
+            </div>
+        </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-03 22:47:04</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>418</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-04 19:28:46</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>414</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-05 19:24:59</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>410</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-05 20:47:48</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>410</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-06 14:33:10</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-07 09:16:53</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-07 16:01:04</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-07 20:32:25</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-08 14:30:56</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-08 20:33:15</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-09 14:01:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-09 20:29:24</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-10 15:13:55</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-10 21:15:11</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-11 18:13:54</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-11 20:20:08</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-12 13:21:03</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>415</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-12 20:21:14</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>411</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-13 13:21:38</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>407</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-13 20:24:07</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>407</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-14 13:23:33</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>407</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message closed"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-15 00:27:27</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>407</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><article class="message"><figure class="avatar"><img src="./tiling_files/avatar_burkolo.svg" class="mCS_img_loaded"></figure><header><div class="sender">Burkoló Alajos</div>
+                            <div class="meta-date">2016-11-16 13:24:44</div>
+                        </header><div class="content-toggle">
+                            <p>Kedves Guru,</p>
+                            <p>Legutóbbi küldeményedre a következő eredmények érkeztek:</p>
+                            <div class="box">
+                                <div class="results row">
+                                                                                                                                                                        <div class="result col-1-4">
+<span>eredmény#1</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#2</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#3</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#4</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#5</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#6</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#7</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#8</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#9</span><span class="result-success"></span>
+</div>
+                                                                                                                                                                                                                                                            <div class="result col-1-4">
+<span>eredmény#10</span><span class="result-success"></span>
+</div>
+                                                                                                                                                        </div>
+                                <p class="result">pont: <b>407</b> </p>
+            				</div>  
+                        </div>
+                        <div class="open-close-toggle"></div> 
+                    </article><script>
+            $('article.message').each(function(index, el) {
+                $('.open-close-toggle', el).click(function(event) {
+                    if($(el).hasClass('closed'))
+                        $(el).removeClass('closed');       
+                    else
+                        $(el).addClass('closed');
+                });
+            });
+        </script>
+</div>
+</div><div id="mCSB_3_scrollbar_vertical" class="mCSB_scrollTools mCSB_3_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: block;"><div class="mCSB_draggerContainer"><div id="mCSB_3_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; display: block; height: 96px; max-height: 682px; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></main><script>
+	$(document).ready(function() {
+        $(".scroll-content").mCustomScrollbar({
+            axis:"y", 
+            autoDraggerLength: true,
+            scrollInertia: 0
+        });
+	}); 
+
+    $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
+
+    FileUpload.init({
+        group:'.upload-group'
+    });   	
+</script><aside id="message-bar" class="message-bar" data-success="" data-error=""><div></div>
+    <span class="ico-before ico-close" onclick="closeMessageBar()"></span>
+</aside></div>
+        <script src="./tiling_files/main.js"></script>
+    
+
+</body></html>
